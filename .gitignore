@@ -1,3 +1,6 @@
+# Configuration file
+serviceAccount.json
+
 # Logs
 logs
 *.log
