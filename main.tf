@@ -1,7 +1,17 @@
 provider "google" {
-  # credentials = file("serviceAccount.json")
-  project     = "postrix"
-  region      = "us-central1"
+  project = "postrix"
+  region  = "us-central1"
+}
+
+resource "google_storage_bucket" "cloud_functions_bucket" {
+  name     = "postrix-bucket"
+  location = "US"
+}
+
+resource "google_storage_bucket_object" "hello_world_function_archive" {
+  name   = "hello-world.zip"
+  bucket = google_storage_bucket.cloud_functions_bucket.name
+  source = "hello-world.zip"
 }
 
 resource "google_cloudfunctions_function" "hello_world_function" {
@@ -15,15 +25,12 @@ resource "google_cloudfunctions_function" "hello_world_function" {
   entry_point           = "helloWorld"
 }
 
-resource "google_storage_bucket" "cloud_functions_bucket" {
-  name     = "my-cloud-functions-bucket"
-  location = "US"
-}
-
-resource "google_storage_bucket_object" "hello_world_function_archive" {
-  name   = "hello-world-function.zip"
-  bucket = google_storage_bucket.cloud_functions_bucket.name
-  source = "path/to/your/function/zip/hello-world-function.zip"
+resource "google_cloudfunctions_function_iam_member" "public_invoker" {
+  project        = google_cloudfunctions_function.hello_world_function.project
+  region         = google_cloudfunctions_function.hello_world_function.region
+  cloud_function = google_cloudfunctions_function.hello_world_function.name
+  role           = "roles/cloudfunctions.invoker"
+  member         = "allUsers"
 }
 
 output "https_trigger_url" {
