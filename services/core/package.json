@@ -1,0 +1,18 @@
+{
+  "name": "hello-world-function",
+  "version": "1.0.0",
+  "description": "A simple Hello World Cloud Function",
+  "main": "lib/index.js",
+  "engines": {
+    "node": "20"
+  },
+  "scripts": {
+    "start": "functions-framework --target=helloWorld",
+    "test": "jest --config jest.config.ts",
+    "zip": "rm -f function-source.zip && zip -r ../../function-source.zip package.json lib"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.3.0",
+    "jest": "^29.7.0"
+  }
+}
