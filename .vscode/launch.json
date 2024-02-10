@@ -12,6 +12,12 @@
                 "<node_internals>/**"
             ],
             "program": "${file}"
+        },
+        {
+            "name": "Github Action Test",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "act -j build"
         }
     ]
 }
