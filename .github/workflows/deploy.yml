@@ -1,0 +1,29 @@
+name: Deploy to Google Cloud Functions
+
+on:
+  push:
+    branches:
+      - main  # Set this to the branch that triggers the deployment
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v0.2.1
+      with:
+        version: 'latest'
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        export_default_credentials: true
+
+    - name: Deploy Function
+      run: |
+        gcloud functions deploy YOUR_FUNCTION_NAME \
+          --region=YOUR_FUNCTION_REGION \
+          --trigger-http \
+          --runtime=nodejs14 \ # or any other supported runtime
+          --entry-point=YOUR_FUNCTION_ENTRY_POINT \
+          --allow-unauthenticated  # or any other parameters you need

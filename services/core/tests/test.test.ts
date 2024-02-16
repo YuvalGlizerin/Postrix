@@ -1,8 +1,14 @@
-// test/helloWorld.test.ts
-import { sum } from '../src';
+import '@types/jest';
+import supertest from 'supertest';
+import { core } from '../src/index'; // Replace './index' with the actual path to your Cloud Function file
 
-describe('GET /helloWorld', () => {
-  it('responds with "Hello, World 1722"', async () => {
-    expect(sum(1, 2)).toBe(3);
+// Since myFunction is an Express app, we can use it directly with supertest
+const request = supertest(core);
+
+describe('GET /', () => {
+  it('responds with Hello, World from Google Cloud Functions!', async () => {
+    const response = await request.get('/');
+    expect(response.status).toBe(200);
+    expect(response.text).toBe('Hello, World from Google Cloud Functions!');
   });
 });
