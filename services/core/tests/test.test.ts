@@ -1,4 +1,3 @@
-import '@types/jest';
 import supertest from 'supertest';
 import { core } from '../src/index'; // Replace './index' with the actual path to your Cloud Function file
 

@@ -1,13 +1,16 @@
-import express, { type Request, type Response } from 'express'
+import express, { type Request, type Response } from 'express';
 
-process.title = 'core-service'
+process.title = 'core-service';
 
-const app = express()
+const app = express();
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Hello, World from Google Cloud Functions!')
-})
+  res.send('Hello, World from Google Cloud Functions!');
+});
 
-console.log('yo')
+const PORT = 8000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
 
 export const core = app;
