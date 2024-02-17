@@ -11,8 +11,8 @@ terraform {
 }
 
 provider "google" {
-  project = var.project
-  region  = var.region
+  project = "postrix"
+  region  = "us-central1"
 }
 
 resource "google_compute_network" "vpc_network" {
