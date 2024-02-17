@@ -1,7 +1,3 @@
-output "instance_ami" {
-  value = aws_instance.ubuntu.ami
-}
-
-output "instance_arn" {
-  value = aws_instance.ubuntu.arn
+output "ip" {
+  value = google_compute_instance.vm_instance.network_interface.0.network_ip
 }
