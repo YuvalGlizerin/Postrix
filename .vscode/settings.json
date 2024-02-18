@@ -1,5 +1,9 @@
 {
     "files.exclude": {
         "**/.git": false
-    }
+    },
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "always"
+    },
+    "eslint.format.enable": true
 }

@@ -1,6 +1,16 @@
-import { HttpFunction } from '@google-cloud/functions-framework/build/src/functions';
+import express, { type Request, type Response } from 'express';
 
-export const helloWorld: HttpFunction = (req, res) => {
-  // test
-  res.send('Hello, World 1722');
-};
+process.title = 'core-service';
+
+const app = express();
+
+app.get('/', (req: Request, res: Response) => {
+  res.send('Hello, World from Google Cloud Functions!');
+});
+
+const PORT = 8000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+export const core = app;
