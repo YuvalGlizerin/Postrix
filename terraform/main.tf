@@ -11,7 +11,6 @@ terraform {
 }
 
 provider "google" {
-  credentials = ""
   project = "postrix"
   region  = "us-central1"
 }
