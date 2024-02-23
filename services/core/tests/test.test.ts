@@ -10,7 +10,7 @@ describe('GET /', () => {
   it('responds with Hello, World from Google Cloud Functions!', async () => {
     const response = await request.get('/');
     expect(response.status).toBe(200);
-    expect(response.text).toBe('Hello, World from Google Cloud Functions!');
+    expect(response.text).toBe('fail test Hello, World from Google Cloud Functions!');
   });
 });
 
