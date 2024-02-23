@@ -11,13 +11,41 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "command": "npm run start-local nodemon --prefix services/core"
+            "command": "npm run start-local nodemon --prefix services/core",
+            "presentation": {
+                "group": "Local Services"
+            }
         },
         {
-            "name": "Github Action Test",
+            "name": "Action Test",
             "type": "node-terminal",
             "request": "launch",
-            "command": "act -j build"
+            "command": "act -j test",
+            "internalConsoleOptions": "neverOpen",
+            "presentation": {
+                "group": "Github Actions"
+            }
+        },
+        {
+            "name": "Action Plan",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "act -j terraform-plan",
+            "internalConsoleOptions": "neverOpen",
+            "presentation": {
+                "group": "Github Actions"
+            }
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Local Services",
+            "configurations": ["Core"],
+            "stopAll": true,
+            "presentation": {
+                "group": "Local Services",
+                "order": 1
+            }
         }
     ]
 }
