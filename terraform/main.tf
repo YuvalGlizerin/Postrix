@@ -20,4 +20,6 @@ resource "google_cloudfunctions_function" "core" {
   runtime               = var.runtime
   available_memory_mb   = 256
   trigger_http          = true
+  min_instances         = 1
+  max_instances         = 1
 }
