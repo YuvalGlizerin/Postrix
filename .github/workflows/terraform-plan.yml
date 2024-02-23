@@ -10,7 +10,7 @@ env:
   CONFIG_DIRECTORY: "./terraform"
 
 jobs:
-  terraform:
+  terraform-plan:
     name: "Terraform Plan"
     runs-on: ubuntu-latest
     permissions:

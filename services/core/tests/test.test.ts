@@ -1,5 +1,5 @@
 import supertest from 'supertest';
-import { core } from '../src/index'; // Replace './index' with the actual path to your Cloud Function file
+import core from '../src/index'; // Replace './index' with the actual path to your Cloud Function file
 
 // Since myFunction is an Express app, we can use it directly with supertest
 const request = supertest(core);
@@ -10,4 +10,9 @@ describe('GET /', () => {
     expect(response.status).toBe(200);
     expect(response.text).toBe('Hello, World from Google Cloud Functions!');
   });
+});
+
+afterAll(done => {
+  core.close();
+  done();
 });
