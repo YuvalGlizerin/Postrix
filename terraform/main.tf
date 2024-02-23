@@ -14,3 +14,10 @@ provider "google" {
   region  = var.region
   zone    = var.zone
 }
+
+resource "google_cloudfunctions_function" "core" {
+  name                  = "core"
+  runtime               = var.runtime
+  available_memory_mb   = 256
+  trigger_http          = true
+}
