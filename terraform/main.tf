@@ -16,32 +16,26 @@ provider "google" {
 }
 
 resource "google_artifact_registry_repository" "my_repository" {
-  provider = google
-
+  provider      = google
   location      = var.region
-  repository_id = "my-docker-repo"
-  description   = "Docker repository"
+  repository_id = "production-docker"
   format        = "DOCKER"
-
-  labels = {
-    environment = "production"
-  }
 }
 
-resource "google_cloud_run_service" "default" {
-  name     = "express-app-service"
-  location = "us-central1"
+# resource "google_cloud_run_service" "default" {
+#   name     = "express-app-service"
+#   location = "us-central1"
 
-  template {
-    spec {
-      containers {
-        image = "gcr.io/${var.project}/express-app:latest"
-      }
-    }
-  }
+#   template {
+#     spec {
+#       containers {
+#         image = "gcr.io/${var.project}/express-app:latest"
+#       }
+#     }
+#   }
 
-  traffic {
-    percent         = 100
-    latest_revision = true
-  }
-}
+#   traffic {
+#     percent         = 100
+#     latest_revision = true
+#   }
+# }
