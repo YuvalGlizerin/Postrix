@@ -1,0 +1,31 @@
+name: Build and Push to Artifact Registry
+
+on:
+    workflow_run:
+      workflows: ["Terraform Apply"]
+      types:
+        - completed
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v0.3.0
+      with:
+        service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+        project_id: postrix
+
+    - name: Configure Docker for Google Artifact Registry
+      run: gcloud auth configure-docker us-central1-docker.pkg.dev
+
+    - name: Build Docker image
+      run: |
+        docker build -t us-central1-docker.pkg.dev/postrix/production-docker/core:latest .
+
+    - name: Push Docker image to Google Artifact Registry
+      run: |
+        docker push us-central1-docker.pkg.dev/postrix/production-docker/core:latest

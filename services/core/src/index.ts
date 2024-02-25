@@ -5,7 +5,7 @@ process.title = 'core-service';
 const app = express();
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Hello, World from Google Cloud Functions!');
+  res.send('Hello World!');
 });
 
 const PORT = 8080; // TODO: update to 8000 for local with env vars
