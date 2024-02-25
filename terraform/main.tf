@@ -38,6 +38,8 @@ resource "google_cloud_run_service" "core" {
     percent         = 100
     latest_revision = true
   }
+
+  autogenerate_revision_name = true
 }
 
 resource "google_cloud_run_service_iam_member" "public_invoker" {
