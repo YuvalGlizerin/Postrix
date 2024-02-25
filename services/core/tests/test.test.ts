@@ -5,10 +5,10 @@ import core from '../src/index'; // Replace './index' with the actual path to yo
 const request = supertest(core);
 
 describe('GET /', () => {
-  it('responds with Hello World!', async () => {
+  it('responds with Done for today', async () => {
     const response = await request.get('/');
     expect(response.status).toBe(200);
-    expect(response.text).toBe('Hello World!');
+    expect(response.text).toBe('Done for today');
   });
 });
 
