@@ -5,10 +5,10 @@ import core from '../src/index'; // Replace './index' with the actual path to yo
 const request = supertest(core);
 
 describe('GET /', () => {
-  it('responds with Hello, World from Google Cloud Functions!', async () => {
+  it('responds with Hello World!', async () => {
     const response = await request.get('/');
     expect(response.status).toBe(200);
-    expect(response.text).toBe('Hello, World from Google Cloud Functions!');
+    expect(response.text).toBe('Hello World!');
   });
 });
 
