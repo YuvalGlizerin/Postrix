@@ -8,7 +8,7 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Hello, World from Google Cloud Functions!');
 });
 
-const PORT = 8000;
+const PORT = 8080; // TODO: update to 8000 for local with env vars
 
 const server = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
