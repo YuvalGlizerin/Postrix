@@ -15,11 +15,33 @@ provider "google" {
   zone    = var.zone
 }
 
-resource "google_cloudfunctions_function" "core" {
-  name                  = "core"
-  runtime               = var.runtime
-  available_memory_mb   = 256
-  trigger_http          = true
-  min_instances         = 1
-  max_instances         = 1
+resource "google_artifact_registry_repository" "my_repository" {
+  provider = google
+
+  location      = var.region
+  repository_id = "my-docker-repo"
+  description   = "Docker repository"
+  format        = "DOCKER"
+
+  labels = {
+    environment = "production"
+  }
+}
+
+resource "google_cloud_run_service" "default" {
+  name     = "express-app-service"
+  location = "us-central1"
+
+  template {
+    spec {
+      containers {
+        image = "gcr.io/${var.project}/express-app:latest"
+      }
+    }
+  }
+
+  traffic {
+    percent         = 100
+    latest_revision = true
+  }
 }
