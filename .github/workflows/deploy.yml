@@ -29,3 +29,11 @@ jobs:
     - name: Push Docker image to Google Artifact Registry
       run: |
         docker push us-central1-docker.pkg.dev/postrix/production-docker/core:latest
+    
+    - name: Deploy to Cloud Run
+      run: |
+        gcloud run deploy core-service \
+        --image=us-central1-docker.pkg.dev/postrix/production-docker/core:latest \
+        --region=us-central1 \
+        --platform=managed \
+        --allow-unauthenticated
