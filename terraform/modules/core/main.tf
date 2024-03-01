@@ -21,7 +21,8 @@ resource "google_cloud_run_service" "core" {
   template {
     spec {
       containers {
-        image = "${var.region}-docker.pkg.dev/${var.project}/${var.artifactory_repository_id}/core:latest"
+        image = "gcr.io/google-samples/hello-app:2.0" # Placeholder image
+        # image = "${var.region}-docker.pkg.dev/${var.project}/${var.artifactory_repository_id}/core:latest"
 
         env {
           name  = "ENV"
