@@ -1,17 +1,18 @@
 import express, { type Request, type Response } from 'express';
+import dotenv from 'dotenv';
 
+dotenv.config({ path: `envs/${process.env.ENV}.env` });
 process.title = 'core-service';
-
 const app = express();
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Done for today');
 });
 
-const PORT = 8080; // TODO: update to 8000 for local with env vars
+const PORT = process.env.PORT;
 
 const server = app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running: http://localhost:${PORT}`);
 });
 
 export default server;

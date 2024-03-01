@@ -1,7 +1,3 @@
-variable "project" {
-  default = "postrix"
-}
-
 variable "region" {
   default = "us-central1"
 }
