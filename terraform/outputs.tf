@@ -1,3 +1,7 @@
-output "url" {
-  value = google_cloud_run_service.core.status[0].url
+output "production_url" {
+  value = module.postrix_production.service_url
+}
+
+output "sandbox_url" {
+  value = module.postrix_sandbox.service_url
 }
