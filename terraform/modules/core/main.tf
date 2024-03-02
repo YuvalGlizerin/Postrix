@@ -41,6 +41,7 @@ resource "google_cloud_run_service" "core" {
 }
 
 resource "google_cloud_run_service_iam_member" "public_invoker" {
+  project  = var.project
   service  = google_cloud_run_service.core.name
   location = google_cloud_run_service.core.location
   role     = "roles/run.invoker"
