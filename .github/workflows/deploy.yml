@@ -6,9 +6,18 @@ on:
       types:
         - completed
 
+env:
+  REGION: us-central1
+
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment:
+          - { name: 'production', project_id: 'postrix', artifact_repo: 'production-docker' }
+          - { name: 'sandbox', project_id: 'postrix-sandbox', artifact_repo: 'sandbox-docker' }
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -17,23 +26,23 @@ jobs:
       uses: google-github-actions/setup-gcloud@v0.3.0
       with:
         service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-        project_id: postrix
+        project_id: ${{ matrix.environment.project_id }}
 
     - name: Configure Docker for Google Artifact Registry
-      run: gcloud auth configure-docker us-central1-docker.pkg.dev
+      run: gcloud auth configure-docker $REGION-docker.pkg.dev
 
     - name: Build Docker image
       run: |
-        docker build -t us-central1-docker.pkg.dev/postrix/production-docker/core:latest ./services/core
+        docker build -t $REGION-docker.pkg.dev/${{ matrix.environment.project_id }}/${{ matrix.environment.artifact_repo }}/core:latest ./services/core
 
     - name: Push Docker image to Google Artifact Registry
       run: |
-        docker push us-central1-docker.pkg.dev/postrix/production-docker/core:latest
+        docker push $REGION-docker.pkg.dev/${{ matrix.environment.project_id }}/${{ matrix.environment.artifact_repo }}/core:latest
     
     - name: Deploy to Cloud Run
       run: |
         gcloud run deploy core-service \
-        --image=us-central1-docker.pkg.dev/postrix/production-docker/core:latest \
-        --region=us-central1 \
+        --image=$REGION-docker.pkg.dev/${{ matrix.environment.project_id }}/${{ matrix.environment.artifact_repo }}/core:latest \
+        --region=$REGION \
         --platform=managed \
         --allow-unauthenticated
