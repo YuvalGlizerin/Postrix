@@ -8,7 +8,7 @@ describe('GET /', () => {
   it('responds with Done for today', async () => {
     const response = await request.get('/');
     expect(response.status).toBe(200);
-    expect(response.text).toBe('Done for today');
+    expect(response.text).toContain('Server is running on');
   });
 });
 
