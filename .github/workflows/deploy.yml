@@ -16,7 +16,7 @@ jobs:
       matrix:
         environment:
           - { name: 'production', project_id: 'postrix', artifact_repo: 'production-docker' }
-          - { name: 'sandbox', project_id: 'postrix-sandbox', artifact_repo: 'sandbox-docker' }
+          - { name: 'development', project_id: 'postrix-development', artifact_repo: 'development-docker' }
 
     steps:
     - name: Checkout code
