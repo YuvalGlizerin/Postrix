@@ -5,10 +5,10 @@ import core from '../src/index'; // Replace './index' with the actual path to yo
 const request = supertest(core);
 
 describe('GET /', () => {
-  it('responds with Done for today', async () => {
+  it('responds with "Core service is running on"', async () => {
     const response = await request.get('/');
     expect(response.status).toBe(200);
-    expect(response.text).toContain('Server is running on');
+    expect(response.text).toContain('Core service is running on');
   });
 });
 
