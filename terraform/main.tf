@@ -1,5 +1,3 @@
-# Requires authentication: gcloud auth application-default login
-
 terraform {
   required_providers {
     google = {
@@ -10,33 +8,41 @@ terraform {
 }
 
 provider "google" {
-  region  = var.region
-  zone    = var.zone
+  region = var.region
+  zone   = var.zone
 }
 
-module "postrix_production" {
-  source                    = "./modules/core"
-  project                   = "postrix"
-  region                    = var.region
-  zone                      = var.zone
-  artifactory_repository_id = "production-docker"
-  env                       = "production"
+locals {
+  environments = {
+    production = {
+      project                   = "postrix"
+      artifactory_repository_id = "production-docker"
+      env                       = "production"
+    }
+    development = {
+      project                   = "postrix-development"
+      artifactory_repository_id = "development-docker"
+      env                       = "development"
+    }
+  }
 }
 
-module "postrix_sandbox" {
+module "core" {
+  for_each                  = local.environments
   source                    = "./modules/core"
-  project                   = "postrix-sandbox"
+  project                   = each.value.project
   region                    = var.region
   zone                      = var.zone
-  artifactory_repository_id = "sandbox-docker"
-  env                       = "sandbox"
+  artifactory_repository_id = each.value.artifactory_repository_id
+  env                       = each.value.env
 }
 
-module "postrix_development" {
-  source                    = "./modules/core"
-  project                   = "postrix-development"
+module "infrastructure" {
+  for_each                  = local.environments
+  source                    = "./modules/infrastructure"
+  project                   = each.value.project
   region                    = var.region
   zone                      = var.zone
-  artifactory_repository_id = "development-docker"
-  env                       = "development"
+  artifactory_repository_id = each.value.artifactory_repository_id
+  env                       = each.value.env
 }
