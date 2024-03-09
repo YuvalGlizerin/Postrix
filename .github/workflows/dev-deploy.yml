@@ -1,0 +1,62 @@
+name: PR Deployment Workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, closed]
+
+jobs:
+  deploy-or-release:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+  
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.3.0
+        with:
+          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          project_id: postrix-development
+
+      - name: Configure Docker for Google Artifact Registry
+        run: gcloud auth configure-docker $REGION-docker.pkg.dev
+    
+      - name: Build Docker image
+        if: github.event.action != 'closed'
+        run: |
+          docker build -t $REGION-docker.pkg.dev/postrix-development/development-docker/core:latest ./services/core
+
+      - name: Push Docker image to Google Artifact Registry
+        if: github.event.action != 'closed'
+        run: |
+          docker push $REGION-docker.pkg.dev/postrix-development/development-docker/core:latest
+    
+      - name: Deploy to Cloud Run
+        if: github.event.action != 'closed'
+        run: |
+          gcloud run deploy core-service \
+          --image=$REGION-docker.pkg.dev/postrix-development/development-docker/core:latest \
+          --region=$REGION \
+          --platform=managed \
+          --allow-unauthenticated
+
+    #   # Deploy or update services
+    #   - name: Deploy Services
+    #     if: github.event.action != 'closed'
+    #     run: |
+    #       echo "Deploying or updating services for PR #${{ github.event.pull_request.title }}"
+    #       # Example command to deploy or update your services
+    #       # Adjust this command to fit your actual deployment process
+    #       # Ensure your deployment scripts or commands use the PR number for service naming
+    #       deploy-service --service-name pr-${{ github.event.pull_request.title }}-my-service --action deploy
+
+    #   # Release resources when PR is closed
+    #   - name: Release Resources
+    #     if: github.event.action == 'closed'
+    #     run: |
+    #       echo "Releasing resources for PR #${{ github.event.pull_request.title }}"
+    #       # Example command to release your services
+    #       # Adjust this command to fit your actual release process
+    #       deploy-service --service-name pr-${{ github.event.pull_request.title }}-my-service --action release

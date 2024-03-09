@@ -31,3 +31,12 @@ module "postrix_sandbox" {
   artifactory_repository_id = "sandbox-docker"
   env                       = "sandbox"
 }
+
+module "postrix_development" {
+  source                    = "./modules/core"
+  project                   = "postrix-development"
+  region                    = var.region
+  zone                      = var.zone
+  artifactory_repository_id = "development-docker"
+  env                       = "development"
+}

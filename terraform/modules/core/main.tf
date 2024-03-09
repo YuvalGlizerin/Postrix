@@ -13,6 +13,7 @@ resource "google_artifact_registry_repository" "artifact_registry" {
 }
 
 resource "google_cloud_run_service" "core" {
+  count = var.env != "development" ? 1 : 0
   provider  = google
   project   = var.project
   name      = "core-service"
@@ -40,6 +41,7 @@ resource "google_cloud_run_service" "core" {
 }
 
 resource "google_cloud_run_service_iam_member" "public_invoker" {
+  count = var.env != "development" ? 1 : 0
   provider = google
   project  = var.project
   service  = google_cloud_run_service.core.name
