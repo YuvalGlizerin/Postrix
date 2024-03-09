@@ -4,6 +4,18 @@ variable "zone" {}
 variable "artifactory_repository_id" {}
 variable "env" {}
 
+resource "null_resource" "docker_image" {
+  depends_on = [google_artifact_registry_repository.artifact_registry]
+
+  provisioner "local-exec" {
+    command = <<-EOT
+      docker pull hello-world
+      docker tag hello-world ${var.region}-docker.pkg.dev/${var.project}/${var.artifactory_repository_id}/core:latest
+      docker push ${var.region}-docker.pkg.dev/${var.project}/${var.artifactory_repository_id}/core:latest
+    EOT
+  }
+}
+
 resource "google_cloud_run_service" "core" {
   provider  = google
   project   = var.project
