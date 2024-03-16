@@ -36,9 +36,9 @@ locals {
   }
 }
 
-module "core" {
+module "infrastructure" {
   for_each                  = local.environments
-  source                    = "./modules/core"
+  source                    = "./modules/infrastructure"
   project                   = each.value.project
   region                    = var.region
   zone                      = var.zone
@@ -46,9 +46,10 @@ module "core" {
   env                       = each.value.env
 }
 
-module "infrastructure" {
+module "core" {
+  depends_on                = [module.infrastructure]
   for_each                  = local.environments
-  source                    = "./modules/infrastructure"
+  source                    = "./modules/core"
   project                   = each.value.project
   region                    = var.region
   zone                      = var.zone
