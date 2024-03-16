@@ -2,7 +2,16 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "4.52.0"
+      version = ">= 5.20.0"
+    }
+  }
+
+  backend "remote" {
+    hostname     = "app.terraform.io"
+    organization = "postrix"
+
+    workspaces {
+      name = "postrix"
     }
   }
 }

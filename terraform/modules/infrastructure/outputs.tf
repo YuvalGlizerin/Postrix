@@ -1,3 +1,3 @@
 output "repository_url" {
-  value = google_artifact_registry_repository.artifact_registry.repository_url
+  value = "https://${var.region}-docker.pkg.dev/${var.project}/${var.artifactory_repository_id}"
 }
