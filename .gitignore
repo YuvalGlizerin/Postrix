@@ -1,3 +1,19 @@
+# My Ignores
+# -------------------------------------
+
+# Local .terraform directories
+.terraform
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# Ignore lock file
+.terraform.lock.hcl
+
+# Template Ignores
+# -------------------------------------
+
 # Logs
 logs
 *.log
