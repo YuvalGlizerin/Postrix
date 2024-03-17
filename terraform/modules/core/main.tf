@@ -3,6 +3,8 @@ variable "region" {}
 variable "zone" {}
 variable "artifactory_repository_id" {}
 variable "env" {}
+variable "domain" {}
+variable "domain_prefix" {}
 
 resource "google_cloud_run_service" "core" {
   provider  = google
@@ -44,4 +46,31 @@ resource "google_cloud_run_service_iam_member" "public_invoker" {
   location = google_cloud_run_service.core.location
   role     = "roles/run.invoker"
   member   = "allUsers"
+}
+
+resource "google_cloud_run_domain_mapping" "core_domain_mapping" {
+  provider = google
+  project  = var.project
+  location = var.region
+  name     = "${var.domain_prefix}${var.domain}"
+
+  metadata {
+    namespace = var.project
+  }
+  spec {
+    route_name = google_cloud_run_service.core.name
+  }
+}
+
+resource "godaddy_domain_record" "cname_core_dev" {
+  depends_on = [google_cloud_run_domain_mapping.core_domain_mapping]
+
+  provider = godaddy
+  domain = var.domain
+  record {
+    name = var.domain_prefix
+    type = "CNAME"
+    data = "ghs.googlehosted.com"
+    ttl = 600
+  }
 }
