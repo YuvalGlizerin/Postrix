@@ -39,4 +39,4 @@ jobs:
         --region=$REGION \
         --platform=managed \
         --allow-unauthenticated \
-        --env-vars-file=./services/core/envs/.env.dev
+        --env-vars-file=./services/core/envs/dev.env
