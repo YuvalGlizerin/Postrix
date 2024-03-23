@@ -13,3 +13,10 @@ variable "zone" {
 variable "runtime" {
   default = "nodejs20"
 }
+
+variable "domain_server_ip" {
+  description = "Domain Server IP"
+  type        = string
+  sensitive   = false
+  default     = ""
+}
