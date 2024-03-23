@@ -11,3 +11,10 @@ variable "GODADDY_API_SECRET" {
   sensitive   = true
   default     = ""
 }
+
+variable "DOMAIN_SERVER_IP" {
+  description = "Domain Server IP"
+  type        = string
+  sensitive   = true
+  default     = ""
+}

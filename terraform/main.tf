@@ -46,6 +46,7 @@ locals {
 module "godaddy" {
   source                    = "./modules/global/godaddy"
   domain                    = var.domain
+  domain_server_ip          = var.DOMAIN_SERVER_IP
 
   providers = {
     godaddy-dns = godaddy-dns
