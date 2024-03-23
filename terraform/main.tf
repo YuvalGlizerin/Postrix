@@ -21,9 +21,6 @@ terraform {
   }
 }
 
-# keys usually set with env GODADDY_API_KEY and GODADDY_API_SECRET
-# provider "godaddy-dns" {}
-
 provider "google" {
   region = var.region
   zone   = var.zone
