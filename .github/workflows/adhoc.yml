@@ -5,6 +5,7 @@ on:
 
 env:
   REGION: us-central1
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
 
 jobs:
   build_and_push:
@@ -33,7 +34,7 @@ jobs:
     
     - name: Deploy to Cloud Run
       run: |
-        gcloud run deploy core-service \
+        gcloud run deploy ${{ env.BRANCH_NAME }}-core-service \
         --image=$REGION-docker.pkg.dev/postrix-development/development-docker/${{ github.ref }}-core:latest \
         --region=$REGION \
         --platform=managed \
