@@ -14,7 +14,7 @@ variable "runtime" {
   default = "nodejs20"
 }
 
-variable "domain_server_ip" {
+variable "DOMAIN_DNS_SERVER_IP" {
   description = "Domain Server IP"
   type        = string
   sensitive   = false
