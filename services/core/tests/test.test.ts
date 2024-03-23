@@ -4,6 +4,7 @@ import core from '../src/index'; // Replace './index' with the actual path to yo
 // Since myFunction is an Express app, we can use it directly with supertest
 const request = supertest(core);
 
+// Test the / endpoint
 describe('GET /', () => {
   it('responds with "Core service is running on"', async () => {
     const response = await request.get('/');
@@ -12,6 +13,7 @@ describe('GET /', () => {
   });
 });
 
+// Close the server after all tests
 afterAll(done => {
   core.close();
   done();

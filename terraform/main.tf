@@ -5,9 +5,9 @@ terraform {
       version = "5.20.0"
     }
 
-    godaddy = {
-      source  = "n3integration/godaddy"
-      version = "1.9.1"
+    godaddy-dns = {
+      source  = "registry.terraform.io/veksh/godaddy-dns"
+      version = "0.3.7"
     }
   }
 
@@ -21,14 +21,12 @@ terraform {
   }
 }
 
+# keys usually set with env GODADDY_API_KEY and GODADDY_API_SECRET
+# provider "godaddy-dns" {}
+
 provider "google" {
   region = var.region
   zone   = var.zone
-}
-
-provider "godaddy" {
-  key    = var.GODADDY_API_KEY
-  secret = var.GODADDY_API_SECRET
 }
 
 locals {
@@ -48,9 +46,18 @@ locals {
   }
 }
 
+module "godaddy" {
+  source                    = "./modules/global/godaddy"
+  domain                    = var.domain
+
+  providers = {
+    godaddy-dns = godaddy-dns
+  }
+}
+
 module "infrastructure" {
   for_each                  = local.environments
-  source                    = "./modules/infrastructure"
+  source                    = "./modules/project/infrastructure"
   project                   = each.value.project
   region                    = var.region
   zone                      = var.zone
@@ -66,7 +73,7 @@ module "core" {
   depends_on                = [module.infrastructure]
 
   for_each                  = local.environments
-  source                    = "./modules/core"
+  source                    = "./modules/project/core"
   project                   = each.value.project
   region                    = var.region
   zone                      = var.zone
@@ -77,6 +84,6 @@ module "core" {
 
   providers = {
     google  = google
-    godaddy = godaddy
+    godaddy-dns = godaddy-dns
   }
 }
