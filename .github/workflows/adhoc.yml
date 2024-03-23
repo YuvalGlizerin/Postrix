@@ -1,0 +1,40 @@
+name: Deploy adhoc
+
+on:
+  pull_request:
+
+env:
+  REGION: us-central1
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v0.3.0
+      with:
+        service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+        project_id: postrix-development
+
+    - name: Configure Docker for Google Artifact Registry
+      run: gcloud auth configure-docker $REGION-docker.pkg.dev
+
+    - name: Build Docker image
+      run: |
+        docker build -t $REGION-docker.pkg.dev/postrix-development/development-docker/${{ github.ref }}-core:latest ./services/core
+
+    - name: Push Docker image to Google Artifact Registry
+      run: |
+        docker push $REGION-docker.pkg.dev/postrix-development/development-docker/${{ github.ref }}-core:latest
+    
+    - name: Deploy to Cloud Run
+      run: |
+        gcloud run deploy core-service \
+        --image=$REGION-docker.pkg.dev/postrix-development/development-docker/${{ github.ref }}-core:latest \
+        --region=$REGION \
+        --platform=managed \
+        --allow-unauthenticated
