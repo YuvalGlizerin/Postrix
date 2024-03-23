@@ -62,15 +62,13 @@ resource "google_cloud_run_domain_mapping" "core_domain_mapping" {
   }
 }
 
-resource "godaddy_domain_record" "cname_core_dev" {
+resource "godaddy-dns_record" "cname_core_dev" {
   depends_on = [google_cloud_run_domain_mapping.core_domain_mapping]
 
-  provider = godaddy
+  provider = godaddy-dns
   domain = var.domain
-  record {
-    name = var.domain_prefix
-    type = "CNAME"
-    data = "ghs.googlehosted.com"
-    ttl = 600
-  }
+  name = trimsuffix(var.domain_prefix, ".")
+  type = "CNAME"
+  data = "ghs.googlehosted.com"
+  ttl = 600
 }

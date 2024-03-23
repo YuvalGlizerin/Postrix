@@ -3,8 +3,8 @@ terraform {
     google = {
       source  = "hashicorp/google"
     }
-    godaddy = {
-      source  = "n3integration/godaddy"
+    godaddy-dns = {
+      source  = "registry.terraform.io/veksh/godaddy-dns"
     }
   }
 }
