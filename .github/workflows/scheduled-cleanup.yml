@@ -28,7 +28,7 @@ jobs:
         
             for SERVICE in $SERVICES; do
                 # Get the last deployment time of the service
-                LAST_DEPLOYMENT_TIME=$(gcloud run services describe $SERVICE --platform=managed --region=$REGION --format="value(status.latestCreatedRevisionName)")
+                LAST_DEPLOYMENT_TIME=$(gcloud run services describe $SERVICE --platform=managed --region=$REGION --format="value(metadata.creationTimestamp)")
             
                 # Convert the last deployment time to a Unix timestamp
                 LAST_DEPLOYMENT_TIMESTAMP=$(date --date="$LAST_DEPLOYMENT_TIME" +%s)
