@@ -9,7 +9,7 @@ env:
   REGION: us-central1
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
   SERVICE_NAME: ${{ github.head_ref }}-core-service
-  IMAGE_NAME: $REGION-docker.pkg.dev/postrix-development/development-docker/$BRANCH_NAME-core:latest
+  IMAGE_NAME: $REGION-docker.pkg.dev/postrix-development/development-docker/$BRANCH_NAME-core
 
 jobs:
   destroy:
@@ -28,5 +28,6 @@ jobs:
 
     - name: Destroy resources
       run: |
+        echo "Image to delete: $IMAGE_NAME"
         gcloud run services delete $SERVICE_NAME --region=$REGION --platform=managed --quiet
         gcloud artifacts docker images delete $IMAGE_NAME --quiet
