@@ -2,9 +2,6 @@ name: Adhoc Deployment and Cleanup
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - '**'
   schedule:
     - cron: '0 0 * * *'  # Run cleanup job every day at 00:00 UTC
 
