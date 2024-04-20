@@ -15,11 +15,6 @@ jobs:
   destroy:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
-    strategy:
-      matrix:
-        environment:
-          - { name: 'production', project_id: 'postrix', artifact_repo: 'production-docker' }
-          - { name: 'development', project_id: 'postrix-development', artifact_repo: 'development-docker' }
 
     steps:
     - name: Checkout code
