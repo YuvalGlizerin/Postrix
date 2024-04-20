@@ -27,5 +27,5 @@ jobs:
 
     - name: Destroy resources
       run: |
-        gcloud run services delete $SERVICE_NAME --region=$REGION --platform=managed --quiet
+        gcloud run services delete ${{ env.SERVICE_NAME }} --region=${{ env.REGION }} --platform=managed --quiet
         gcloud artifacts docker images delete ${{ env.REGION }}-docker.pkg.dev/postrix-development/development-docker/${{ env.BRANCH_NAME }}-core --quiet
