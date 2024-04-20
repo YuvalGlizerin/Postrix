@@ -44,4 +44,4 @@ jobs:
     
     - name: Map adhoc url to service
       run: |
-        gcloud run domain-mappings create --service ${{ env.BRANCH_NAME }}-core-service --domain ${{ env.BRANCH_NAME }}-core.dev.postrix.io
+        gcloud beta run domain-mappings create --service ${{ env.BRANCH_NAME }}-core-service --domain ${{ env.BRANCH_NAME }}-core.dev.postrix.io
