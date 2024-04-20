@@ -39,5 +39,5 @@ jobs:
         --region=$REGION \
         --platform=managed \
         --allow-unauthenticated \
-        --env-vars-file=./services/core/envs/dev.env
-        --label=adhoc=true
+        --env-vars-file=./services/core/envs/dev.env \
+        --labels=adhoc=true
