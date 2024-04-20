@@ -1,0 +1,50 @@
+name: Adhoc Deployment and Cleanup
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - '**'
+  schedule:
+    - cron: '0 0 * * *'  # Run cleanup job every day at 00:00 UTC
+
+env:
+  REGION: us-central1
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.3.0
+        with:
+          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          project_id: postrix-development
+
+      - name: Delete expired deployments
+        run: |
+            # Get a list of adhoc services
+            SERVICES=$(gcloud run services list --platform=managed --region=$REGION --filter="metadata.labels.adhoc=true" --format="value(metadata.name)")
+        
+            for SERVICE in $SERVICES; do
+                # Get the last deployment time of the service
+                LAST_DEPLOYMENT_TIME=$(gcloud run services describe $SERVICE --platform=managed --region=$REGION --format="value(status.latestCreatedRevisionName)")
+            
+                # Convert the last deployment time to a Unix timestamp
+                LAST_DEPLOYMENT_TIMESTAMP=$(date --date="$LAST_DEPLOYMENT_TIME" +%s)
+            
+                # Get the current time as a Unix timestamp
+                CURRENT_TIMESTAMP=$(date +%s)
+            
+                # Calculate the age of the service in days
+                AGE=$(( (CURRENT_TIMESTAMP - LAST_DEPLOYMENT_TIMESTAMP) / 60 / 60 / 24 ))
+            
+                # Delete the service if it's older than one week
+                if [ $AGE -gt 7 ]; then
+                    gcloud run services delete $SERVICE --platform=managed --region=$REGION --quiet
+                fi
+            done
