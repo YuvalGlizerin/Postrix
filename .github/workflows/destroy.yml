@@ -1,0 +1,37 @@
+name: Destroy PR resources
+
+on:
+  pull_request:
+    types:
+      - closed
+
+env:
+  REGION: us-central1
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+  SERVICE_NAME: ${{ github.head_ref }}-core-service
+  IMAGE_NAME: $REGION-docker.pkg.dev/postrix-development/development-docker/$BRANCH_NAME-core:latest
+
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    strategy:
+      matrix:
+        environment:
+          - { name: 'production', project_id: 'postrix', artifact_repo: 'production-docker' }
+          - { name: 'development', project_id: 'postrix-development', artifact_repo: 'development-docker' }
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v0.3.0
+      with:
+        service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+        project_id: postrix-development
+
+    - name: Destroy resources
+      run: |
+        gcloud run services delete $SERVICE_NAME --region=$REGION --platform=managed --quiet
+        gcloud artifacts docker images delete $IMAGE_NAME --quiet
