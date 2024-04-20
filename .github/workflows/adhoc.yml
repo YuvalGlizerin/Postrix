@@ -21,6 +21,9 @@ jobs:
         service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
         project_id: postrix-development
 
+    - name: Install gcloud beta components
+      run: gcloud components install beta
+
     - name: Configure Docker for Google Artifact Registry
       run: gcloud auth configure-docker $REGION-docker.pkg.dev
 
