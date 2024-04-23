@@ -41,6 +41,6 @@ jobs:
 
     - name: Delete domain mapping
       run: |
-        if gcloud beta run domain-mappings describe --service ${{ env.BRANCH_NAME }}-core-service --domain ${{ steps.brach-url.outputs.urlified-string }}.core.dev.postrix.io --region $REGION; then
+        if gcloud beta run domain-mappings describe --domain ${{ steps.brach-url.outputs.urlified-string }}.core.dev.postrix.io --region $REGION; then
           gcloud beta run domain-mappings delete --service ${{ env.BRANCH_NAME }}-core-service --domain ${{ steps.brach-url.outputs.urlified-string }}.core.dev.postrix.io --region $REGION
         fi
