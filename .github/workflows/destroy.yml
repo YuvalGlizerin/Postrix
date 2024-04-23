@@ -25,6 +25,9 @@ jobs:
         service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
         project_id: postrix-development
 
+    - name: Install gcloud beta components
+      run: gcloud components install beta
+
     - name: Destroy resources
       run: |
         gcloud run services delete ${{ env.SERVICE_NAME }} --region=${{ env.REGION }} --platform=managed --quiet
@@ -38,4 +41,6 @@ jobs:
 
     - name: Delete domain mapping
       run: |
-        gcloud beta run domain-mappings delete --service ${{ env.BRANCH_NAME }}-core-service --domain ${{ steps.brach-url.outputs.urlified-string }}.core.dev.postrix.io --region $REGION
+        if gcloud beta run domain-mappings describe --domain ${{ steps.brach-url.outputs.urlified-string }}.core.dev.postrix.io --region $REGION; then
+          gcloud beta run domain-mappings delete --service ${{ env.BRANCH_NAME }}-core-service --domain ${{ steps.brach-url.outputs.urlified-string }}.core.dev.postrix.io --region $REGION
+        fi
