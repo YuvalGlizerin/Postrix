@@ -31,7 +31,7 @@ resource "godaddy-dns_record" "production_to_google" {
 resource "godaddy-dns_record" "dev_to_google" {
   domain = var.domain
   name   = "*.dev" // Example: my-service.dev.postrix.io
-  type   = "A"
+  type   = "CNAME"
   data   = "ghs.googlehosted.com"
   ttl    = 3600
 }
@@ -39,7 +39,7 @@ resource "godaddy-dns_record" "dev_to_google" {
 resource "godaddy-dns_record" "adhoc_to_google" {
   domain = var.domain
   name   = "*.*.dev"  // Example: my-branch.my-service.dev.postrix.io
-  type   = "A"
+  type   = "CNAME"
   data   = "ghs.googlehosted.com"
   ttl    = 3600
 }
