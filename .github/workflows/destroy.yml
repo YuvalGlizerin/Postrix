@@ -29,3 +29,13 @@ jobs:
       run: |
         gcloud run services delete ${{ env.SERVICE_NAME }} --region=${{ env.REGION }} --platform=managed --quiet
         gcloud artifacts docker images delete ${{ env.REGION }}-docker.pkg.dev/postrix-development/development-docker/${{ env.BRANCH_NAME }}-core --quiet
+    
+    - name: Get branch url
+      id: brach-url
+      uses: efiShtain/urlify-string@v1.1
+      with:
+        string: ${{ env.BRANCH_NAME }}.core.dev.postrix.io
+
+    - name: Delete domain mapping
+      run: |
+        gcloud beta run domain-mappings delete --service ${{ env.BRANCH_NAME }}-core-service --domain ${{ steps.brach-url.outputs.urlified-string }} --region $REGION
