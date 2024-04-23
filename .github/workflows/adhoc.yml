@@ -5,7 +5,7 @@ on:
 
 env:
   REGION: us-central1
-  BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
 
 jobs:
   build_and_push:
@@ -45,6 +45,12 @@ jobs:
         --env-vars-file=./services/core/envs/dev.env \
         --labels=adhoc=true
     
+    - name: Get branch url
+      id: brach-url
+      uses: efiShtain/urlify-string@v1.1
+      with:
+        string: ${{ env.BRANCH_NAME }}
+    
     - name: Map adhoc url to service
       run: |
-        gcloud beta run domain-mappings create --service ${{ env.BRANCH_NAME }}-core-service --domain ${{ env.BRANCH_NAME }}.core.dev.postrix.io --region $REGION
+        gcloud beta run domain-mappings create --service ${{ env.BRANCH_NAME }}-core-service --domain ${{ steps.brach-url.outputs.urlified-string }}.core.dev.postrix.io --region $REGION
