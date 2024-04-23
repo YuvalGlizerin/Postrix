@@ -34,8 +34,8 @@ jobs:
       id: brach-url
       uses: efiShtain/urlify-string@v1.1
       with:
-        string: ${{ env.BRANCH_NAME }}.core.dev.postrix.io
+        string: ${{ env.BRANCH_NAME }}
 
     - name: Delete domain mapping
       run: |
-        gcloud beta run domain-mappings delete --service ${{ env.BRANCH_NAME }}-core-service --domain ${{ steps.brach-url.outputs.urlified-string }} --region $REGION
+        gcloud beta run domain-mappings delete --service ${{ env.BRANCH_NAME }}-core-service --domain ${{ steps.brach-url.outputs.urlified-string }}.core.dev.postrix.io --region $REGION
