@@ -82,6 +82,5 @@ module "core" {
 
   providers = {
     google  = google
-    godaddy-dns = godaddy-dns
   }
 }
