@@ -23,14 +23,16 @@ runs:
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v0.3.0
       with:
-        service_account_key: ${{ process.env.GCP_SERVICE_ACCOUNT_KEY }}
+        service_account_key: ${{ env.GCP_SERVICE_ACCOUNT_KEY }}
         project_id: ${{ inputs.project_id }}
 
     - name: Configure Docker for Google Artifact Registry
       if: ${{ inputs.configure-docker == 'true' }}
       run: gcloud auth configure-docker ${{ inputs.region }}-docker.pkg.dev
+      shell: bash
 
     - name: Install gcloud beta components
       if: ${{ inputs.gcloud-beta-components == 'true' }}
       run: gcloud components install beta
+      shell: bash
           
