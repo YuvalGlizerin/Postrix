@@ -1,16 +1,3 @@
-# My Ignores
-# -------------------------------------
-
-# Local .terraform directories
-.terraform
-
-# .tfstate files
-*.tfstate
-*.tfstate.*
-
-# Ignore lock file
-.terraform.lock.hcl
-
 # Template Ignores
 # -------------------------------------
 
@@ -144,3 +131,18 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# -------------------------------------
+
+# My Ignores
+# -------------------------------------
+
+# Local .terraform directories
+.terraform
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# Ignore lock file
+.terraform.lock.hcl
