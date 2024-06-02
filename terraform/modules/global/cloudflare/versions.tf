@@ -1,6 +1,6 @@
 terraform {
   required_providers {
-    godaddy-dns = {
+    cloudflare = {
       source  = "cloudflare/cloudflare"
     }
   }
