@@ -1,14 +1,7 @@
 // All sensitive variables imported from terraform cloud
 
-variable "GODADDY_API_KEY" {
-  description = "API Key for GoDaddy"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
-variable "GODADDY_API_SECRET" {
-  description = "API Secret for GoDaddy"
+variable "CLOUDFLARE_API_TOKEN" {
+  description = "API Token for Cloudflare"
   type        = string
   sensitive   = true
   default     = ""
