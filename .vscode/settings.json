@@ -5,5 +5,10 @@
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": "always"
     },
-    "eslint.format.enable": true
+    "eslint.format.enable": true,
+    "editor.tabSize": 4,
+    "editor.detectIndentation": false,
+    "[github-actions-workflow]": {
+        "editor.tabSize": 2
+    }
 }

@@ -2,44 +2,46 @@
 // GODADDY_API_KEY=your_api_key GODADDY_API_SECRET=your_api_secret terraform import module.godaddy.resource_name.reference_name domain:type:name:data
 
 variable "domain" {}
+variable "account_id" {}
+variable "zone_id" {}
 variable "domain_dns_server_ip" {}
 
-resource "godaddy-dns_record" "cname_domain" {
-  domain = var.domain
+resource "cloudflare_record" "cname_domain" {
+  zone_id = var.zone_id
   name   = "www"
   type   = "CNAME"
-  data   = "@"
+  value   = "@"
   ttl    = 3600
 }
 
-resource "godaddy-dns_record" "server_ip" {
-  domain = var.domain
+resource "cloudflare_record" "server_ip" {
+  zone_id = var.zone_id
   name   = "@"
   type   = "A"
-  data   = var.domain_dns_server_ip
+  value   = var.domain_dns_server_ip
   ttl    = 3600
 }
 
-resource "godaddy-dns_record" "production_to_google" {
-  domain = var.domain
+resource "cloudflare_record" "production_to_google" {
+  zone_id = var.zone_id
   name   = "*" // Example: my-service.postrix.io
   type   = "CNAME"
-  data   = "ghs.googlehosted.com"
+  value   = "ghs.googlehosted.com"
   ttl    = 3600
 }
 
-resource "godaddy-dns_record" "dev_to_google" {
-  domain = var.domain
+resource "cloudflare_record" "dev_to_google" {
+  zone_id = var.zone_id
   name   = "*.dev" // Example: my-service.dev.postrix.io
   type   = "CNAME"
-  data   = "ghs.googlehosted.com"
+  value   = "ghs.googlehosted.com"
   ttl    = 3600
 }
 
-resource "godaddy-dns_record" "adhoc_to_google" {
-  domain = var.domain
+resource "cloudflare_record" "adhoc_to_google" {
+  zone_id = var.zone_id
   name   = "*.*.dev"  // Example: my-branch.my-service.dev.postrix.io
   type   = "CNAME"
-  data   = "ghs.googlehosted.com"
+  value   = "ghs.googlehosted.com"
   ttl    = 3600
 }

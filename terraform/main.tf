@@ -5,9 +5,9 @@ terraform {
       version = "5.20.0"
     }
 
-    godaddy-dns = {
-      source  = "registry.terraform.io/veksh/godaddy-dns"
-      version = "0.3.7"
+    cloudflare = {   
+      source = "cloudflare/cloudflare"
+      version = "4.34.0"
     }
   }
 
@@ -24,6 +24,10 @@ terraform {
 provider "google" {
   region = var.region
   zone   = var.zone
+}
+
+provider "cloudflare" {
+  api_token = var.CLOUDFLARE_API_TOKEN
 }
 
 locals {
@@ -43,13 +47,15 @@ locals {
   }
 }
 
-module "godaddy" {
-  source                    = "./modules/global/godaddy"
+module "cloudflare" {
+  source                    = "./modules/global/cloudflare"
   domain                    = var.domain
+  zone_id                   = var.CLOUDFLARE_ZONE_ID
+  account_id                = var.CLOUDFLARE_ACCOUNT_ID
   domain_dns_server_ip      = var.DOMAIN_DNS_SERVER_IP
 
   providers = {
-    godaddy-dns = godaddy-dns
+    cloudflare = cloudflare
   }
 }
 
@@ -82,6 +88,5 @@ module "core" {
 
   providers = {
     google  = google
-    godaddy-dns = godaddy-dns
   }
 }

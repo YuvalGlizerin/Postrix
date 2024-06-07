@@ -15,11 +15,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0.3.0
+      - uses: ./.github/actions/gcp-warm-up
         with:
-          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
           project_id: postrix-development
+          region: ${{ env.REGION }}
 
       - name: Delete expired deployments
         run: |
