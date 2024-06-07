@@ -21,6 +21,8 @@ jobs:
         region: ${{ env.REGION }}
         configure-docker: true
         gcloud-beta-components: true
+      env:
+        GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
     - name: Build Docker image
       run: |
