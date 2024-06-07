@@ -32,15 +32,7 @@ resource "cloudflare_record" "production_to_google" {
 
 resource "cloudflare_record" "dev_to_google" {
   zone_id = var.zone_id
-  name   = "*.dev" // Example: my-service.dev.postrix.io
-  type   = "CNAME"
-  value   = "ghs.googlehosted.com"
-  ttl    = 3600
-}
-
-resource "cloudflare_record" "adhoc_to_google" {
-  zone_id = var.zone_id
-  name   = "*.*.dev"  // Example: my-branch.my-service.dev.postrix.io
+  name   = "*.dev" // Example: my_service.dev.postrix.io or github_branch-my_service.dev.postrix.io
   type   = "CNAME"
   value   = "ghs.googlehosted.com"
   ttl    = 3600
