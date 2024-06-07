@@ -24,7 +24,7 @@ jobs:
 
     - uses: ./.github/actions/gcp-warm-up
       with:
-        project_id: postrix-development
+        project_id: ${{ matrix.environment.name }}
         region: ${{ env.REGION }}
         configure-docker: true
       env:

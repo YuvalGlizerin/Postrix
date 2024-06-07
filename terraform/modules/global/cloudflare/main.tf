@@ -10,7 +10,7 @@ resource "cloudflare_record" "cname_domain" {
   zone_id = var.zone_id
   name   = "www"
   type   = "CNAME"
-  value   = "@"
+  value   = var.domain
   ttl    = 3600
 }
 
