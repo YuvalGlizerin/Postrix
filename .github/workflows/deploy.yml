@@ -27,6 +27,8 @@ jobs:
         project_id: postrix-development
         region: ${{ env.REGION }}
         configure-docker: true
+      env:
+        GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
         
     - name: Build Docker image
       run: |
