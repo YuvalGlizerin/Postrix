@@ -24,6 +24,8 @@ jobs:
         project_id: postrix-development
         region: ${{ env.REGION }}
         gcloud-beta-components: true
+      env:
+        GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
     - name: Destroy resources
       run: |
