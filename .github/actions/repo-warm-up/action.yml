@@ -1,0 +1,14 @@
+name: 'Repo Warm Up'
+description: 'Warm up resources for GitHub Actions'
+  
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install and Build TypeScript Actions
+      run: |
+        for dir in .github/actions/*/; do
+          if [ -f "$dir/package.json" ]; then
+            npm --prefix "$dir" install && npm --prefix "$dir" run build
+          fi
+        done
