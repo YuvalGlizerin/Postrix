@@ -1,5 +1,5 @@
 {
-  "name": "comment-pr",
+  "name": "terraform-comment-pr",
   "version": "1.0.0",
   "description": "Adds a comment to the github PR",
   "main": "dist/index.js",
