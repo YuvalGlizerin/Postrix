@@ -23,9 +23,9 @@ async function run() {
 
         const output = `#### Terraform Cloud Plan Output
             \`\`\`
-            Plan: ${{ add }} to add, ${{ change }} to change, ${{ destroy }} to destroy.
+            Plan: ${add} to add, ${change} to change, ${destroy} to destroy.
             \`\`\`
-            [Terraform Cloud Plan](${{ run_link }})
+            [Terraform Cloud Plan](${run_link})
             `;
             
         if (botComment) {
