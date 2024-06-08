@@ -21,7 +21,7 @@ async function run() {
             return comment?.user?.type === 'Bot' && comment?.body?.includes('Terraform Cloud Plan Output')
         });
 
-        const output = `#### Terraform Cloud Plan Output\n\n\`\`\`Plan: ${add} to add, ${change} to change, ${destroy} to destroy.\`\`\`\n[Terraform Cloud Plan](${run_link})`;
+        const output = `#### Terraform Cloud Plan Output\n\n\`\`\`Plan: ${add} to add, ${change} to change, ${destroy} to destroy.\n\`\`\`\n[Terraform Cloud Plan](${run_link})`;
             
         if (botComment) {
             octokit.rest.issues.deleteComment({
