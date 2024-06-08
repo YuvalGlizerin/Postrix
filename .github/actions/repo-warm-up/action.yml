@@ -12,3 +12,4 @@ runs:
             npm --prefix "$dir" install && npm --prefix "$dir" run build
           fi
         done
+      shell: bash
