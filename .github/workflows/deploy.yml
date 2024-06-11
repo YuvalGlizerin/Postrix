@@ -26,7 +26,7 @@ jobs:
       with:
         project_id: ${{ matrix.environment.project_id }}
         region: ${{ env.REGION }}
-        configure-docker: true
+        configure_docker: true
       env:
         GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
         

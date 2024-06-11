@@ -23,7 +23,7 @@ jobs:
       with:
         project_id: postrix-development
         region: ${{ env.REGION }}
-        gcloud-beta-components: true
+        install_components: beta
       env:
         GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 

@@ -9,12 +9,11 @@ inputs:
   region:
     description: 'The GCP region'
     required: true
-  configure-docker:
+  configure_docker:
     description: 'Whether to configure Docker for Google Artifact Registry'
     default: 'false'
-  gcloud-beta-components:
-    description: 'Whether to install gcloud beta components'
-    default: 'false'
+  install_components:
+    description: 'What components to install'
   
 
 runs:
@@ -25,14 +24,9 @@ runs:
       with:
         service_account_key: ${{ env.GCP_SERVICE_ACCOUNT_KEY }}
         project_id: ${{ inputs.project_id }}
+        install_components: ${{ inputs.install_components }}
 
     - name: Configure Docker for Google Artifact Registry
-      if: ${{ inputs.configure-docker == 'true' }}
+      if: ${{ inputs.configure_docker == 'true' }}
       run: gcloud auth configure-docker ${{ inputs.region }}-docker.pkg.dev
       shell: bash
-
-    - name: Install gcloud beta components
-      if: ${{ inputs.gcloud-beta-components == 'true' }}
-      run: gcloud components install beta
-      shell: bash
-          
