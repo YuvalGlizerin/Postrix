@@ -24,7 +24,7 @@ runs:
       with:
         service_account_key: ${{ env.GCP_SERVICE_ACCOUNT_KEY }}
         project_id: ${{ inputs.project_id }}
-        install_components: ${{ inputs.install_components }}
+        install_components: '${{ inputs.install_components }}'
 
     - name: Configure Docker for Google Artifact Registry
       if: ${{ inputs.configure_docker == 'true' }}
