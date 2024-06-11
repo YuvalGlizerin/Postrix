@@ -20,11 +20,11 @@ runs:
   using: 'composite'
   steps:
     - name: Set up Cloud SDK
-      uses: google-github-actions/setup-gcloud@v0.3.0
+      uses: google-github-actions/setup-gcloud@v2
       with:
         service_account_key: ${{ env.GCP_SERVICE_ACCOUNT_KEY }}
         project_id: ${{ inputs.project_id }}
-        install_components: '${{ inputs.install_components }}'
+        install_components: ${{ inputs.install_components }}
 
     - name: Configure Docker for Google Artifact Registry
       if: ${{ inputs.configure_docker == 'true' }}
