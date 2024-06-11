@@ -20,7 +20,7 @@ jobs:
         project_id: postrix-development
         region: ${{ env.REGION }}
         configure_docker: true
-        install_components: beta
+        install_components: 'beta'
       env:
         GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
