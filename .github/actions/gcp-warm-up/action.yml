@@ -29,7 +29,7 @@ runs:
       uses: 'google-github-actions/auth@v2'
       with:
         workload_identity_provider: ${{ inputs.workload_identity_provider }}
-        service_account: ${{ inputs.service_account }}
+        # service_account: ${{ inputs.service_account }}
 
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v2
