@@ -29,6 +29,7 @@ runs:
       uses: 'google-github-actions/auth@v2'
       with:
         workload_identity_provider: ${{ inputs.workload_identity_provider }}
+        project_id: ${{ inputs.project_id }}
         # service_account: ${{ inputs.service_account }}
 
     - name: Set up Cloud SDK
