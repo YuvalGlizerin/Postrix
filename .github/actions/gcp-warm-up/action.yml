@@ -25,7 +25,7 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - id: Google Authenticate
+    - name: Google Authenticate
       uses: 'google-github-actions/auth@v2'
       with:
         workload_identity_provider: ${{ inputs.workload_identity_provider }}
