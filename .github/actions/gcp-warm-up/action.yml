@@ -25,17 +25,17 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    # - name: Google Authenticate
-    #   uses: 'google-github-actions/auth@v2'
-    #   with:
-    #     workload_identity_provider: ${{ inputs.workload_identity_provider }}
-    #     service_account: ${{ inputs.service_account }}
+    - name: Google Authenticate
+      uses: 'google-github-actions/auth@v2'
+      with:
+        workload_identity_provider: ${{ inputs.workload_identity_provider }}
+        service_account: ${{ inputs.service_account }}
 
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v2
       with:
-        service_account_key: ${{ env.GCP_SERVICE_ACCOUNT_KEY }}
-        project_id: ${{ inputs.project_id }}
+        # service_account_key: ${{ env.GCP_SERVICE_ACCOUNT_KEY }}
+        # project_id: ${{ inputs.project_id }}
         install_components: ${{ inputs.install_components }}
 
     - name: Configure Docker for Google Artifact Registry
