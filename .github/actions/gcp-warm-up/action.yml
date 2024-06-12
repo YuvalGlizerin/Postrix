@@ -28,8 +28,8 @@ runs:
     - id: Google Authenticate
       uses: 'google-github-actions/auth@v2'
       with:
-        workload_identity_provider: 'projects/123456789/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
-        service_account: 'my-service-account@my-project.iam.gserviceaccount.com'
+        workload_identity_provider: ${{ inputs.workload_identity_provider }}
+        service_account: ${{ inputs.service_account }}
 
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v2
