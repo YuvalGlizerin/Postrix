@@ -7,6 +7,10 @@ env:
   REGION: us-central1
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
