@@ -1,13 +1,16 @@
-name: Build and Push to Artifact Registry
+# TODO: Remove
+name: Test prod
 
 on:
-    workflow_run:
-      workflows: ["Terraform Apply"]
-      types:
-        - completed
+  pull_request:
 
 env:
   REGION: us-central1
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
   build_and_push:
@@ -16,17 +19,18 @@ jobs:
       matrix:
         environment:
           - { name: 'production', project_id: 'postrix', artifact_repo: 'production-docker' }
-          - { name: 'development', project_id: 'postrix-development', artifact_repo: 'development-docker' }
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - uses: ./.github/actions/gcp-warm-up
       with:
         project_id: ${{ matrix.environment.project_id }}
         region: ${{ env.REGION }}
         configure_docker: true
+        workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+        service_account: ${{ secrets.SERVICE_ACCOUNT }}
       env:
         GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
         

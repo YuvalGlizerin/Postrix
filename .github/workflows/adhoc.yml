@@ -7,6 +7,10 @@ env:
   REGION: us-central1
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
@@ -19,8 +23,10 @@ jobs:
       with:
         project_id: postrix-development
         region: ${{ env.REGION }}
-        configure-docker: true
-        gcloud-beta-components: true
+        configure_docker: true
+        install_components: 'beta'
+        workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+        service_account: ${{ secrets.SERVICE_ACCOUNT }}
       env:
         GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
@@ -41,15 +47,16 @@ jobs:
         --allow-unauthenticated \
         --env-vars-file=./services/core/envs/dev.env \
         --labels=adhoc=true
-    
-    - name: Get branch url
-      id: brach-url
-      uses: efiShtain/urlify-string@v1.1
-      with:
-        string: ${{ env.BRANCH_NAME }}
-    
-    - name: Map adhoc url to service
+
+    - name: Get Cloud Run Service URL
+      id: get-url
       run: |
-        if ! gcloud beta run domain-mappings describe --domain ${{ steps.brach-url.outputs.urlified-string  }}-core.dev.postrix.io --region $REGION; then
-          gcloud beta run domain-mappings create --service ${{ env.BRANCH_NAME }}-core-service --domain ${{ steps.brach-url.outputs.urlified-string }}-core.dev.postrix.io --region $REGION
-        fi
+        SERVICE_URL=$(gcloud run services describe ${{ env.BRANCH_NAME }}-core-service \
+          --platform managed \
+          --region $REGION \
+          --format 'value(status.url)')
+        echo "service_url=$SERVICE_URL" >> $GITHUB_OUTPUT
+
+    - name: Use Service URL
+      run: |
+        echo "The service URL is: ${{ steps.get-url.outputs.service_url }}"
