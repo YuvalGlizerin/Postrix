@@ -3,10 +3,6 @@ name: Build and deploy service
 on:
   workflow_call:
     inputs:
-      env:
-        required: true
-        description: 'The environment to deploy to'
-        type: string
       project_id:
         required: true
         description: 'The GCP project ID'
@@ -29,14 +25,17 @@ on:
         type: boolean
       
     secrets:
+      PROJECT_ID:
+        required: true
       WORKLOAD_IDENTITY_PROVIDER:
         required: true
       SERVICE_ACCOUNT:
         required: true
+      REGION:
+        required: true
 
 env:
-  REGION: us-central1
-  IMAGE: $REGION-docker.pkg.dev/${{ inputs.project_id }}/${{ inputs.artifact_repo }}/${{ steps.full-service-name.outputs.service_name }}:latest
+  IMAGE: ${{ secrets.REGION }}-docker.pkg.dev/${{ inputs.project_id }}/${{ inputs.artifact_repo }}/${{ steps.full-service-name.outputs.service_name }}:latest
 
 jobs:
   build_and_deploy:
@@ -48,10 +47,10 @@ jobs:
 
     - uses: ./.github/actions/gcp-warm-up
       with:
-        project_id: ${{ inputs.project_id }}
+        project_id: ${{ secrets.PROJECT_ID }}
         workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
         service_account: ${{ secrets.SERVICE_ACCOUNT }}
-        region: ${{ env.REGION }}
+        region: ${{ secrets.REGION }}
         configure_docker: true
 
     - name: Get full service name
@@ -75,15 +74,15 @@ jobs:
       run: |
         gcloud run deploy ${{ steps.full-service-name.outputs.service_name }}-service \
         --image=${{ env.IMAGE }} \
-        --region=$REGION \
+        --region=${{ secrets.REGION }} \
         --platform=managed \
         --allow-unauthenticated
 
     - name: Get Cloud Run Service URL
       if: ${{ inputs.echo_service_url }}
       run: |
-        SERVICE_URL=$(gcloud run services describe ${{ env.BRANCH_NAME }}-core-service \
+        SERVICE_URL=$(gcloud run services describe ${{ steps.full-service-name.outputs.service_name }}-service \
           --platform managed \
-          --region $REGION \
+          --region ${{ secrets.REGION }} \
           --format 'value(status.url)')
         echo "service_url=$SERVICE_URL" >> $GITHUB_OUTPUT

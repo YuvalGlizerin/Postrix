@@ -3,64 +3,64 @@ name: Deploy adhoc
 on:
   pull_request:
 
-env:
-  REGION: us-central1
-  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
-
 permissions:
   contents: read
   id-token: write
 
 jobs:
   build_and_deploy_adhoc:
+    uses: YuvalGlizerin/Postrix/.github/reusable-workflows/build-and-deploy.yml@main
+    with:
+      env: dev
+      project_id: postrix-development
+      artifact_repo: development-docker
+      service_name: core
+      branch_name: ${{ github.head_ref || github.ref_name }}
+      echo_service_url: true
+    secrets: inherit
+
+    # runs-on: ubuntu-latest
+
+    # steps:
+    # - name: Checkout code
+    #   uses: actions/checkout@v3
+
+    # - uses: ./.github/actions/gcp-warm-up
+    #   with:
+    #     project_id: postrix-development
+    #     workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+    #     service_account: ${{ secrets.SERVICE_ACCOUNT }}
+    #     region: ${{ env.REGION }}
+    #     configure_docker: true
+    #     install_components: 'beta'
+
+    # - name: Build Docker image
+    #   run: |
+    #     docker build -t $REGION-docker.pkg.dev/postrix-development/development-docker/${{ env.BRANCH_NAME }}-core:latest ./services/core
+
+    # - name: Push Docker image to Google Artifact Registry
+    #   run: |
+    #     docker push $REGION-docker.pkg.dev/postrix-development/development-docker/${{ env.BRANCH_NAME }}-core:latest
     
-    # uses: YuvalGlizerin/Postrix/.github/reusable-workflows/build-and-deploy.yml@main
-    # with:
-    #   config-path: .github/labeler.yml
-    # secrets: inherit
+    # - name: Deploy to Cloud Run
+    #   run: |
+    #     gcloud run deploy ${{ env.BRANCH_NAME }}-core-service \
+    #     --image=$REGION-docker.pkg.dev/postrix-development/development-docker/${{ env.BRANCH_NAME }}-core:latest \
+    #     --region=$REGION \
+    #     --platform=managed \
+    #     --allow-unauthenticated \
+    #     --env-vars-file=./services/core/envs/dev.env \
+    #     --labels=adhoc=true
 
-    runs-on: ubuntu-latest
+    # - name: Get Cloud Run Service URL
+    #   id: get-url
+    #   run: |
+    #     SERVICE_URL=$(gcloud run services describe ${{ env.BRANCH_NAME }}-core-service \
+    #       --platform managed \
+    #       --region $REGION \
+    #       --format 'value(status.url)')
+    #     echo "service_url=$SERVICE_URL" >> $GITHUB_OUTPUT
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    - uses: ./.github/actions/gcp-warm-up
-      with:
-        project_id: postrix-development
-        workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
-        service_account: ${{ secrets.SERVICE_ACCOUNT }}
-        region: ${{ env.REGION }}
-        configure_docker: true
-        install_components: 'beta'
-
-    - name: Build Docker image
-      run: |
-        docker build -t $REGION-docker.pkg.dev/postrix-development/development-docker/${{ env.BRANCH_NAME }}-core:latest ./services/core
-
-    - name: Push Docker image to Google Artifact Registry
-      run: |
-        docker push $REGION-docker.pkg.dev/postrix-development/development-docker/${{ env.BRANCH_NAME }}-core:latest
-    
-    - name: Deploy to Cloud Run
-      run: |
-        gcloud run deploy ${{ env.BRANCH_NAME }}-core-service \
-        --image=$REGION-docker.pkg.dev/postrix-development/development-docker/${{ env.BRANCH_NAME }}-core:latest \
-        --region=$REGION \
-        --platform=managed \
-        --allow-unauthenticated \
-        --env-vars-file=./services/core/envs/dev.env \
-        --labels=adhoc=true
-
-    - name: Get Cloud Run Service URL
-      id: get-url
-      run: |
-        SERVICE_URL=$(gcloud run services describe ${{ env.BRANCH_NAME }}-core-service \
-          --platform managed \
-          --region $REGION \
-          --format 'value(status.url)')
-        echo "service_url=$SERVICE_URL" >> $GITHUB_OUTPUT
-
-    - name: Use Service URL
-      run: |
-        echo "The service URL is: ${{ steps.get-url.outputs.service_url }}"
+    # - name: Use Service URL
+    #   run: |
+    #     echo "The service URL is: ${{ steps.get-url.outputs.service_url }}"
