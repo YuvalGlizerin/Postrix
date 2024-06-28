@@ -1,21 +1,14 @@
 name: 'Comment PR'
-description: 'Comment on PR, replace if another comment with the same title exists'
 
 inputs:
   github_token:
     description: 'GitHub token'
     required: true
-  add:
-    description: 'The amount of resources to add'
+  title:
+    description: 'The title of the comment(will replace comment if another comment with the same title exists)'
     required: true
-  change:
-    description: 'The amount of resources to change'
-    required: true
-  destroy:
-    description: 'The amount of resources to destroy'
-    required: true
-  run_link:
-    description: 'The link to the Terraform Cloud run'
+  message:
+    description: 'The message of the comment'
     required: true
 
 runs:
