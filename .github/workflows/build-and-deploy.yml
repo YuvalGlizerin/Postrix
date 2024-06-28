@@ -20,6 +20,10 @@ on:
         description: 'The branch name of the adhoc deployment if exists and the service name'
         type: string
         default: ${{ inputs.service_name }}
+    outputs:
+      full_service_url:
+        description: 'The full URL of the deployed service'
+        value: ${{ jobs.build_and_deploy.outputs.full-service-url }}
 
 jobs:
   build_and_deploy:
@@ -28,6 +32,9 @@ jobs:
 
     env:
       IMAGE: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ vars.GCP_ARTIFACT_REPO }}/${{ inputs.service_url }}:latest
+
+    outputs:
+      full-service-url: ${{ steps.full-service-url.outputs.SERVICE_URL }}
 
     steps:
     - name: Checkout code
@@ -56,3 +63,9 @@ jobs:
         --region=${{ vars.GCP_REGION }} \
         --platform=managed \
         --allow-unauthenticated
+
+    - name: Get service URL
+      id: full-service-url
+      run: |
+        SERVICE_URL=$(gcloud run services describe ${{ inputs.service_url }}-service --region=${{ vars.GCP_REGION }} --format='value(status.url)')
+        echo SERVICE_URL=$SERVICE_URL >> $GITHUB_OUTPUT

@@ -41,4 +41,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           title: "Service URLs"
           message: |
-            [Core](https://example.com)"
+            [Core](${{ needs.build_and_deploy_adhoc.outputs.full-service-url }})"
