@@ -1,18 +1,18 @@
-name: Deploy adhoc
+# name: Deploy adhoc
 
-on:
-  workflow_dispatch:
-    inputs:
-      branch_name:
-        required: true
-        description: 'The branch name of the adhoc deployment'
-        type: string
-  pull_request:
+# on:
+#   workflow_dispatch:
+#     inputs:
+#       branch_name:
+#         required: true
+#         description: 'The branch name of the adhoc deployment'
+#         type: string
+#   pull_request:
 
-jobs:
-  build_and_deploy_adhoc:
-    uses: YuvalGlizerin/Postrix/.github/workflows/build-and-deploy.yml@main
-    with:
-      environment: dev
-      service_name: core
-      service_url: ${{ inputs.branch_name || github.head_ref || github.ref_name }}-core
+# jobs:
+#   build_and_deploy_adhoc:
+#     uses: YuvalGlizerin/Postrix/.github/workflows/build-and-deploy.yml@main
+#     with:
+#       environment: dev
+#       service_name: core
+#       service_url: ${{ inputs.branch_name || github.head_ref || github.ref_name }}-core
