@@ -21,3 +21,15 @@ jobs:
       service_name: core
       service_url: ${{ inputs.branch_name || github.head_ref || github.ref_name }}-core
     secrets: inherit
+
+  comment_pr:
+    runs-on: ubuntu-latest
+    needs: build_and_deploy_adhoc
+    steps:
+      - name: Comment PR
+        uses: ./.github/actions/comment-pr
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          title: "Service URLs"
+          message: |
+            [Core](https://example.com)"

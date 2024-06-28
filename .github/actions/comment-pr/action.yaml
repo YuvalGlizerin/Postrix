@@ -1,5 +1,5 @@
-name: 'Comment PR terraform'
-description: 'Comment on PR with Terraform plan output'
+name: 'Comment PR'
+description: 'Comment on PR, replace if another comment with the same title exists'
 
 inputs:
   github_token:

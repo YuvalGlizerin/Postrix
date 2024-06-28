@@ -5,10 +5,8 @@ import { Context } from '@actions/github/lib/context';
 async function run() {
     try {
         const token = core.getInput('github_token');
-        const add = core.getInput('add');
-        const change = core.getInput('change');
-        const destroy = core.getInput('destroy');
-        const run_link = core.getInput('run_link');
+        const title = core.getInput('title');
+        const message = core.getInput('message');
         const octokit = github.getOctokit(token);
 
         const context: Context = github.context;
@@ -18,10 +16,10 @@ async function run() {
             issue_number: context.issue.number,
         });
         const botComment = comments.find(comment => {
-            return comment?.user?.type === 'Bot' && comment?.body?.includes('Terraform Cloud Plan Output')
+            return comment?.user?.type === 'Bot' && comment?.body?.includes(title)
         });
 
-        const output = `#### Terraform Cloud Plan Output\n\n\`\`\`\nPlan: ${add} to add, ${change} to change, ${destroy} to destroy.\n\`\`\`\n[Terraform Cloud Plan](${run_link})`;
+        const output = `#### ${title}\n\n\`\`\`\n${message}`;
             
         if (botComment) {
             octokit.rest.issues.deleteComment({
