@@ -20,3 +20,4 @@ jobs:
       environment: dev
       service_name: core
       service_url: ${{ inputs.branch_name || github.head_ref || github.ref_name }}-core
+    secrets: inherit
