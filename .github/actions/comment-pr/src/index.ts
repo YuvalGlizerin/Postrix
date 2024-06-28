@@ -15,19 +15,17 @@ async function run() {
             repo: context.repo.repo,
             issue_number: context.issue.number,
         });
-        const botComment = comments.find(comment => {
-            return comment?.user?.type === 'Bot' && comment?.body?.includes(title)
+        comments.forEach(comment => {
+            if (comment?.user?.type === 'Bot' && comment?.body?.includes(title)) {
+                octokit.rest.issues.deleteComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    comment_id: comment.id,
+                });
+            }
         });
 
         const output = `#### ${title}\n\n\`\`\`\n${message}`;
-            
-        if (botComment) {
-            octokit.rest.issues.deleteComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              comment_id: botComment.id,
-            });
-        }
         octokit.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
