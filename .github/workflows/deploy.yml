@@ -1,10 +1,10 @@
 name: Build and Push to Artifact Registry
 
 on:
-    workflow_run:
-      workflows: ["Terraform Apply"]
-      types:
-        - completed
+  workflow_run:
+    workflows: ["Terraform Apply"]
+    types:
+      - completed
 
 env:
   REGION: us-central1
@@ -25,11 +25,11 @@ jobs:
     - uses: ./.github/actions/gcp-warm-up
       with:
         project_id: ${{ matrix.environment.project_id }}
+        workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+        service_account: ${{ secrets.SERVICE_ACCOUNT }}
         region: ${{ env.REGION }}
         configure_docker: true
-      env:
-        GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-        
+
     - name: Build Docker image
       run: |
         docker build -t $REGION-docker.pkg.dev/${{ matrix.environment.project_id }}/${{ matrix.environment.artifact_repo }}/core:latest ./services/core
