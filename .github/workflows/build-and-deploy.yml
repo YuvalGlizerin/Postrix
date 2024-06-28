@@ -1,0 +1,58 @@
+name: Build and deploy service
+
+permissions:
+  contents: read
+  id-token: write
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        description: 'The environment to deploy to'
+        type: boolean
+      service_name:
+        required: true
+        description: 'The name of the Cloud Run service to deploy'
+        type: string
+      service_url:
+        required: false
+        description: 'The branch name of the adhoc deployment if exists and the service name'
+        type: string
+        default: ${{ inputs.service_name }}
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+
+    env:
+      IMAGE: $REGION-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ vars.GCP_ARTIFACT_REPO }}/${{ inputs.service_url }}:latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - uses: ./.github/actions/gcp-warm-up
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+        service_account: ${{ secrets.SERVICE_ACCOUNT }}
+        region: ${{ vars.GCP_REGION }}
+        configure_docker: true
+
+    - name: Build Docker image
+      run: |
+        docker build -t ${{ env.IMAGE }} ./services/${{ inputs.service_name }}
+
+    - name: Push Docker image to Google Artifact Registry
+      run: |
+        docker push ${{ env.IMAGE }}
+    
+    - name: Deploy to Cloud Run
+      run: |
+        gcloud run deploy ${{ inputs.service_url }}-service \
+        --image=${{ env.IMAGE }} \
+        --region=${{ vars.GCP_REGION }} \
+        --platform=managed \
+        --allow-unauthenticated
