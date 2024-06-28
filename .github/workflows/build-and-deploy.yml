@@ -10,7 +10,7 @@ on:
       environment:
         required: true
         description: 'The environment to deploy to'
-        type: boolean
+        type: string
       service_name:
         required: true
         description: 'The name of the Cloud Run service to deploy'
@@ -27,7 +27,7 @@ jobs:
     environment: ${{ inputs.environment }}
 
     env:
-      IMAGE: $REGION-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ vars.GCP_ARTIFACT_REPO }}/${{ inputs.service_url }}:latest
+      IMAGE: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ vars.GCP_ARTIFACT_REPO }}/${{ inputs.service_url }}:latest
 
     steps:
     - name: Checkout code
