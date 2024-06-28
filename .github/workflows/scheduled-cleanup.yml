@@ -18,9 +18,9 @@ jobs:
       - uses: ./.github/actions/gcp-warm-up
         with:
           project_id: postrix-development
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.SERVICE_ACCOUNT }}
           region: ${{ env.REGION }}
-        env:
-          GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
       - name: Delete expired deployments
         run: |

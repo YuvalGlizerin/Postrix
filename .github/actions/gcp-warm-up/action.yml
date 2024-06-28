@@ -1,5 +1,3 @@
-# Requires GCP_SERVICE_ACCOUNT_KEY secret to be passed as an environment variable
-
 name: 'GCP Warm Up'
 description: 'Warm up GCP resources for GitHub Actions'
 inputs:
@@ -35,8 +33,6 @@ runs:
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v2
       with:
-        # service_account_key: ${{ env.GCP_SERVICE_ACCOUNT_KEY }}
-        # project_id: ${{ inputs.project_id }}
         install_components: ${{ inputs.install_components }}
 
     - name: Configure Docker for Google Artifact Registry

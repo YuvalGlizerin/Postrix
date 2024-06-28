@@ -12,7 +12,13 @@ permissions:
   id-token: write
 
 jobs:
-  build_and_push:
+  build_and_deploy_adhoc:
+    
+    # uses: YuvalGlizerin/Postrix/.github/reusable-workflows/build-and-deploy.yml@main
+    # with:
+    #   config-path: .github/labeler.yml
+    # secrets: inherit
+
     runs-on: ubuntu-latest
 
     steps:
@@ -22,13 +28,11 @@ jobs:
     - uses: ./.github/actions/gcp-warm-up
       with:
         project_id: postrix-development
+        workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+        service_account: ${{ secrets.SERVICE_ACCOUNT }}
         region: ${{ env.REGION }}
         configure_docker: true
         install_components: 'beta'
-        workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
-        service_account: ${{ secrets.SERVICE_ACCOUNT }}
-      env:
-        GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
     - name: Build Docker image
       run: |
