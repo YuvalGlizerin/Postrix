@@ -27,7 +27,7 @@ jobs:
     environment: ${{ inputs.environment }}
 
     env:
-      IMAGE: $REGION-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ vars.GCP_ARTIFACT_REPO }}/${{ inputs.service_url }}:latest
+      IMAGE: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ vars.GCP_ARTIFACT_REPO }}/${{ inputs.service_url }}:latest
 
     steps:
     - name: Checkout code
