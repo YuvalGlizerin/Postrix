@@ -1,9 +1,5 @@
 name: Build and deploy adhoc
 
-permissions:
-  contents: read
-  id-token: write
-
 on:
   workflow_dispatch:
     inputs:
@@ -15,6 +11,10 @@ on:
 
 jobs:
   build_and_deploy_adhoc:
+    permissions:
+      contents: read
+      id-token: write
+
     uses: YuvalGlizerin/Postrix/.github/workflows/build-and-deploy.yml@main
     with:
       environment: dev
@@ -23,11 +23,15 @@ jobs:
     secrets: inherit
 
   comment_pr:
+    permissions:
+      contents: read
+      pull-requests: write
+
     runs-on: ubuntu-latest
     needs: build_and_deploy_adhoc
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - uses: ./.github/actions/repo-warm-up
 
