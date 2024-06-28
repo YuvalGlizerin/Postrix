@@ -1,4 +1,4 @@
-name: Deploy adhoc
+name: Build and deploy adhoc
 
 permissions:
   contents: read
