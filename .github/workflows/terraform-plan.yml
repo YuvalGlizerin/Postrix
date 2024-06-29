@@ -49,8 +49,9 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           title: "Terraform Cloud Plan Output"
-          message: >
-            Plan: ${{ steps.plan-output.outputs.add }} to add, \
-            ${{ steps.plan-output.outputs.change }} to change, \
-            ${{ steps.plan-output.outputs.destroy }} to destroy. \
-            \n\`\`\`\n[Terraform Cloud Plan](${{ steps.plan-run.outputs.run_link }})
+          block: >
+            Plan: ${{ steps.plan-output.outputs.add }} to add, 
+            ${{ steps.plan-output.outputs.change }} to change, 
+            ${{ steps.plan-output.outputs.destroy }} to destroy.
+          message: |
+            [Terraform Cloud Plan](${{ steps.plan-run.outputs.run_link }})

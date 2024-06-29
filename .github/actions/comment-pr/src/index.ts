@@ -6,6 +6,7 @@ async function run() {
     try {
         const token = core.getInput('github_token');
         const title = core.getInput('title');
+        const block = core.getInput('block');
         const message = core.getInput('message');
         const octokit = github.getOctokit(token);
 
@@ -25,7 +26,7 @@ async function run() {
             }
         });
 
-        const output = `#### ${title}\n\n\`\`\`\n${message}`;
+        const output = `#### ${title}\n\n\`\`\`\n${block}\n\`\`\`\n${message}`;
         octokit.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
