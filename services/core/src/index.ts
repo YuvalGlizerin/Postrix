@@ -7,7 +7,7 @@ const app = express();
 const PORT = process.env.PORT;
 
 app.get('/', (req: Request, res: Response) => {
-  res.send(`Core service is running on ${process.env.TEXT}.\nMore is yet to come!\n YOYO!`);
+  res.send(`Core service is running on ${process.env.ENV}.\nFixed service URL!`);
 });
 
 const server = app.listen(PORT, () => {

@@ -16,10 +16,9 @@ on:
         description: 'The name of the Cloud Run service to deploy'
         type: string
       service_url:
-        required: false
+        required: true
         description: 'The branch name of the adhoc deployment if exists and the service name'
         type: string
-        default: ${{ inputs.service_name }}
     outputs:
       full_service_url:
         description: 'The full URL of the deployed service'
