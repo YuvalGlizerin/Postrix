@@ -62,7 +62,7 @@ jobs:
         --image=${{ env.IMAGE }} \
         --region=${{ vars.GCP_REGION }} \
         --platform=managed \
-        --allow-unauthenticated
+        --allow-unauthenticated \
         --set-env-vars=ENV=${{ inputs.environment }}
 
     - name: Get service URL
