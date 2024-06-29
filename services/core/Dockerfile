@@ -18,6 +18,7 @@ RUN npm install --only=production
 
 # Copy local code to the container image.
 COPY ./src ./src
+COPY ./envs ./envs
 
 # Start the application using ts-node, enabling the transpileOnly option for faster startup
 CMD ["npx", "ts-node", "--transpile-only", "src/index.ts"]
