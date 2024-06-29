@@ -68,4 +68,4 @@ jobs:
       id: full-service-url
       run: |
         SERVICE_URL=$(gcloud run services describe ${{ inputs.service_url }}-service --region=${{ vars.GCP_REGION }} --format='value(status.url)')
-        echo SERVICE_URL=$SERVICE_URL >> $GITHUB_OUTPUT
+        echo "SERVICE_URL=$SERVICE_URL" >> $GITHUB_OUTPUT
