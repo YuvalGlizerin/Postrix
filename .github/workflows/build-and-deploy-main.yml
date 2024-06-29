@@ -1,0 +1,27 @@
+name: Build and deploy main to prod/sandbox
+
+on:
+  workflow_run:
+    workflows: ["Terraform Apply"]
+    types:
+      - completed
+
+env:
+  REGION: us-central1
+
+jobs:
+  build_and_deploy_main:
+    permissions:
+      contents: read
+      id-token: write
+
+    strategy:
+      matrix:
+        target: [dev, prod]
+        service: [core]
+    
+    uses: ./.github/workflows/build-and-deploy.yml
+    with:
+      environment: ${{ matrix.target }}
+      service_name: ${{ matrix.service }}
+    secrets: inherit

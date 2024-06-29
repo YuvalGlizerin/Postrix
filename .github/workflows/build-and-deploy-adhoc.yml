@@ -15,7 +15,7 @@ jobs:
       contents: read
       id-token: write
 
-    uses: YuvalGlizerin/Postrix/.github/workflows/build-and-deploy.yml@main
+    uses: ./.github/workflows/build-and-deploy.yml
     with:
       environment: dev
       service_name: core
