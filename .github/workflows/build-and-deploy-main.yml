@@ -24,4 +24,5 @@ jobs:
     with:
       environment: ${{ matrix.target }}
       service_name: ${{ matrix.service }}
+      service_url: ${{ matrix.service }}
     secrets: inherit
