@@ -26,7 +26,8 @@ async function run() {
             }
         });
 
-        const output = `#### ${title}\n\n\`\`\`\n${block}\n\`\`\`\n${message}`;
+        const blockMessage = block ? `\`\`\`\n${block}\n\`\`\`` : '';
+        const output = `#### ${title}\n\n${blockMessage}\n${message}`;
         octokit.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
