@@ -44,11 +44,14 @@ jobs:
         with:
           plan: ${{ fromJSON(steps.plan-run.outputs.payload).data.relationships.plan.data.id }}
 
-      - name: Update PR
-        uses: ./.github/actions/terraform-comment-pr
+      - name: Comment PR
+        uses: ./.github/actions/comment-pr
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          add: ${{ steps.plan-output.outputs.add }}
-          change: ${{ steps.plan-output.outputs.change }}
-          destroy: ${{ steps.plan-output.outputs.destroy }}
-          run_link: ${{ steps.plan-run.outputs.run_link }}
+          title: "Terraform Cloud Plan Output"
+          block: >
+            Plan: ${{ steps.plan-output.outputs.add }} to add, 
+            ${{ steps.plan-output.outputs.change }} to change, 
+            ${{ steps.plan-output.outputs.destroy }} to destroy.
+          message: |
+            [Terraform Cloud Plan](${{ steps.plan-run.outputs.run_link }})

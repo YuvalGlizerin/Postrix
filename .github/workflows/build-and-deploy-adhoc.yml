@@ -1,0 +1,44 @@
+name: Build and deploy adhoc
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch_name:
+        required: true
+        description: 'The branch name of the adhoc deployment'
+        type: string
+  pull_request:
+
+jobs:
+  build_and_deploy_adhoc:
+    permissions:
+      contents: read
+      id-token: write
+
+    uses: YuvalGlizerin/Postrix/.github/workflows/build-and-deploy.yml@main
+    with:
+      environment: dev
+      service_name: core
+      service_url: ${{ inputs.branch_name || github.head_ref || github.ref_name }}-core
+    secrets: inherit
+
+  comment_pr:
+    permissions:
+      contents: read
+      pull-requests: write
+
+    runs-on: ubuntu-latest
+    needs: build_and_deploy_adhoc
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: ./.github/actions/repo-warm-up
+
+      - name: Comment PR
+        uses: ./.github/actions/comment-pr
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          title: "Service URLs"
+          message: |
+            [Core](${{ needs.build_and_deploy_adhoc.outputs.full_service_url }})

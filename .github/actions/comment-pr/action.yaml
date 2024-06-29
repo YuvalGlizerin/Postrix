@@ -1,0 +1,19 @@
+name: 'Comment PR'
+
+inputs:
+  github_token:
+    description: 'GitHub token'
+    required: true
+  title:
+    description: 'The title of the comment(will replace comment if another comment with the same title exists)'
+    required: true
+  block:
+    description: 'The code block of the comment'
+    required: false
+  message:
+    description: 'The message of the comment'
+    required: true
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

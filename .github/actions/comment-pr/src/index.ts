@@ -5,10 +5,9 @@ import { Context } from '@actions/github/lib/context';
 async function run() {
     try {
         const token = core.getInput('github_token');
-        const add = core.getInput('add');
-        const change = core.getInput('change');
-        const destroy = core.getInput('destroy');
-        const run_link = core.getInput('run_link');
+        const title = core.getInput('title');
+        const block = core.getInput('block');
+        const message = core.getInput('message');
         const octokit = github.getOctokit(token);
 
         const context: Context = github.context;
@@ -17,19 +16,18 @@ async function run() {
             repo: context.repo.repo,
             issue_number: context.issue.number,
         });
-        const botComment = comments.find(comment => {
-            return comment?.user?.type === 'Bot' && comment?.body?.includes('Terraform Cloud Plan Output')
+        comments.forEach(comment => {
+            if (comment?.user?.type === 'Bot' && comment?.body?.includes(title)) {
+                octokit.rest.issues.deleteComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    comment_id: comment.id,
+                });
+            }
         });
 
-        const output = `#### Terraform Cloud Plan Output\n\n\`\`\`\nPlan: ${add} to add, ${change} to change, ${destroy} to destroy.\n\`\`\`\n[Terraform Cloud Plan](${run_link})`;
-            
-        if (botComment) {
-            octokit.rest.issues.deleteComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              comment_id: botComment.id,
-            });
-        }
+        const blockMessage = block ? `\`\`\`\n${block}\n\`\`\`` : '';
+        const output = `#### ${title}\n\n${blockMessage}\n${message}`;
         octokit.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
