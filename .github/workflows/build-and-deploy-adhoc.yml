@@ -15,11 +15,15 @@ jobs:
       contents: read
       id-token: write
 
+    strategy:
+      matrix:
+        service: [core]
+
     uses: ./.github/workflows/build-and-deploy.yml
     with:
       environment: dev
-      service_name: core
-      service_url: ${{ inputs.branch_name || github.head_ref || github.ref_name }}-core
+      service_name: ${{ matrix.service }}
+      service_url: ${{ inputs.branch_name || github.head_ref || github.ref_name }}-${{ matrix.service }}
     secrets: inherit
 
   comment_pr:
