@@ -82,7 +82,7 @@ jobs:
         --platform=managed \
         --allow-unauthenticated \
         --set-env-vars=ENV=${{ inputs.environment }} \
-        --labels=branch=${{ inputs.service_url }}
+        --labels=branch=${{ inputs.service_url }},pr_number=${{ github.event.pull_request.number }}
 
     - name: Get service URL
       id: full-service-url

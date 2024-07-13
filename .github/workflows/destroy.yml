@@ -41,7 +41,7 @@ jobs:
     - name: Delete expired deployments
       run: |
         # Get a list of adhoc services
-        SERVICES=$(gcloud run services list --platform=managed --region=$REGION --format="value(metadata.name)") --filter="metadata.labels.adhoc=true" 
+        SERVICES=$(gcloud run services list --platform=managed --region=$REGION --format="value(metadata.name)") --filter="metadata.labels.branch:*"
 
         for SERVICE in $SERVICES; do
           cloud run services delete $SERVICE --platform=managed --region=$REGION --quiet
