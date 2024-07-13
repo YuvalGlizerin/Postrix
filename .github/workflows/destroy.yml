@@ -38,7 +38,7 @@ jobs:
         SERVICES=$(gcloud run services list \
           --platform=managed \
           --region=${{ vars.GCP_REGION }} \
-          --format="value(metadata.name, metadata.labels.pr_number") \
+          --format="value(metadata.name, metadata.labels.pr_number)" \
           --filter="metadata.labels.pr_number:*")
 
         # Convert the SERVICES string to an array
