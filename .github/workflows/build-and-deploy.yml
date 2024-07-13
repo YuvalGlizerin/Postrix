@@ -53,7 +53,6 @@ jobs:
             }
           };
           return envVars['${{ inputs.environment }}'];
-        result-encoding: string
 
     - uses: ./.github/actions/gcp-warm-up
       with:
