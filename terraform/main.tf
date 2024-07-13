@@ -35,13 +35,13 @@ locals {
     production = {
       project                   = "postrix"
       artifactory_repository_id = "production-docker"
-      env                       = "production"
+      env                       = "prod"
       domain_prefix             = ""
     }
     development = {
       project                   = "postrix-development"
       artifactory_repository_id = "development-docker"
-      env                       = "development"
+      env                       = "dev"
       domain_prefix             = "dev."
     }
   }

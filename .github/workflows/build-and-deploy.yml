@@ -4,6 +4,11 @@ permissions:
   contents: read
   id-token: write
 
+# Environment variables to be set dynamically later in the workflow
+env:
+  PROJECT_ID: ''
+  IMAGE: ''
+
 on:
   workflow_call:
     inputs:
@@ -27,10 +32,6 @@ on:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
-
-    env:
-      IMAGE: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ vars.GCP_ARTIFACT_REPO }}/${{ inputs.service_url }}:latest
 
     outputs:
       full-service-url: ${{ steps.full-service-url.outputs.SERVICE_URL }}
@@ -39,9 +40,27 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Set Dynamic Environment Variables
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const envVars = {
+            dev: {
+              PROJECT_ID: '${{ secrets.GCP_DEV_PROJECT_ID }}',
+              IMAGE: '${{ vars.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_DEV_PROJECT_ID }}/${{ vars.GCP_DEV_ARTIFACT_REPO }}/${{ inputs.service_url }}:latest'
+            },
+            prod: {
+              PROJECT_ID: '${{ secrets.GCP_PROD_PROJECT_ID }}',
+              IMAGE: '${{ vars.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROD_PROJECT_ID }}/${{ vars.GCP_PROD_ARTIFACT_REPO }}/${{ inputs.service_url }}:latest'
+            }
+          };
+          const selectedEnv = envVars['${{ inputs.environment }}'];
+          core.exportVariable('PROJECT_ID', selectedEnv.PROJECT_ID);
+          core.exportVariable('IMAGE', selectedEnv.IMAGE);
+
     - uses: ./.github/actions/gcp-warm-up
       with:
-        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        project_id: ${{ env.PROJECT_ID }}
         workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
         service_account: ${{ secrets.SERVICE_ACCOUNT }}
         region: ${{ vars.GCP_REGION }}
