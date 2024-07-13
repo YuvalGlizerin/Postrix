@@ -54,9 +54,15 @@ jobs:
           };
           return envVars['${{ inputs.environment }}'];
 
+    - name: output envs
+      run: |
+        echo "${{ steps.dynamic_env_vars.outputs.result }}"
+        echo "${{ steps.dynamic_env_vars.outputs.result.dev }}"
+        echo "${{ steps.dynamic_env_vars.outputs.result.dev.PROJECT_ID }}"
+
     - uses: ./.github/actions/gcp-warm-up
       with:
-        project_id: ${{ steps.dynamic_env_vars.outputs.result.PROJECT_ID }}
+        project_id: ${{ steps.dynamic_env_vars.outputs.result.dev.PROJECT_ID }}
         workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
         service_account: ${{ secrets.SERVICE_ACCOUNT }}
         region: ${{ vars.GCP_REGION }}
