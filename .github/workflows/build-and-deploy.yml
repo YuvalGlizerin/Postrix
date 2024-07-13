@@ -57,15 +57,15 @@ jobs:
           core.setOutput('ARTIFACT_REPO', selectedEnv.ARTIFACT_REPO);
           core.setOutput('IMAGE', selectedEnv.IMAGE);
 
-    - name: output envs
-      run: |
-        echo "${{ steps.dynamic_env_vars.outputs }}"
-        echo "${{ steps.dynamic_env_vars.outputs.PROJECT_ID }}"
-        echo "${{ steps.dynamic_env_vars.outputs.result.PROJECT_ID }}"
+    # - name: output envs
+    #   run: |
+    #     echo "${{ steps.dynamic_env_vars.outputs }}"
+    #     echo "${{ steps.dynamic_env_vars.outputs.PROJECT_ID }}"
+    #     echo "${{ steps.dynamic_env_vars.outputs.result.PROJECT_ID }}"
 
     - uses: ./.github/actions/gcp-warm-up
       with:
-        project_id: ${{ steps.dynamic_env_vars.outputs.result.dev.PROJECT_ID }}
+        project_id: ${{ steps.dynamic_env_vars.outputs.PROJECT_ID }}
         workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
         service_account: ${{ secrets.SERVICE_ACCOUNT }}
         region: ${{ vars.GCP_REGION }}
@@ -73,16 +73,16 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t ${{ steps.dynamic_env_vars.outputs.result.IMAGE }} ./services/${{ inputs.service_name }}
+        docker build -t ${{ steps.dynamic_env_vars.outputs.IMAGE }} ./services/${{ inputs.service_name }}
 
     - name: Push Docker image to Google Artifact Registry
       run: |
-        docker push ${{ steps.dynamic_env_vars.outputs.result.IMAGE }}
+        docker push ${{ steps.dynamic_env_vars.outputs.IMAGE }}
     
     - name: Deploy to Cloud Run
       run: |
         gcloud run deploy ${{ inputs.service_url }}-service \
-        --image=${{ steps.dynamic_env_vars.outputs.result.IMAGE }} \
+        --image=${{ steps.dynamic_env_vars.outputs.IMAGE }} \
         --region=${{ vars.GCP_REGION }} \
         --platform=managed \
         --allow-unauthenticated \
