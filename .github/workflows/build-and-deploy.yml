@@ -43,29 +43,20 @@ jobs:
           const envVars = {
             dev: {
               PROJECT_ID: '${{ secrets.GCP_DEV_PROJECT_ID }}',
-              ARTIFACT_REPO: '${{ vars.GCP_DEV_ARTIFACT_REPO }}',
               IMAGE: '${{ vars.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_DEV_PROJECT_ID }}/${{ vars.GCP_DEV_ARTIFACT_REPO }}/${{ inputs.service_url }}:latest'
             },
             prod: {
               PROJECT_ID: '${{ secrets.GCP_PROD_PROJECT_ID }}',
-              ARTIFACT_REPO: '${{ vars.GCP_PROD_ARTIFACT_REPO }}',
               IMAGE: '${{ vars.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROD_PROJECT_ID }}/${{ vars.GCP_PROD_ARTIFACT_REPO }}/${{ inputs.service_url }}:latest'
             }
           };
           const selectedEnv = envVars['${{ inputs.environment }}'];
-          core.setOutput('PROJECT_ID', selectedEnv.PROJECT_ID);
-          core.setOutput('ARTIFACT_REPO', selectedEnv.ARTIFACT_REPO);
-          core.setOutput('IMAGE', selectedEnv.IMAGE);
-
-    # - name: output envs
-    #   run: |
-    #     echo "${{ steps.dynamic_env_vars.outputs }}"
-    #     echo "${{ steps.dynamic_env_vars.outputs.PROJECT_ID }}"
-    #     echo "${{ steps.dynamic_env_vars.outputs.result.PROJECT_ID }}"
+          core.setSecret('PROJECT_ID', selectedEnv.PROJECT_ID);
+          core.setSecret('IMAGE', selectedEnv.IMAGE);
 
     - uses: ./.github/actions/gcp-warm-up
       with:
-        project_id: ${{ steps.dynamic_env_vars.outputs.PROJECT_ID }}
+        project_id: ${{ secrets.PROJECT_ID }}
         workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
         service_account: ${{ secrets.SERVICE_ACCOUNT }}
         region: ${{ vars.GCP_REGION }}
@@ -73,16 +64,16 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t ${{ steps.dynamic_env_vars.outputs.IMAGE }} ./services/${{ inputs.service_name }}
+        docker build -t ${{ secrets.IMAGE }} ./services/${{ inputs.service_name }}
 
     - name: Push Docker image to Google Artifact Registry
       run: |
-        docker push ${{ steps.dynamic_env_vars.outputs.IMAGE }}
+        docker push ${{ secrets.IMAGE }}
     
     - name: Deploy to Cloud Run
       run: |
         gcloud run deploy ${{ inputs.service_url }}-service \
-        --image=${{ steps.dynamic_env_vars.outputs.IMAGE }} \
+        --image=${{ secrets.IMAGE }} \
         --region=${{ vars.GCP_REGION }} \
         --platform=managed \
         --allow-unauthenticated \
