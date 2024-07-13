@@ -44,12 +44,12 @@ jobs:
             dev: {
               PROJECT_ID: '${{ secrets.GCP_DEV_PROJECT_ID }}',
               ARTIFACT_REPO: '${{ vars.GCP_DEV_ARTIFACT_REPO }}',
-              IMAGE: '${{ vars.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_DEV_PROJECT_ID }}/${{ vars.GCP_DEV_ARTIFACT_REPO }}/${{ inputs.service_url }}':latest
+              IMAGE: '${{ vars.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_DEV_PROJECT_ID }}/${{ vars.GCP_DEV_ARTIFACT_REPO }}/${{ inputs.service_url }}:latest'
             },
             prod: {
               PROJECT_ID: '${{ secrets.GCP_PROD_PROJECT_ID }}',
               ARTIFACT_REPO: '${{ vars.GCP_PROD_ARTIFACT_REPO }}',
-              IMAGE: '${{ vars.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROD_PROJECT_ID }}/${{ vars.GCP_PROD_ARTIFACT_REPO }}/${{ inputs.service_url }}':latest
+              IMAGE: '${{ vars.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROD_PROJECT_ID }}/${{ vars.GCP_PROD_ARTIFACT_REPO }}/${{ inputs.service_url }}:latest'
             }
           };
           return envVars['${{ inputs.environment }}'];
