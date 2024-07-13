@@ -9,7 +9,7 @@ variable "domain_prefix" {}
 resource "google_cloud_run_service" "core" {
   provider  = google
   project   = var.project
-  name      = "core-service"
+  name      = "core"
   location  = var.region
 
   template {
