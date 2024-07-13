@@ -14,7 +14,7 @@ on:
 
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
-  SERVICE_NAME: ${{ github.head_ref }}-core-service
+  SERVICE_NAME: ${{ github.head_ref }}-core
 
 jobs:
   destroy:
@@ -33,16 +33,30 @@ jobs:
         region: ${{ vars.GCP_REGION }}
         install_components: beta
 
-    - name: Destroy resources
-      run: |
-        gcloud run services delete ${{ env.SERVICE_NAME }} --region=${{ vars.GCP_REGION }} --platform=managed --quiet
-        gcloud artifacts docker images delete ${{ vars.GCP_REGION }}-docker.pkg.dev/postrix-development/development-docker/${{ env.BRANCH_NAME }}-core --quiet
-
     - name: Delete expired deployments
       run: |
         # Get a list of adhoc services
-        SERVICES=$(gcloud run services list --platform=managed --region=$REGION --format="value(metadata.name)") --filter="metadata.labels.branch:*"
+        SERVICES=$(gcloud run services list \
+          --platform=managed \
+          --region=${{ vars.GCP_REGION }} \
+          --format="value(metadata.name, metadata.labels.pr_number)") \
+          --filter="metadata.labels.pr_number:*"
 
-        for SERVICE in $SERVICES; do
-          cloud run services delete $SERVICE --platform=managed --region=$REGION --quiet
+        # Convert the SERVICES string to an array
+        services_array=$'\n' read -r -d '' -a services_array <<< "$SERVICES"
+
+        for service_entry in "${services_array[@]}"; do
+          SERVICE_NAME=$(echo $service_entry | awk '{print $1}')
+          PR_NUMBER=$(echo $service_entry | awk '{print $2}')
+
+          # Check if there is an open pull request with this pr_number
+          PR_OPEN=$(gh pr view $PR_NUMBER --json state -q .state || echo "closed")
+
+          if [ "$PR_OPEN" != "OPEN" ]; then
+            echo "Deleting service $SERVICE_NAME with closed PR #$PR_NUMBER"
+            gcloud run services delete $SERVICE_NAME --platform=managed --region=$REGION --quiet
+            gcloud artifacts docker images delete ${{ vars.GCP_REGION }}-docker.pkg.dev/postrix-development/development-docker/$SERVICE_NAME --quiet
+          else
+            echo "Service $SERVICE_NAME has an open PR #$PR_NUMBER"
+          fi
         done

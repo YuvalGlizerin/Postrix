@@ -76,7 +76,7 @@ jobs:
     
     - name: Deploy to Cloud Run
       run: |
-        gcloud run deploy ${{ inputs.service_url }}-service \
+        gcloud run deploy ${{ inputs.service_url }} \
         --image=${{ env.IMAGE }} \
         --region=${{ vars.GCP_REGION }} \
         --platform=managed \
@@ -87,5 +87,5 @@ jobs:
     - name: Get service URL
       id: full-service-url
       run: |
-        SERVICE_URL=$(gcloud run services describe ${{ inputs.service_url }}-service --region=${{ vars.GCP_REGION }} --format='value(status.url)')
+        SERVICE_URL=$(gcloud run services describe ${{ inputs.service_url }} --region=${{ vars.GCP_REGION }} --format='value(status.url)')
         echo "SERVICE_URL=$SERVICE_URL" >> $GITHUB_OUTPUT
