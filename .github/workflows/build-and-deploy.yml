@@ -81,7 +81,7 @@ jobs:
         --region=${{ vars.GCP_REGION }} \
         --platform=managed \
         --allow-unauthenticated \
-        --set-env-vars=ENV=${{ inputs.environment }}
+        --set-env-vars=ENV=${{ inputs.environment }} \
         --labels=branch=${{ inputs.service_url }}
 
     - name: Get service URL
