@@ -1,12 +1,18 @@
 name: Destroy PR resources
 
+permissions:
+  contents: read
+  id-token: write
+
 on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'  # Every day at 00:00 UTC
   pull_request:
     types:
       - closed
 
 env:
-  REGION: us-central1
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
   SERVICE_NAME: ${{ github.head_ref }}-core-service
 
@@ -21,13 +27,22 @@ jobs:
 
     - uses: ./.github/actions/gcp-warm-up
       with:
-        project_id: postrix-development
+        project_id: ${{ secrets.GCP_DEV_PROJECT_ID }}
         workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
         service_account: ${{ secrets.SERVICE_ACCOUNT }}
-        region: ${{ env.REGION }}
+        region: ${{ vars.GCP_REGION }}
         install_components: beta
 
     - name: Destroy resources
       run: |
-        gcloud run services delete ${{ env.SERVICE_NAME }} --region=${{ env.REGION }} --platform=managed --quiet
-        gcloud artifacts docker images delete ${{ env.REGION }}-docker.pkg.dev/postrix-development/development-docker/${{ env.BRANCH_NAME }}-core --quiet
+        gcloud run services delete ${{ env.SERVICE_NAME }} --region=${{ vars.GCP_REGION }} --platform=managed --quiet
+        gcloud artifacts docker images delete ${{ vars.GCP_REGION }}-docker.pkg.dev/postrix-development/development-docker/${{ env.BRANCH_NAME }}-core --quiet
+
+    - name: Delete expired deployments
+      run: |
+        # Get a list of adhoc services
+        SERVICES=$(gcloud run services list --platform=managed --region=$REGION --format="value(metadata.name)") --filter="metadata.labels.adhoc=true" 
+
+        for SERVICE in $SERVICES; do
+          cloud run services delete $SERVICE --platform=managed --region=$REGION --quiet
+        done

@@ -82,6 +82,7 @@ jobs:
         --platform=managed \
         --allow-unauthenticated \
         --set-env-vars=ENV=${{ inputs.environment }}
+        --labels=branch=${{ inputs.service_url }}
 
     - name: Get service URL
       id: full-service-url
