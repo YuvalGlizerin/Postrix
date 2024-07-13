@@ -9,17 +9,16 @@ on:
   schedule:
     - cron: '0 0 * * *'  # Every day at 00:00 UTC
   pull_request:
-    # types:
-    #   - closed
+    types:
+      - closed
 
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
   SERVICE_NAME: ${{ github.head_ref }}-core
 
 jobs:
-  destroy-test:
+  destroy:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
 
     steps:
     - name: Checkout code
