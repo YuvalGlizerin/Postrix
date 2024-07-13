@@ -51,12 +51,12 @@ jobs:
             }
           };
           const selectedEnv = envVars['${{ inputs.environment }}'];
-          core.setSecret('PROJECT_ID', selectedEnv.PROJECT_ID);
-          core.setSecret('IMAGE', selectedEnv.IMAGE);
+          core.exportVariable('PROJECT_ID', selectedEnv.PROJECT_ID);
+          core.exportVariable('IMAGE', selectedEnv.IMAGE);
 
     - uses: ./.github/actions/gcp-warm-up
       with:
-        project_id: ${{ secrets.PROJECT_ID }}
+        project_id: ${{ env.PROJECT_ID }}
         workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
         service_account: ${{ secrets.SERVICE_ACCOUNT }}
         region: ${{ vars.GCP_REGION }}
@@ -64,16 +64,16 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t ${{ secrets.IMAGE }} ./services/${{ inputs.service_name }}
+        docker build -t ${{ env.IMAGE }} ./services/${{ inputs.service_name }}
 
     - name: Push Docker image to Google Artifact Registry
       run: |
-        docker push ${{ secrets.IMAGE }}
+        docker push ${{ env.IMAGE }}
     
     - name: Deploy to Cloud Run
       run: |
         gcloud run deploy ${{ inputs.service_url }}-service \
-        --image=${{ secrets.IMAGE }} \
+        --image=${{ env.IMAGE }} \
         --region=${{ vars.GCP_REGION }} \
         --platform=managed \
         --allow-unauthenticated \
