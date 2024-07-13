@@ -52,7 +52,7 @@ jobs:
               IMAGE: '${{ vars.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROD_PROJECT_ID }}/${{ vars.GCP_PROD_ARTIFACT_REPO }}/${{ inputs.service_url }}':latest
             }
           };
-          return envVars[${{ inputs.environment }}];
+          return envVars['${{ inputs.environment }}'];
         result-encoding: string
 
     - uses: ./.github/actions/gcp-warm-up
