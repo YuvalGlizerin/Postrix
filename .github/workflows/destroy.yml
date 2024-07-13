@@ -40,7 +40,7 @@ jobs:
           --platform=managed \
           --region=${{ vars.GCP_REGION }} \
           --format="value(metadata.name, metadata.labels.pr_number)") \
-          --filter="metadata.labels.pr_number:*"
+          --filter="metadata.labels.pr_number:*")
 
         # Convert the SERVICES string to an array
         services_array=$'\n' read -r -d '' -a services_array <<< "$SERVICES"
