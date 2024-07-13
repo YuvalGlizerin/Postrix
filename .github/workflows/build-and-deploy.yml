@@ -57,8 +57,8 @@ jobs:
     - name: output envs
       run: |
         echo "${{ steps.dynamic_env_vars.outputs.result }}"
-        echo "${{ steps.dynamic_env_vars.outputs.result.dev }}"
-        echo "${{ steps.dynamic_env_vars.outputs.result.dev.PROJECT_ID }}"
+        echo "${{ steps.dynamic_env_vars.outputs.result.PROJECT_ID }}"
+        echo "${{ steps.dynamic_env_vars.outputs.result.PROJECT_ID }}"
 
     - uses: ./.github/actions/gcp-warm-up
       with:
