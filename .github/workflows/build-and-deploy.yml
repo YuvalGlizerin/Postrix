@@ -40,7 +40,6 @@ jobs:
       id: dynamic_env_vars
       with:
         script: |
-          const core = require('@actions/core');
           const envVars = {
             dev: {
               PROJECT_ID: '${{ secrets.GCP_DEV_PROJECT_ID }}',
