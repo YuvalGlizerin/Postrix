@@ -9,15 +9,15 @@ on:
   schedule:
     - cron: '0 0 * * *'  # Every day at 00:00 UTC
   pull_request:
-    types:
-      - closed
+    # types:
+    #   - closed
 
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
   SERVICE_NAME: ${{ github.head_ref }}-core
 
 jobs:
-  destroy:
+  destroy-test:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
 
@@ -43,7 +43,7 @@ jobs:
           --filter="metadata.labels.pr_number:*")
 
         # Convert the SERVICES string to an array
-        services_array=$'\n' read -r -d '' -a services_array <<< "$SERVICES"
+        IFS=$'\n' read -r -d '' -a services_array <<< "$SERVICES"
 
         for service_entry in "${services_array[@]}"; do
           SERVICE_NAME=$(echo $service_entry | awk '{print $1}')
