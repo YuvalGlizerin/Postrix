@@ -2,7 +2,7 @@ import express, { type Request, type Response } from 'express';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: `envs/${process.env.ENV}.env` });
-process.title = 'core-service';
+process.title = 'core';
 const app = express();
 const PORT = process.env.PORT;
 
