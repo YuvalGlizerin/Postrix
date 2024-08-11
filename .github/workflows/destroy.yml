@@ -37,12 +37,13 @@ jobs:
       with:
         script: |    
           const { execSync } = require('child_process');
+
           // Fetch the list of adhoc services
-          const servicesOutput = (execSync(`gcloud run services list \
+          const servicesOutput = execSync(`gcloud run services list \
             --platform=managed \
             --region=${{ vars.GCP_REGION }} \
             --format="value(metadata.name, metadata.labels.pr_number)" \
-            --filter="metadata.labels.pr_number:*"`)).toString();
+            --filter="metadata.labels.pr_number:*"`).toString();
     
           // Check if servicesOutput is empty
           if (!servicesOutput.trim()) {
@@ -66,9 +67,9 @@ jobs:
     
               if (pr.data.state !== 'open') {
                 console.log(`Deleting service ${serviceName} with closed PR #${prNumber}`);
-                await exec.exec(`gcloud run services delete ${serviceName} --platform=managed --region=${{ vars.GCP_REGION }} --quiet`);
+                execSync(`gcloud run services delete ${serviceName} --platform=managed --region=${{ vars.GCP_REGION }} --quiet`);
                 console.log(`Deleting artifacts of service ${serviceName} with closed PR #${prNumber}`);
-                await exec.exec(`gcloud artifacts docker images delete ${{ vars.GCP_REGION }}-docker.pkg.dev/postrix-development/development-docker/${serviceName} --quiet`);
+                execSync(`gcloud artifacts docker images delete ${{ vars.GCP_REGION }}-docker.pkg.dev/postrix-development/development-docker/${serviceName} --quiet`);
               } else {
                 console.log(`Service ${serviceName} has an open PR #${prNumber}`);
               }
