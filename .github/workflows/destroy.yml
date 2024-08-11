@@ -36,8 +36,9 @@ jobs:
       uses: actions/github-script@v7
       with:
         script: |    
+          const { execSync } = require('child_process');
           // Fetch the list of adhoc services
-          const servicesOutput = (await exec.exec(`gcloud run services list \
+          const servicesOutput = (execSync(`gcloud run services list \
             --platform=managed \
             --region=${{ vars.GCP_REGION }} \
             --format="value(metadata.name, metadata.labels.pr_number)" \
