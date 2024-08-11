@@ -37,7 +37,7 @@ jobs:
       with:
         script: |    
           // Fetch the list of adhoc services
-          const servicesOutput = exec.exec(`gcloud run services list \
+          const servicesOutput = await exec.exec(`gcloud run services list \
             --platform=managed \
             --region=${{ vars.GCP_REGION }} \
             --format="value(metadata.name, metadata.labels.pr_number)" \
@@ -54,7 +54,6 @@ jobs:
     
           for (const serviceEntry of servicesArray) {
             const [serviceName, prNumber] = serviceEntry.split(/\s+/);
-    
             console.log(`Checking PR #${prNumber} for service ${serviceName}`);
     
             try {
@@ -66,9 +65,9 @@ jobs:
     
               if (pr.data.state !== 'open') {
                 console.log(`Deleting service ${serviceName} with closed PR #${prNumber}`);
-                exec.exec(`gcloud run services delete ${serviceName} --platform=managed --region=${{ vars.GCP_REGION }} --quiet`);
+                await exec.exec(`gcloud run services delete ${serviceName} --platform=managed --region=${{ vars.GCP_REGION }} --quiet`);
                 console.log(`Deleting artifacts of service ${serviceName} with closed PR #${prNumber}`);
-                exec.exec(`gcloud artifacts docker images delete ${{ vars.GCP_REGION }}-docker.pkg.dev/postrix-development/development-docker/${serviceName} --quiet`);
+                await exec.exec(`gcloud artifacts docker images delete ${{ vars.GCP_REGION }}-docker.pkg.dev/postrix-development/development-docker/${serviceName} --quiet`);
               } else {
                 console.log(`Service ${serviceName} has an open PR #${prNumber}`);
               }
