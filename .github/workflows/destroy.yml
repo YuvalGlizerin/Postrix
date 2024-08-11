@@ -55,7 +55,7 @@ jobs:
           const servicesArray = servicesOutput.trim().split('\n');
     
           for (const serviceEntry of servicesArray) {
-            const [serviceName, prNumber] = serviceEntry.split(' ');
+            const [serviceName, prNumber] = serviceEntry.split(/\s+/);
     
             console.log(`Checking PR #${prNumber} for service ${serviceName}`);
     
