@@ -37,11 +37,11 @@ jobs:
       with:
         script: |    
           // Fetch the list of adhoc services
-          const servicesOutput = await exec.exec(`gcloud run services list \
+          const servicesOutput = await (exec.exec(`gcloud run services list \
             --platform=managed \
             --region=${{ vars.GCP_REGION }} \
             --format="value(metadata.name, metadata.labels.pr_number)" \
-            --filter="metadata.labels.pr_number:*"`).toString();
+            --filter="metadata.labels.pr_number:*"`)).toString();
     
           // Check if servicesOutput is empty
           if (!servicesOutput.trim()) {
