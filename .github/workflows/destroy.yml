@@ -77,5 +77,5 @@ jobs:
               throw error;
             }
             
-            coneole.log(`Finished checking PR #${prNumber} for service ${serviceName}\n\n`);
+            console.log(`Finished checking PR #${prNumber} for service ${serviceName}\n\n`);
           }
