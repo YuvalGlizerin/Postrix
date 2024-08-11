@@ -33,6 +33,52 @@ jobs:
         install_components: beta
 
     - name: Delete expired deployments
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const { execSync } = require('child_process');
+    
+          // Fetch the list of adhoc services
+          const servicesOutput = execSync(`gcloud run services list \
+            --platform=managed \
+            --region=${{ vars.GCP_REGION }} \
+            --format="value(metadata.name, metadata.labels.pr_number)" \
+            --filter="metadata.labels.pr_number:*"`).toString();
+    
+          // Check if servicesOutput is empty
+          if (!servicesOutput.trim()) {
+            console.log("No services found with a pr_number label.");
+            return;
+          }
+    
+          // Convert the servicesOutput string to an array
+          const servicesArray = servicesOutput.trim().split('\n');
+    
+          for (const serviceEntry of servicesArray) {
+            const [serviceName, prNumber] = serviceEntry.split(' ');
+    
+            console.log(`Checking PR #${prNumber} for service ${serviceName}`);
+    
+            try {
+              const pr = await github.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+              });
+    
+              if (pr.data.state !== 'open') {
+                console.log(`Deleting service ${serviceName} with closed PR #${prNumber}`);
+                execSync(`gcloud run services delete ${serviceName} --platform=managed --region=${{ vars.GCP_REGION }} --quiet`);
+                execSync(`gcloud artifacts docker images delete ${{ vars.GCP_REGION }}-docker.pkg.dev/postrix-development/development-docker/${serviceName} --quiet`);
+              } else {
+                console.log(`Service ${serviceName} has an open PR #${prNumber}`);
+              }
+            } catch (error) {
+              console.log(`Error checking PR #${prNumber}: ${error.message}`);
+            }
+          }
+
+    - name: Delete expired deployments
       run: |
         # Get a list of adhoc services
         SERVICES=$(gcloud run services list \
