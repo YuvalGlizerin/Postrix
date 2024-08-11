@@ -78,36 +78,36 @@ jobs:
             }
           }
 
-    - name: Delete expired deployments
-      run: |
-        # Get a list of adhoc services
-        SERVICES=$(gcloud run services list \
-          --platform=managed \
-          --region=${{ vars.GCP_REGION }} \
-          --format="value(metadata.name, metadata.labels.pr_number)" \
-          --filter="metadata.labels.pr_number:*")
+    # - name: Delete expired deployments
+    #   run: |
+    #     # Get a list of adhoc services
+    #     SERVICES=$(gcloud run services list \
+    #       --platform=managed \
+    #       --region=${{ vars.GCP_REGION }} \
+    #       --format="value(metadata.name, metadata.labels.pr_number)" \
+    #       --filter="metadata.labels.pr_number:*")
 
-        # Check if SERVICES is empty
-        if [ -z "$SERVICES" ]; then
-          echo "No services found with a pr_number label."
-          exit 0
-        fi
+    #     # Check if SERVICES is empty
+    #     if [ -z "$SERVICES" ]; then
+    #       echo "No services found with a pr_number label."
+    #       exit 0
+    #     fi
 
-        # Convert the SERVICES string to an array
-        IFS=$'\n' read -r -d '' -a services_array <<< "$SERVICES"$'\n'
+    #     # Convert the SERVICES string to an array
+    #     IFS=$'\n' read -r -d '' -a services_array <<< "$SERVICES"$'\n'
 
-        for service_entry in "${services_array[@]}"; do
-          SERVICE_NAME=$(echo $service_entry | awk '{print $1}')
-          PR_NUMBER=$(echo $service_entry | awk '{print $2}')
+    #     for service_entry in "${services_array[@]}"; do
+    #       SERVICE_NAME=$(echo $service_entry | awk '{print $1}')
+    #       PR_NUMBER=$(echo $service_entry | awk '{print $2}')
 
-          # Check if there is an open pull request with this pr_number
-          PR_OPEN=$(gh pr view $PR_NUMBER --json state -q .state || echo "closed")
+    #       # Check if there is an open pull request with this pr_number
+    #       PR_OPEN=$(gh pr view $PR_NUMBER --json state -q .state || echo "closed")
 
-          if [ "$PR_OPEN" != "OPEN" ]; then
-            echo "Deleting service $SERVICE_NAME with closed PR #$PR_NUMBER"
-            gcloud run services delete $SERVICE_NAME --platform=managed --region=$REGION --quiet
-            gcloud artifacts docker images delete ${{ vars.GCP_REGION }}-docker.pkg.dev/postrix-development/development-docker/$SERVICE_NAME --quiet
-          else
-            echo "Service $SERVICE_NAME has an open PR #$PR_NUMBER"
-          fi
-        done
+    #       if [ "$PR_OPEN" != "OPEN" ]; then
+    #         echo "Deleting service $SERVICE_NAME with closed PR #$PR_NUMBER"
+    #         gcloud run services delete $SERVICE_NAME --platform=managed --region=$REGION --quiet
+    #         gcloud artifacts docker images delete ${{ vars.GCP_REGION }}-docker.pkg.dev/postrix-development/development-docker/$SERVICE_NAME --quiet
+    #       else
+    #         echo "Service $SERVICE_NAME has an open PR #$PR_NUMBER"
+    #       fi
+    #     done
