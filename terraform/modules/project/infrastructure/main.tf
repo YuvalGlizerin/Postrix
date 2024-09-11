@@ -44,13 +44,12 @@ resource "google_project_service" "enable_container_api" {
 }
 
 resource "google_container_cluster" "primary" {
-  name     = var.cluster_name
-  location = var.zone
-  enable_autopilot = true
+  depends_on = [google_project_service.enable_container_api]
 
-  depends_on = [
-    google_project_service.enable_container_api,
-  ]
+  project          = var.project
+  name             = var.cluster_name
+  location         = var.zone
+  enable_autopilot = true
 }
 
 resource "google_artifact_registry_repository" "artifact_registry" {
