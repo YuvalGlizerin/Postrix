@@ -37,12 +37,14 @@ locals {
       artifactory_repository_id = "production-docker"
       env                       = "prod"
       domain_prefix             = ""
+      cluster_name              = "production"
     }
     development = {
       project                   = "postrix-development"
       artifactory_repository_id = "development-docker"
       env                       = "dev"
       domain_prefix             = "dev."
+      cluster_name              = "development"
     }
   }
 }
@@ -67,6 +69,7 @@ module "infrastructure" {
   zone                      = var.zone
   artifactory_repository_id = each.value.artifactory_repository_id
   env                       = each.value.env
+  cluster_name              = each.value.cluster_name
 
   providers = {
     google = google

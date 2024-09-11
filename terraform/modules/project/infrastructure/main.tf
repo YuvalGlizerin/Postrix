@@ -3,6 +3,8 @@ variable "region" {}
 variable "zone" {}
 variable "artifactory_repository_id" {}
 variable "env" {}
+variable "cluster_name" {}
+
 
 resource "google_project_service" "enable_cloud_resource_manager_api" {
   project = var.project
@@ -30,6 +32,24 @@ resource "google_project_service" "enable_iam_api" {
   service = "iam.googleapis.com"
   depends_on = [
     google_project_service.enable_cloud_resource_manager_api,
+  ]
+}
+
+resource "google_project_service" "enable_container_api" {
+  project = var.project
+  service = "container.googleapis.com"
+  depends_on = [
+    google_project_service.enable_cloud_resource_manager_api,
+  ]
+}
+
+resource "google_container_cluster" "primary" {
+  name     = var.cluster_name
+  location = var.zone
+  enable_autopilot = true
+
+  depends_on = [
+    google_project_service.enable_container_api,
   ]
 }
 
