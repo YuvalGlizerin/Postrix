@@ -15,8 +15,3 @@ variable "zone" {
 variable "runtime" {
   default = "nodejs20"
 }
-
-variable "cluster_name" {
-  description = "The name of the GKE cluster"
-  default     = "postrix-cluster"
-}
