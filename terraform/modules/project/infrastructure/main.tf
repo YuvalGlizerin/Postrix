@@ -53,18 +53,6 @@ resource "google_container_cluster" "primary" {
   ]
 }
 
-output "kubernetes_cluster_name" {
-  value = google_container_cluster.primary.name
-}
-
-output "kubernetes_cluster_endpoint" {
-  value = google_container_cluster.primary.endpoint
-}
-
-output "kubernetes_cluster_master_version" {
-  value = google_container_cluster.primary.master_version
-}
-
 resource "google_artifact_registry_repository" "artifact_registry" {
   depends_on = [google_project_service.enable_artifact_registry_api]
 
