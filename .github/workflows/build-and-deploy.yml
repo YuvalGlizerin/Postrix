@@ -24,6 +24,10 @@ on:
         required: true
         description: 'The branch name of the adhoc deployment if exists and the service name'
         type: string
+      cluster_name:
+        required: true
+        description: 'The name of the Kubernetes cluster to authenticate to'
+        type: string
     outputs:
       full_service_url:
         description: 'The full URL of the deployed service'
@@ -65,6 +69,7 @@ jobs:
         service_account: ${{ secrets.SERVICE_ACCOUNT }}
         region: ${{ vars.GCP_REGION }}
         configure_docker: true
+        cluster_name: ${{ inputs.cluster_name }}
 
     - name: Build Docker image
       run: |

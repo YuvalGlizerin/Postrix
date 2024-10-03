@@ -18,6 +18,10 @@ inputs:
   service_account:
     description: 'The service account email for authentication'
     required: true
+  cluster_name:
+    description: 'The name of the Kubernetes cluster to authenticate to'
+    required: false
+    default: ''
   
 
 runs:
@@ -38,4 +42,12 @@ runs:
     - name: Configure Docker for Google Artifact Registry
       if: ${{ inputs.configure_docker == 'true' }}
       run: gcloud auth configure-docker ${{ inputs.region }}-docker.pkg.dev
+      shell: bash
+
+    - name: Get Credentials
+      if: ${{ inputs.cluster_name != '' }}
+      run: |
+        curl -L https://github.com/roboll/helmfile/releases/download/v0.144.0/helmfile_linux_amd64 -o /usr/local/bin/helmfile
+        chmod +x /usr/local/bin/helmfile
+        gcloud beta container clusters get-credentials ${{ inputs.cluster_name }} --region ${{ inputs.region }} --project ${{ inputs.project_id }}
       shell: bash

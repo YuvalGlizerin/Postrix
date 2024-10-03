@@ -24,6 +24,7 @@ jobs:
       environment: dev
       service_name: ${{ matrix.service }}
       service_url: ${{ inputs.branch_name || github.head_ref || github.ref_name }}-${{ matrix.service }}
+      cluster_name: development
     secrets: inherit
 
   comment_pr:
