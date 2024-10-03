@@ -82,7 +82,7 @@ jobs:
 
     - name: Deploy to Kubernetes
       run: |
-        helmfile sync --file kubernetes/${{ inputs.service_name }}/helmfile.yaml --environment=${{ inputs.environment }}
+        helmfile sync --file Postrix/kubernetes/${{ inputs.service_name }}/helmfile.yaml --environment=${{ inputs.environment }}
 
     - name: Get service URL
       id: full-service-url
