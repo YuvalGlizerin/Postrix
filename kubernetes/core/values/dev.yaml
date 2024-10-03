@@ -1,0 +1,3 @@
+replicas: 1
+image: us-central1-docker.pkg.dev/postrix-development/development-docker/core:latest
+env: dev

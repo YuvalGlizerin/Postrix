@@ -48,7 +48,7 @@ resource "google_container_cluster" "primary" {
 
   project          = var.project
   name             = var.cluster_name
-  location         = var.zone
+  location         = var.region
   enable_autopilot = true
 }
 
@@ -89,5 +89,16 @@ resource "google_artifact_registry_repository" "artifact_registry" {
       older_than = "2592000s" # 30 days
     }
   }
+}
+
+resource "google_artifact_registry_repository_iam_member" "public_access" {
+  depends_on = [google_artifact_registry_repository.artifact_registry]
+
+  provider      = google
+  project       = var.project
+  location      = var.region
+  repository    = google_artifact_registry_repository.artifact_registry.repository_id
+  role          = "roles/artifactregistry.reader"
+  member        = "allUsers"
 }
 

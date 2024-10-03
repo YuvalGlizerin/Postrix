@@ -1,0 +1,21 @@
+repositories:
+  - name: stable
+    url: https://charts.helm.sh/stable
+
+environments:
+  local:
+    values:
+      - ./values/local.yaml
+  dev:
+    values:
+      - ./values/dev.yaml
+  prod:
+    values:
+      - ./values/prod.yaml
+
+releases:
+  - name: core
+    namespace: "{{ default .Namespace .Environment.Name }}"
+    chart: .
+    values:
+      - ./values/{{ .Environment.Name }}.yaml 
