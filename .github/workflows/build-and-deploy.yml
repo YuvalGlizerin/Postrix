@@ -67,6 +67,7 @@ jobs:
         project_id: ${{ env.PROJECT_ID }}
         workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
         service_account: ${{ secrets.SERVICE_ACCOUNT }}
+        install_components: 'beta,gke-gcloud-auth-plugin'
         region: ${{ vars.GCP_REGION }}
         configure_docker: true
         cluster_name: ${{ inputs.cluster_name }}
