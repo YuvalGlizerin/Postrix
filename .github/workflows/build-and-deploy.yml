@@ -80,9 +80,13 @@ jobs:
       run: |
         docker push ${{ env.IMAGE }}
 
+    - name: Create namespace if doesn't exist
+      run: |
+        kubectl get namespace ${{ inputs.environment }} || kubectl create namespace ${{ inputs.environment }} || kubectl get namespace ${{ inputs.environment }}
+
     - name: Deploy to Kubernetes
       run: |
-        helmfile --file=kubernetes/${{ inputs.service_name }}/helmfile.yaml --environment=${{ inputs.environment }} sync
+        kubectl apply -f kubernetes/${{ inputs.service_name }}/ --namespace=${{ inputs.environment }}
 
     - name: Get service URL
       id: full-service-url
