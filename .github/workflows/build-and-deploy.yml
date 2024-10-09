@@ -82,11 +82,11 @@ jobs:
 
     - name: Create namespace if doesn't exist
       run: |
-        kubectl get namespace ${{ inputs.environment }} || kubectl create namespace ${{ inputs.environment }} || kubectl get namespace ${{ inputs.environment }}
+        kubectl get namespace ${{ inputs.service_url }} || kubectl create namespace ${{ inputs.service_url }} || kubectl get namespace ${{ inputs.service_url }}
 
     - name: Deploy to Kubernetes
       run: |
-        kubectl apply -f kubernetes/${{ inputs.service_name }}/ --namespace=${{ inputs.environment }}
+        kubectl apply -f kubernetes/${{ inputs.service_name }}/${{ inputs.environment }} --namespace=${{ inputs.service_url }}
 
     - name: Get service URL
       id: full-service-url
