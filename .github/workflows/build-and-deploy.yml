@@ -24,6 +24,10 @@ on:
         required: true
         description: 'The branch name of the adhoc deployment if exists and the service name'
         type: string
+      cluster_name:
+        required: true
+        description: 'The name of the Kubernetes cluster to authenticate to'
+        type: string
     outputs:
       full_service_url:
         description: 'The full URL of the deployed service'
@@ -63,8 +67,10 @@ jobs:
         project_id: ${{ env.PROJECT_ID }}
         workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
         service_account: ${{ secrets.SERVICE_ACCOUNT }}
+        install_components: 'beta,gke-gcloud-auth-plugin'
         region: ${{ vars.GCP_REGION }}
         configure_docker: true
+        cluster_name: ${{ inputs.cluster_name }}
 
     - name: Build Docker image
       run: |
@@ -73,19 +79,17 @@ jobs:
     - name: Push Docker image to Google Artifact Registry
       run: |
         docker push ${{ env.IMAGE }}
-    
-    - name: Deploy to Cloud Run
+
+    - name: Create namespace if doesn't exist
       run: |
-        gcloud run deploy ${{ inputs.service_url }} \
-        --image=${{ env.IMAGE }} \
-        --region=${{ vars.GCP_REGION }} \
-        --platform=managed \
-        --allow-unauthenticated \
-        --set-env-vars=ENV=${{ inputs.environment }} \
-        --labels=branch=${{ inputs.service_url }},pr_number=${{ github.event.pull_request.number }}
+        kubectl get namespace ${{ inputs.service_url }} || kubectl create namespace ${{ inputs.service_url }} || kubectl get namespace ${{ inputs.service_url }}
+
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f kubernetes/${{ inputs.service_name }}/${{ inputs.environment }} --namespace=${{ inputs.service_url }}
 
     - name: Get service URL
       id: full-service-url
       run: |
-        SERVICE_URL=$(gcloud run services describe ${{ inputs.service_url }} --region=${{ vars.GCP_REGION }} --format='value(status.url)')
+        SERVICE_URL="https://example.com"
         echo "SERVICE_URL=$SERVICE_URL" >> $GITHUB_OUTPUT
