@@ -1,12 +1,12 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: core-ingress
+  name: wildcard-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-  - host: "dev.postrix.io"
+  - host: "*.dev.equitypupa.com"
     http:
       paths:
       - path: /
