@@ -1,0 +1,11 @@
+replicas: 2
+image: us-central1-docker.pkg.dev/postrix-development/development-docker/core:latest
+env: local
+containerPort: 8000
+resources:
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+  requests:
+    cpu: "250m"
+    memory: "256Mi"
