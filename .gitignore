@@ -136,6 +136,7 @@ dist
 
 # My Ignores
 # -------------------------------------
+.history
 
 # Local .terraform directories
 .terraform
