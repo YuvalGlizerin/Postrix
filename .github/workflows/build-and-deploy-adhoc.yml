@@ -23,7 +23,7 @@ jobs:
     with:
       environment: dev
       service_name: ${{ matrix.service }}
-      namespace: ${{ inputs.branch_name || github.head_ref || github.ref_name }}
+      namespace: ${{ inputs.branch_name || github.head_ref || github.ref_name }}2
       cluster_name: development
     secrets: inherit
 
