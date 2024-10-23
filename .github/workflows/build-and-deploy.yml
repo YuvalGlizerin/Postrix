@@ -82,7 +82,7 @@ jobs:
 
     - name: Deploy to Kubernetes
       run: |
-        helmfile sync -f kubernetes/helmfile.yaml --environment=${{ inputs.environment }} -l app=${{ inputs.service_name }}
+        helmfile sync -f kubernetes/helmfile.yaml --environment=${{ inputs.environment }} --namespace=${{ inputs.namespace }} -l app=${{ inputs.service_name }}
 
     - name: Get service URL
       id: full-service-url
