@@ -22,6 +22,6 @@ jobs:
     with:
       environment: ${{ matrix.target }}
       service_name: ${{ matrix.service }}
-      service_url: ${{ matrix.service }}
+      namespace: ${{ matrix.target }}
       cluster_name: ${{ matrix.cluster_name }}
     secrets: inherit

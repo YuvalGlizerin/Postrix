@@ -11,5 +11,7 @@ releases:
   - name: core
     namespace: "{{ default .Namespace .Environment.Name }}"
     chart: ./core
+    labels:
+      app: core
     values:
       - ./core/values/{{ .Environment.Name }}.yaml 

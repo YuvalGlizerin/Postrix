@@ -1,4 +1,4 @@
-replicas: 2
+replicas: 1
 image: us-central1-docker.pkg.dev/postrix-development/development-docker/core:latest
 env: local
 containerPort: 8000

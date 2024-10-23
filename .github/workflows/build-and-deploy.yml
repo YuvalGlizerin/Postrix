@@ -20,9 +20,9 @@ on:
         required: true
         description: 'The name of the Cloud Run service to deploy'
         type: string
-      service_url:
+      namespace:
         required: true
-        description: 'The branch name of the adhoc deployment if exists and the service name'
+        description: 'The k8s namespace of the deployment'
         type: string
       cluster_name:
         required: true
@@ -51,11 +51,11 @@ jobs:
           const envVars = {
             dev: {
               PROJECT_ID: '${{ secrets.GCP_DEV_PROJECT_ID }}',
-              IMAGE: '${{ vars.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_DEV_PROJECT_ID }}/${{ vars.GCP_DEV_ARTIFACT_REPO }}/${{ inputs.service_url }}:latest'
+              IMAGE: '${{ vars.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_DEV_PROJECT_ID }}/${{ vars.GCP_DEV_ARTIFACT_REPO }}/${{ inputs.service_name }}:latest'
             },
             prod: {
               PROJECT_ID: '${{ secrets.GCP_PROD_PROJECT_ID }}',
-              IMAGE: '${{ vars.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROD_PROJECT_ID }}/${{ vars.GCP_PROD_ARTIFACT_REPO }}/${{ inputs.service_url }}:latest'
+              IMAGE: '${{ vars.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROD_PROJECT_ID }}/${{ vars.GCP_PROD_ARTIFACT_REPO }}/${{ inputs.service_name }}:latest'
             }
           };
           const selectedEnv = envVars['${{ inputs.environment }}'];
@@ -80,13 +80,9 @@ jobs:
       run: |
         docker push ${{ env.IMAGE }}
 
-    - name: Create namespace if doesn't exist
-      run: |
-        kubectl get namespace ${{ inputs.service_url }} || kubectl create namespace ${{ inputs.service_url }} || kubectl get namespace ${{ inputs.service_url }}
-
     - name: Deploy to Kubernetes
       run: |
-        kubectl apply -f kubernetes/${{ inputs.service_name }}/${{ inputs.environment }} --namespace=${{ inputs.service_url }}
+        helmfile sync -f kubernetes/helmfile.yaml --environment=${{ inputs.environment }} -l app=${{ inputs.service_name }}`
 
     - name: Get service URL
       id: full-service-url
