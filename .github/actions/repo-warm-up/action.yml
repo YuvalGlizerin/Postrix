@@ -10,7 +10,7 @@ runs:
     - name: Get Git Hash
       id: get_git_hash
       run: |
-        GIT_HASH=$(git rev-parse --short=8 HEAD) >> $GITHUB_OUTPUT
+        git_hash=$(git rev-parse --short=8 HEAD) >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Install and Build TypeScript Actions
