@@ -2,7 +2,9 @@ name: 'Repo Warm Up'
 description: 'Warm up resources for GitHub Actions'
 
 outputs:
-  git_hash: ${{ steps.get_git_hash.outputs.git_hash }}
+  git_hash:
+    description: 'The git hash of the current commit'
+    value: ${{ steps.get_git_hash.outputs.GIT_HASH }}
 
 runs:
   using: 'composite'
@@ -10,7 +12,7 @@ runs:
     - name: Get Git Hash
       id: get_git_hash
       run: |
-        echo "git_hash=$(git rev-parse --short=8 HEAD)" >> $GITHUB_OUTPUT
+        echo "GIT_HASH=$(git rev-parse --short=8 HEAD)" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Install and Build TypeScript Actions
