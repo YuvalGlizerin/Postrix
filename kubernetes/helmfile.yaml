@@ -8,10 +8,18 @@ environments:
   prod: {}
 
 releases:
+  - name: redis
+    namespace: "{{ default .Namespace .Environment.Name }}"
+    chart: bitnami/redis
+    labels:
+      app: redis
+    values:
+      - ./redis/values/{{ .Environment.Name }}.yaml
+
   - name: core
     namespace: "{{ default .Namespace .Environment.Name }}"
     chart: ./core
     labels:
       app: core
     values:
-      - ./core/values/{{ .Environment.Name }}.yaml 
+      - ./core/values/{{ .Environment.Name }}.yaml

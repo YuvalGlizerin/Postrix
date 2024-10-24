@@ -28,17 +28,10 @@ on:
         required: true
         description: 'The name of the Kubernetes cluster to authenticate to'
         type: string
-    outputs:
-      full_service_url:
-        description: 'The full URL of the deployed service'
-        value: ${{ jobs.build_and_deploy.outputs.full-service-url }}
 
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-
-    outputs:
-      full-service-url: ${{ steps.full-service-url.outputs.SERVICE_URL }}
 
     steps:
     - name: Checkout code
@@ -51,11 +44,11 @@ jobs:
           const envVars = {
             dev: {
               PROJECT_ID: '${{ secrets.GCP_DEV_PROJECT_ID }}',
-              IMAGE: '${{ vars.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_DEV_PROJECT_ID }}/${{ vars.GCP_DEV_ARTIFACT_REPO }}/${{ inputs.service_name }}:latest'
+              IMAGE: '${{ vars.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_DEV_PROJECT_ID }}/${{ vars.GCP_DEV_ARTIFACT_REPO }}/${{ inputs.service_name }}'
             },
             prod: {
               PROJECT_ID: '${{ secrets.GCP_PROD_PROJECT_ID }}',
-              IMAGE: '${{ vars.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROD_PROJECT_ID }}/${{ vars.GCP_PROD_ARTIFACT_REPO }}/${{ inputs.service_name }}:latest'
+              IMAGE: '${{ vars.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROD_PROJECT_ID }}/${{ vars.GCP_PROD_ARTIFACT_REPO }}/${{ inputs.service_name }}'
             }
           };
           const selectedEnv = envVars['${{ inputs.environment }}'];
@@ -72,9 +65,14 @@ jobs:
         configure_docker: true
         cluster_name: ${{ inputs.cluster_name }}
 
+    - name: Repo Warm Up
+      uses: ./.github/actions/repo-warm-up
+      id: repo_warm_up
+
     - name: Build Docker image
       run: |
-        docker build -t ${{ env.IMAGE }} ./services/${{ inputs.service_name }}
+        docker build -t ${{ env.IMAGE }}:${{ steps.repo_warm_up.outputs.git_hash }} ./services/${{ inputs.service_name }}
+        docker tag ${{ env.IMAGE }}:${{ steps.repo_warm_up.outputs.git_hash }} ${{ env.IMAGE }}:latest
 
     - name: Push Docker image to Google Artifact Registry
       run: |
@@ -87,9 +85,3 @@ jobs:
           --namespace=${{ inputs.namespace }} \
           -l app=${{ inputs.service_name }} \
           --set ingress.host=${{ inputs.namespace }}-${{ inputs.service_name }}.${{ inputs.environment }}.postrix.io
-
-    - name: Get service URL
-      id: full-service-url
-      run: |
-        SERVICE_URL="https://example.com"
-        echo "SERVICE_URL=$SERVICE_URL" >> $GITHUB_OUTPUT
