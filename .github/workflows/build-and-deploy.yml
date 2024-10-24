@@ -76,11 +76,3 @@ jobs:
     - name: Push Docker image to Google Artifact Registry
       run: |
         docker push ${{ env.IMAGE }} --all-tags
-
-    - name: Deploy to Kubernetes
-      run: |
-        helmfile sync -f kubernetes/helmfile.yaml \
-          --environment=${{ inputs.environment }} \
-          --namespace=${{ inputs.namespace }} \
-          -l app=${{ inputs.service_name }} \
-          --set ingress.host=${{ inputs.namespace }}-${{ inputs.service_name }}.${{ inputs.environment }}.postrix.io
