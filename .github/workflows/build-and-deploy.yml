@@ -71,12 +71,11 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t ${{ env.IMAGE }}:${{ steps.repo_warm_up.outputs.git_hash }} ./services/${{ inputs.service_name }}
-        docker tag ${{ env.IMAGE }}:${{ steps.repo_warm_up.outputs.git_hash }} ${{ env.IMAGE }}:latest
+        docker build -t ${{ env.IMAGE }}:${{ steps.repo_warm_up.outputs.git_hash }} -t ${{ env.IMAGE }}:latest ./services/${{ inputs.service_name }}
 
     - name: Push Docker image to Google Artifact Registry
       run: |
-        docker push ${{ env.IMAGE }}
+        docker push ${{ env.IMAGE }} --all-tags
 
     - name: Deploy to Kubernetes
       run: |
