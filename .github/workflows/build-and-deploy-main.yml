@@ -14,12 +14,14 @@ jobs:
 
     strategy:
       matrix:
-        target: [dev, prod]
-        service: [core]
+        include:
+          - { target: dev, service: core, cluster_name: development }
+          - { target: prod, service: core, cluster_name: production }
     
     uses: ./.github/workflows/build-and-deploy.yml
     with:
       environment: ${{ matrix.target }}
       service_name: ${{ matrix.service }}
-      service_url: ${{ matrix.service }}
+      namespace: ${{ matrix.target }}
+      cluster_name: ${{ matrix.cluster_name }}
     secrets: inherit
