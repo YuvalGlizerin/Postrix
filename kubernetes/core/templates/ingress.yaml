@@ -10,10 +10,10 @@ spec:
   - host: {{ .Values.ingress.host }}
     http:
       paths:
-      - path: /
+      - path: /core
         pathType: Prefix
         backend:
           service:
             name: {{ .Release.Name }}
             port:
-              number: 80
+              number: 8000

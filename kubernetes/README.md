@@ -2,12 +2,12 @@
 We manage everything in the cluster in the kubernetes directory.
 Anything managed outside the cluster, such as node machine type, cluster settings, is managed by Terraform.
 
-# Prerequisites
-- Install helmfile: `sudo snap install helmfile`
-- Install minikube: `sudo snap install minikube --classic`
-- Install kubectl: `sudo snap install kubectl --classic`
-- Install helm: `sudo snap install helm --classic`
-- Add redis helm chart repo: `helm repo add bitnami https://charts.bitnami.com/bitnami`
+# Local development
+- Install minikube
+- Install kubectl
+- Install helm
+- Install helmfile
+- (Optional)Follow guide to expose services on local browser without `minikube service`: https://minikube.sigs.k8s.io/docs/handbook/addons/ingress-dns/#Linux
 
 # Deploy comands
 All helmfile deploy commands should have a --environment argument
