@@ -23,12 +23,14 @@ jobs:
     with:
       environment: dev
       service_name: ${{ matrix.service }}
-      service_url: ${{ inputs.branch_name || github.head_ref || github.ref_name }}-${{ matrix.service }}
+      namespace: ${{ inputs.branch_name || github.head_ref || github.ref_name }}
+      cluster_name: development
     secrets: inherit
 
   comment_pr:
     permissions:
       contents: read
+      id-token: write
       pull-requests: write
 
     runs-on: ubuntu-latest
@@ -39,10 +41,24 @@ jobs:
 
       - uses: ./.github/actions/repo-warm-up
 
+      - uses: ./.github/actions/gcp-warm-up
+        with:
+          project_id: ${{ secrets.GCP_DEV_PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.SERVICE_ACCOUNT }}
+          install_components: 'beta,gke-gcloud-auth-plugin'
+          region: ${{ vars.GCP_REGION }}
+          cluster_name: development
+
+      - name: Deploy to Kubernetes
+        run: |
+          helmfile sync -f kubernetes/helmfile.yaml --environment=dev --namespace=${{ inputs.branch_name || github.head_ref || github.ref_name }}
+
       - name: Comment PR
         uses: ./.github/actions/comment-pr
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           title: "Service URLs"
           message: |
-            [Core](${{ needs.build_and_deploy_adhoc.outputs.full_service_url }})
+            [Core](${{ inputs.branch_name || github.head_ref || github.ref_name }}-core.dev.postrix.io)
+      

@@ -3,9 +3,9 @@ kind: Service
 metadata:
   name: core
 spec:
-  type: ClusterIP
   selector:
     app: core
   ports:
     - port: 80
       targetPort: 8000
+  type: LoadBalancer

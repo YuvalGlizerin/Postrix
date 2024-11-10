@@ -20,21 +20,18 @@ on:
         required: true
         description: 'The name of the Cloud Run service to deploy'
         type: string
-      service_url:
+      namespace:
         required: true
-        description: 'The branch name of the adhoc deployment if exists and the service name'
+        description: 'The k8s namespace of the deployment'
         type: string
-    outputs:
-      full_service_url:
-        description: 'The full URL of the deployed service'
-        value: ${{ jobs.build_and_deploy.outputs.full-service-url }}
+      cluster_name:
+        required: true
+        description: 'The name of the Kubernetes cluster to authenticate to'
+        type: string
 
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-
-    outputs:
-      full-service-url: ${{ steps.full-service-url.outputs.SERVICE_URL }}
 
     steps:
     - name: Checkout code
@@ -47,11 +44,11 @@ jobs:
           const envVars = {
             dev: {
               PROJECT_ID: '${{ secrets.GCP_DEV_PROJECT_ID }}',
-              IMAGE: '${{ vars.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_DEV_PROJECT_ID }}/${{ vars.GCP_DEV_ARTIFACT_REPO }}/${{ inputs.service_url }}:latest'
+              IMAGE: '${{ vars.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_DEV_PROJECT_ID }}/${{ vars.GCP_DEV_ARTIFACT_REPO }}/${{ inputs.service_name }}'
             },
             prod: {
               PROJECT_ID: '${{ secrets.GCP_PROD_PROJECT_ID }}',
-              IMAGE: '${{ vars.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROD_PROJECT_ID }}/${{ vars.GCP_PROD_ARTIFACT_REPO }}/${{ inputs.service_url }}:latest'
+              IMAGE: '${{ vars.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROD_PROJECT_ID }}/${{ vars.GCP_PROD_ARTIFACT_REPO }}/${{ inputs.service_name }}'
             }
           };
           const selectedEnv = envVars['${{ inputs.environment }}'];
@@ -63,29 +60,19 @@ jobs:
         project_id: ${{ env.PROJECT_ID }}
         workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
         service_account: ${{ secrets.SERVICE_ACCOUNT }}
+        install_components: 'beta,gke-gcloud-auth-plugin'
         region: ${{ vars.GCP_REGION }}
         configure_docker: true
+        cluster_name: ${{ inputs.cluster_name }}
+
+    - name: Repo Warm Up
+      uses: ./.github/actions/repo-warm-up
+      id: repo_warm_up
 
     - name: Build Docker image
       run: |
-        docker build -t ${{ env.IMAGE }} ./services/${{ inputs.service_name }}
+        docker build -t ${{ env.IMAGE }}:${{ steps.repo_warm_up.outputs.git_hash }} -t ${{ env.IMAGE }}:latest ./services/${{ inputs.service_name }}
 
     - name: Push Docker image to Google Artifact Registry
       run: |
-        docker push ${{ env.IMAGE }}
-    
-    - name: Deploy to Cloud Run
-      run: |
-        gcloud run deploy ${{ inputs.service_url }} \
-        --image=${{ env.IMAGE }} \
-        --region=${{ vars.GCP_REGION }} \
-        --platform=managed \
-        --allow-unauthenticated \
-        --set-env-vars=ENV=${{ inputs.environment }} \
-        --labels=branch=${{ inputs.service_url }},pr_number=${{ github.event.pull_request.number }}
-
-    - name: Get service URL
-      id: full-service-url
-      run: |
-        SERVICE_URL=$(gcloud run services describe ${{ inputs.service_url }} --region=${{ vars.GCP_REGION }} --format='value(status.url)')
-        echo "SERVICE_URL=$SERVICE_URL" >> $GITHUB_OUTPUT
+        docker push ${{ env.IMAGE }} --all-tags

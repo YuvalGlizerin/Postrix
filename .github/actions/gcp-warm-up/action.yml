@@ -18,6 +18,10 @@ inputs:
   service_account:
     description: 'The service account email for authentication'
     required: true
+  cluster_name:
+    description: 'The name of the Kubernetes cluster to authenticate to'
+    required: false
+    default: ''
   
 
 runs:
@@ -39,3 +43,14 @@ runs:
       if: ${{ inputs.configure_docker == 'true' }}
       run: gcloud auth configure-docker ${{ inputs.region }}-docker.pkg.dev
       shell: bash
+
+    - name: Authenticate to Kubernetes Cluster
+      if: ${{ inputs.cluster_name != '' }}
+      run: |
+        gcloud beta container clusters get-credentials ${{ inputs.cluster_name }} --region ${{ inputs.region }} --project ${{ inputs.project_id }}
+      shell: bash
+
+    - name: Setup helmfile
+      uses: mamezou-tech/setup-helmfile@v2.0.0
+      with:
+        helmfile-version: "v0.168.0"
