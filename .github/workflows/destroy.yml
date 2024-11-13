@@ -6,11 +6,11 @@ permissions:
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * *'  # Every day at 00:00 UTC
-  pull_request:
-    types:
-      - closed
+  # schedule:
+  #   - cron: '0 0 * * *'  # Every day at 00:00 UTC
+  # pull_request:
+  #   types:
+  #     - closed
 
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}

@@ -35,7 +35,7 @@ resource "aws_eks_node_group" "postrix_nodes" {
     max_size     = 2
   }
 
-  instance_types = ["t3.micro"] # 1 t3.micro is in the free tier
+  instance_types = ["t2.micro"] # 1 t2.micro is in the free tier
 }
 
 // IAM role for EKS nodes, allowing EC2 instances to assume this role
