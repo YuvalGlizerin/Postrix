@@ -4,14 +4,6 @@ variable "domain" {
   default = "postrix.io"
 }
 
-variable "region" {
-  default = "us-central1"
-}
-
-variable "zone" {
-  default = "us-central1-a"
-}
-
-variable "runtime" {
-  default = "nodejs20"
+variable "aws_region" {
+  default = "us-east-1"
 }
