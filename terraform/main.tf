@@ -73,8 +73,8 @@ module "github_general" {
   }
 }
 
-module "tfe_sentinel" {
-  source = "./modules/tfe/sentinel"
+module "tfe" {
+  source = "./modules/tfe"
 
   providers = {
     tfe = tfe
