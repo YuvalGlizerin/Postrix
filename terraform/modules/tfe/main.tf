@@ -1,6 +1,6 @@
 resource "tfe_organization" "postrix" {
-  name                                = "Postrix"
-  email                               = "yuval.glizerin@postrix.io"
+  name                                = var.organization_name
+  email                               = var.owner_email
   speculative_plan_management_enabled = false
 }
 
@@ -11,7 +11,7 @@ resource "tfe_organization_default_settings" "org_default" {
 
 resource "tfe_organization_membership" "yuval" {
   organization  = tfe_organization.postrix.name
-  email         = "yuval.glizerin@postrix.io"
+  email         = var.owner_email
 }
 
 resource "tfe_organization_membership" "yuval-eb" {
@@ -36,11 +36,11 @@ resource "tfe_team_organization_member" "yuval-eb" {
 
 resource "tfe_project" "postrix" {
   organization = tfe_organization.postrix.name
-  name         = "Postrix"
+  name         = var.project_name
 }
 
 resource "tfe_workspace" "postrix" {
-  name                    = "Postrix"
+  name                    = var.workspace_name
   organization            = tfe_organization.postrix.name
   file_triggers_enabled   = false
   queue_all_runs          = false

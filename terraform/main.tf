@@ -64,8 +64,8 @@ module "aws_route53" {
   }
 }
 
-module "github_general" {
-  source = "./modules/github/general"
+module "github" {
+  source = "./modules/github"
   domain = var.domain
 
   providers = {
