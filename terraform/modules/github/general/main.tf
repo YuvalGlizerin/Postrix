@@ -4,13 +4,18 @@ variable "domain" {
 }
 
 resource "github_repository" "repo" {
-  name        = "Postrix"
-  description = "Open source infrastructure project"
-  visibility  = "public"
-  homepage_url = var.domain
+  name            = "Postrix"
+  description     = "Open source infrastructure project"
+  visibility      = "public"
+  homepage_url    = var.domain
 
-  has_downloads = true
-  has_issues = true
-  has_projects = true
+  has_downloads       = true
+  has_issues          = true
+  has_projects        = true
   vulnerability_alerts = true
+}
+
+resource "github_actions_secret" "terraform_api_token" {
+  repository      = github_repository.repo.name
+  secret_name     = "TERRAFORM_API_TOKEN"
 }
