@@ -7,7 +7,7 @@ Anything managed outside the cluster, such as node machine type, cluster setting
 - Install kubectl
 - Install helm
 - Install helmfile
-- (Optional)Follow guide to expose services on local browser without `minikube service`: https://minikube.sigs.k8s.io/docs/handbook/addons/ingress-dns/#Linux
+- (Optional)Follow guide to expose services on local browser with custom urls and without `minikube service`: https://minikube.sigs.k8s.io/docs/handbook/addons/ingress-dns/#Linux
 
 # Deploy comands
 All helmfile deploy commands should have a --environment argument
