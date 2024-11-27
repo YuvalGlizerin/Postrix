@@ -12,13 +12,14 @@ Anything managed outside the cluster, such as node machine type, cluster setting
 # Deploy comands
 All helmfile deploy commands should have a --environment argument
 
-Deploy services local: `helmfile sync -f helmfile.yaml --environment=local`
-Deploy services dev: `helmfile sync -f helmfile.yaml --environment=dev`
-Deploy services prod: `helmfile sync -f helmfile.yaml --environment=prod`
+Deploy services local(Will only work on local): `helmfile sync -f helmfile.yaml --environment=local`
+Deploy services dev(Will not work on local): `helmfile sync -f helmfile.yaml --environment=dev`
+Deploy services prod(Will not work on local): `helmfile sync -f helmfile.yaml --environment=prod`
 
 You might also only want to sync a single service, for example: `helmfile sync -f helmfile.yaml --environment=local -l app=core`
 
 # View service locally on browser
 You might want to view you service locally on the browser
 
-View core service local: `minikube service core --namespace=local`
+View all services local(Defined ports): `minikube tunnel`
+View core service local(Random port): `minikube service core --namespace=local`
