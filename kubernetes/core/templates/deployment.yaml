@@ -17,7 +17,7 @@ spec:
         - name: {{ .Release.Name }}
           image: {{ .Values.image }}
           ports:
-            - containerPort: 8000
+            - containerPort: {{ .Values.containerPort }}
           env:
             - name: ENV
               value: {{ .Values.env }}

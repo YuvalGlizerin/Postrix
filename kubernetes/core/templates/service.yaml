@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: core
+  name: {{ .Release.Name }}
 spec:
-  type: ClusterIP
+  type: {{ .Values.serviceType }}
   selector:
-    app: core
+    app: {{ .Release.Name }}
   ports:
-    - port: 80
-      targetPort: 8000
+    - port: {{ .Values.servicePort }}
+      targetPort: {{ .Values.serviceTargetPort }}
