@@ -16,4 +16,4 @@ spec:
           service:
             name: {{ .Release.Name }}
             port:
-              number: 8000
+              number: {{ .Values.ingressPort }}
