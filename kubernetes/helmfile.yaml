@@ -12,13 +12,20 @@ environments:
   prod: {}
 
 releases:
+  - name: external-dns
+    namespace: kube-system
+    chart: bitnami/external-dns
+    values:
+      - provider: aws
+      - aws:
+          zoneType: public
+      - txtOwnerId: postrix
+
   - name: nginx
     namespace: ingress-nginx
     chart: ingress-nginx/ingress-nginx
     labels:
       app: nginx
-    values:
-      - ./nginx/values/{{ .Environment.Name }}.yaml
 
   - name: redis
     namespace: "{{ default .Namespace .Environment.Name }}"
