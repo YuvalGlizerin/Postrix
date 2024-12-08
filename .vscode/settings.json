@@ -17,5 +17,8 @@
         "file:///home/yuvadius/Desktop/Postrix/kubernetes/core/helmfile-dev.yaml",
         "file:///home/yuvadius/Desktop/Postrix/kubernetes/core/helmfile-prod.yaml"
       ]
-    }
+    },
+    "cSpell.words": [
+      "postrix"
+    ]
 }

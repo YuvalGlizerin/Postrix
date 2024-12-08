@@ -118,14 +118,15 @@ resource "aws_iam_policy" "external_dns" {
           "route53:ChangeResourceRecordSets"
         ],
         Resource = [
-          "arn:aws:route53:::hostedzone/*"
+          "arn:aws:route53:::hostedzone/"
         ]
       },
       {
         Effect = "Allow"
         Action = [
           "route53:ListHostedZones",
-          "route53:ListResourceRecordSets"
+          "route53:ListResourceRecordSets",
+          "route53:ListTagsForResource"
         ],
         Resource = [
           "*"
@@ -139,4 +140,12 @@ resource "aws_iam_policy" "external_dns" {
 resource "aws_iam_role_policy_attachment" "attach_external_dns_policy" {
   policy_arn = aws_iam_policy.external_dns.arn
   role       = aws_iam_role.eks_node.name
+}
+
+// Create an OpenID Connect provider for the EKS cluster
+// This is necessary so that iam roles can be assumed from the EKS cluster
+resource "aws_iam_openid_connect_provider" "eks" {
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [var.oidc_thumbprint]
+  url             = "https://oidc.eks.${var.region}.amazonaws.com/id/${aws_eks_cluster.postrix.id}"
 }
