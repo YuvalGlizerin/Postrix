@@ -7,5 +7,5 @@ serviceAccount:
   name: external-dns
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::384389382109:role/postrix-external-dns-policy
-domainFilter: example.com
-region: eu-west-1
+domainFilter: postrix.io
+region: us-east-1

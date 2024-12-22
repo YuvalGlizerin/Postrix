@@ -14,31 +14,43 @@ environments:
 releases:
   - name: external-dns
     namespace: kube-system
-    chart: bitnami/external-dns
+    chart: ./external-dns
+    labels:
+      app: external-dns
     values:
-      - provider: aws
-      - aws:
-          zoneType: public
-      - txtOwnerId: postrix
-      - serviceAccount:
-          create: true
-          name: external-dns
-          annotations:
-            eks.amazonaws.com/role-arn: arn:aws:iam::384389382109:role/postrix-external-dns-policy
+      - ./external-dns/values/{{ .Environment.Name }}.yaml
 
+  # TODO: Update to use the new aws ALB instead of CLB
   - name: nginx
     namespace: ingress-nginx
     chart: ingress-nginx/ingress-nginx
     labels:
       app: nginx
-
-  - name: redis
-    namespace: "{{ default .Namespace .Environment.Name }}"
-    chart: bitnami/redis
-    labels:
-      app: redis
     values:
-      - ./redis/values/{{ .Environment.Name }}.yaml
+      - controller:
+          service:
+            type: LoadBalancer
+            ports:
+              http: 80
+              https: 443
+            targetPorts:
+              http: http
+              https: http  # Important: both HTTP and HTTPS traffic should go to HTTP backend
+            annotations:
+              service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+              service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:384389382109:certificate/2729c5c5-85a3-4a24-9988-ef0a12b7b513"
+              service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+          config:
+            use-forwarded-headers: "true"
+            proxy-real-ip-cidr: "0.0.0.0/0"
+            enable-real-ip: "true"
+  # - name: redis
+  #   namespace: "{{ default .Namespace .Environment.Name }}"
+  #   chart: bitnami/redis
+  #   labels:
+  #     app: redis
+  #   values:
+  #     - ./redis/values/{{ .Environment.Name }}.yaml
 
   - name: core
     namespace: "{{ default .Namespace .Environment.Name }}"
