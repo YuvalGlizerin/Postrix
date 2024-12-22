@@ -24,7 +24,8 @@ releases:
 
   - name: ingress-controller
     namespace: ingress-nginx
-    chart: ./ingress-controller
+    chart: ingress-nginx/ingress-nginx
+    version: "4.11.3"
     labels:
       app: ingress-controller
     values:
