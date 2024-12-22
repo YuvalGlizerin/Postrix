@@ -1,3 +1,5 @@
+# TODO: Use secrets and clean up structure
+
 repositories:
   - name: stable
     url: https://charts.helm.sh/stable
