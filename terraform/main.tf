@@ -64,6 +64,16 @@ module "aws_route53" {
   }
 }
 
+module "aws_certificate_manager" {
+  source = "./modules/aws/certificate-manager"
+  domain = var.domain
+  zone_id = module.aws_route53.zone_id
+
+  providers = {
+    aws = aws
+  }
+}
+
 module "github" {
   source = "./modules/github"
   domain = var.domain

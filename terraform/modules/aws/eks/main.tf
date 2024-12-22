@@ -20,6 +20,10 @@ resource "aws_eks_cluster" "postrix" {
   vpc_config {
     subnet_ids = var.subnet_ids
   }
+
+  tags = {
+    "alpha.eksctl.io/cluster-oidc-enabled" = "true"
+  }
 }
 
 // Managed node group for the EKS cluster, specifying instance type and scaling
@@ -35,7 +39,7 @@ resource "aws_eks_node_group" "postrix_nodes" {
     max_size     = 2
   }
 
-  instance_types = ["t2.micro"] # 1 t2.micro is in the free tier
+  instance_types = ["t3.medium"]
 }
 
 // IAM role for EKS nodes, allowing EC2 instances to assume this role
@@ -102,4 +106,47 @@ resource "aws_iam_role_policy_attachment" "eks_cluster" {
 resource "aws_iam_role_policy_attachment" "eks_ec2_registry" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.eks_node.name
+}
+
+// IAM policy for External DNS to manage Route 53 records
+resource "aws_iam_policy" "external_dns" {
+  name        = "${var.cluster_name}-external-dns-policy"
+  description = "Policy for External DNS to manage Route 53 records"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "route53:ChangeResourceRecordSets"
+        ],
+        Resource = [
+          "arn:aws:route53:::hostedzone/*"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "route53:ListHostedZones",
+          "route53:ListResourceRecordSets",
+          "route53:ListTagsForResource"
+        ],
+        Resource = [
+          "*"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_openid_connect_provider" "eks" {
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [var.oidc_thumbprint]
+  url             = "https://oidc.eks.us-east-1.amazonaws.com/id/27822741B2F3481942B42867BB3425A5"
+
+  tags = {
+    "alpha.eksctl.io/cluster-name"   = "postrix"
+    "alpha.eksctl.io/eksctl-version" = "0.198.0"
+  }
 }

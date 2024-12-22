@@ -1,7 +1,7 @@
 replicas: 1
-image: us-central1-docker.pkg.dev/postrix-development/development-docker/core:latest
+image: kicbase/echo-server:1.0
 env: dev
-containerPort: 8000
+containerPort: 8080
 ingressPort: 8080
 servicePort: 8080
 serviceTargetPort: 8080
@@ -14,4 +14,4 @@ resources:
     cpu: 250m
     memory: 256Mi
 ingress:
-  host: core.dev.postrix.io
+  host: postrix.io

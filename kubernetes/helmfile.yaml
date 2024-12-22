@@ -12,21 +12,29 @@ environments:
   prod: {}
 
 releases:
-  - name: nginx
-    namespace: ingress-nginx
-    chart: ingress-nginx/ingress-nginx
+  - name: external-dns
+    namespace: kube-system
+    chart: ./external-dns
     labels:
-      app: nginx
+      app: external-dns
     values:
-      - ./nginx/values/{{ .Environment.Name }}.yaml
+      - ./external-dns/values/{{ .Environment.Name }}.yaml
 
-  - name: redis
-    namespace: "{{ default .Namespace .Environment.Name }}"
-    chart: bitnami/redis
+  - name: ingress-controller
+    namespace: ingress-nginx
+    chart: ./ingress-controller
     labels:
-      app: redis
+      app: ingress-controller
     values:
-      - ./redis/values/{{ .Environment.Name }}.yaml
+      - ./ingress-controller/values/{{ .Environment.Name }}.yaml
+
+  # - name: redis
+  #   namespace: "{{ default .Namespace .Environment.Name }}"
+  #   chart: bitnami/redis
+  #   labels:
+  #     app: redis
+  #   values:
+  #     - ./redis/values/{{ .Environment.Name }}.yaml
 
   - name: core
     namespace: "{{ default .Namespace .Environment.Name }}"
