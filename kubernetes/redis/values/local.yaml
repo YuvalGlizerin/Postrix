@@ -1,2 +1,18 @@
+architecture: standalone
+
+master:
+  persistence:
+    enabled: false  # Disable persistence - data will be stored in memory only
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "150m"
+      memory: "192Mi"
+
+auth:
+  enabled: false
+
 replica:
-  replicaCount: 1
+  replicaCount: 0

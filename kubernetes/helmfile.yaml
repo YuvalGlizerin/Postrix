@@ -31,13 +31,13 @@ releases:
     values:
       - ./ingress-controller/values/{{ .Environment.Name }}.yaml
 
-  # - name: redis
-  #   namespace: "{{ default .Namespace .Environment.Name }}"
-  #   chart: bitnami/redis
-  #   labels:
-  #     app: redis
-  #   values:
-  #     - ./redis/values/{{ .Environment.Name }}.yaml
+  - name: redis
+    namespace: "{{ default .Namespace .Environment.Name }}"
+    chart: bitnami/redis
+    labels:
+      app: redis
+    values:
+      - ./redis/values/{{ .Environment.Name }}.yaml
 
   - name: core
     namespace: "{{ default .Namespace .Environment.Name }}"
