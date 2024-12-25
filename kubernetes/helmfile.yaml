@@ -20,6 +20,7 @@ releases:
     values:
       - ./external-dns/values/{{ .Environment.Name }}.yaml
 
+  # TODO: Fix on local
   - name: ingress-controller
     namespace: ingress-nginx
     chart: ingress-nginx/ingress-nginx
