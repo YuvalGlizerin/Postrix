@@ -20,21 +20,23 @@ releases:
     values:
       - ./external-dns/values/{{ .Environment.Name }}.yaml
 
+  # TODO: Fix on local
   - name: ingress-controller
     namespace: ingress-nginx
-    chart: ./ingress-controller
+    chart: ingress-nginx/ingress-nginx
+    version: "4.11.3"
     labels:
       app: ingress-controller
     values:
       - ./ingress-controller/values/{{ .Environment.Name }}.yaml
 
-  # - name: redis
-  #   namespace: "{{ default .Namespace .Environment.Name }}"
-  #   chart: bitnami/redis
-  #   labels:
-  #     app: redis
-  #   values:
-  #     - ./redis/values/{{ .Environment.Name }}.yaml
+  - name: redis
+    namespace: "{{ default .Namespace .Environment.Name }}"
+    chart: bitnami/redis
+    labels:
+      app: redis
+    values:
+      - ./redis/values/{{ .Environment.Name }}.yaml
 
   - name: core
     namespace: "{{ default .Namespace .Environment.Name }}"
