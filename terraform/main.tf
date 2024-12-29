@@ -14,6 +14,10 @@ terraform {
       source  = "hashicorp/tfe"
       version = ">= 0.60.1"
     }
+    docker = {
+      source  = "docker/docker"
+      version = "~> 0.4"
+    }
   }
 
   backend "remote" {
@@ -39,6 +43,10 @@ provider "github" {
 provider "tfe" {
   # Using TFE_TOKEN
   hostname = "app.terraform.io"
+}
+
+provider "docker" {
+  # Using DOCKER_USERNAME and DOCKER_PASSWORD
 }
 
 module "aws_eks" {
@@ -88,5 +96,13 @@ module "tfe" {
 
   providers = {
     tfe = tfe
+  }
+}
+
+module "docker" {
+  source = "./modules/docker"
+
+  providers = {
+    docker = docker
   }
 }

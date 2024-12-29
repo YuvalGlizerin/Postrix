@@ -96,3 +96,23 @@ resource "tfe_variable" "github_token" {
   sensitive       = true # value not tracked if sensitive is true
   variable_set_id = tfe_variable_set.github_credentials.id
 }
+
+resource "tfe_variable_set" "docker_credentials" {
+  name          = "Docker Credentials"
+  organization  = tfe_organization.postrix.name
+  global        = true
+}
+
+resource "tfe_variable" "docker_username" {
+  key             = "DOCKER_USERNAME"
+  category        = "env"
+  sensitive       = true # value not tracked if sensitive is true
+  variable_set_id = tfe_variable_set.docker_credentials.id
+}
+
+resource "tfe_variable" "docker_password" {
+  key             = "DOCKER_PASSWORD"
+  category        = "env"
+  sensitive       = true # value not tracked if sensitive is true
+  variable_set_id = tfe_variable_set.docker_credentials.id
+}
