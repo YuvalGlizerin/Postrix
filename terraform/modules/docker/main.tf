@@ -10,6 +10,6 @@ resource "docker_hub_repository" "postrix" {
 resource "docker_hub_repository" "postrix-dev" {
   name        = "postrix-dev"
   namespace   = "yuvadius"
-  description = "Postrix Dev Docker repository"
+  description = "Postrix Development Docker repository"
   private     = false
 }
