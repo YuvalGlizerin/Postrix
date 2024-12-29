@@ -1,4 +1,4 @@
-# The access token is created manually in Docker Hub, not managed by Terraform
+# The access token was created manually in Docker Hub, not managed by Terraform
 
 resource "docker_hub_repository" "postrix" {
   name        = "postrix"
