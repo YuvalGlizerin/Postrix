@@ -10,7 +10,9 @@ Anything managed outside the cluster, such as node machine type, cluster setting
 - (Optional)Follow guide to expose services on local browser with custom urls and without `minikube service`: https://minikube.sigs.k8s.io/docs/handbook/addons/ingress-dns/#Linux
 
 # Deploy comands
-All helmfile deploy commands should have a --environment argument
+All helmfile sync commands should have a --environment argument
+Please note that helmfile sync will not uninstall charts that were removed from helmfile.yaml.
+This is to prevent accidental deletion of services, so to uninstall a chart, you need to run `helm uninstall <old-chart-name>`
 
 Deploy services local(Will only work on local): `helmfile sync -f helmfile.yaml --environment=local`
 Deploy services dev(Will not work on local): `helmfile sync -f helmfile.yaml --environment=dev`

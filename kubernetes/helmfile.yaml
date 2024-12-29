@@ -20,7 +20,6 @@ releases:
     values:
       - ./external-dns/values/{{ .Environment.Name }}.yaml
 
-  # TODO: Fix on local
   - name: ingress-controller
     namespace: ingress-nginx
     chart: ingress-nginx/ingress-nginx
@@ -30,6 +29,14 @@ releases:
     values:
       - ./ingress-controller/values/{{ .Environment.Name }}.yaml
 
+  - name: postgresql
+    namespace: postgresql
+    chart: bitnami/postgresql
+    labels:
+      app: postgresql
+    values:
+      - ./postgresql/values/{{ .Environment.Name }}.yaml
+
   - name: redis
     namespace: "{{ default .Namespace .Environment.Name }}"
     chart: bitnami/redis
@@ -37,10 +44,18 @@ releases:
       app: redis
     values:
       - ./redis/values/{{ .Environment.Name }}.yaml
+  
+  # - name: rabbitmq
+  #   namespace: "{{ default .Namespace .Environment.Name }}"
+  #   chart: bitnami/rabbitmq
+  #   labels:
+  #     app: rabbitmq
+  #   values:
+  #     - ./rabbitmq/values/{{ .Environment.Name }}.yaml
 
   - name: core
     namespace: "{{ default .Namespace .Environment.Name }}"
-    chart: ./core
+    chart: ./common
     labels:
       app: core
     values:
