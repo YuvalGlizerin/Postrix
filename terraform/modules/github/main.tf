@@ -56,12 +56,12 @@ resource "github_actions_secret" "terraform_api_token" {
   secret_name     = "TERRAFORM_API_TOKEN"
 }
 
-resource "github_actions_secret" "docker_hub_username" {
+resource "github_actions_secret" "docker_username" {
   repository      = github_repository.repo.name
   secret_name     = "DOCKER_USERNAME"
 }
 
-resource "github_actions_secret" "docker_hub_password" {
+resource "github_actions_secret" "docker_password" {
   repository      = github_repository.repo.name
   secret_name     = "DOCKER_PASSWORD"
 }
