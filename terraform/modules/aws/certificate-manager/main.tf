@@ -9,11 +9,15 @@ variable "zone_id" {
 }
 
 resource "aws_acm_certificate" "cert" {
-  domain_name       = var.domain
-  validation_method = "DNS"
+  domain_name               = var.domain
+  subject_alternative_names = [
+    "*.${var.domain}",
+    "*.dev.${var.domain}"
+  ]
+  validation_method         = "DNS"
 
   lifecycle {
-    create_before_destroy = true
+    create_before_destroy   = true
   }
 }
 

@@ -1,6 +1,10 @@
+# docker build -t yuvadius/core:latest .
+# docker push yuvadius/core:latest
+# docker run -p 8080:8080 -e ENV=local  yuvadius/core:latest
+
 # Use the official lightweight Node.js image.
 # https://hub.docker.com/_/node
-FROM node:20.11-slim
+FROM --platform=linux/amd64 node:20.11-slim
 
 # Create and change to the app directory.
 WORKDIR /usr/src/app
@@ -11,14 +15,17 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 COPY tsconfig.json ./
 
-# Install production dependencies.
-RUN npm install --only=production
+# Install dependencies.
+RUN npm install
 
-#RUN npm install -g typescript ts-node
+# Copy the rest of the application
+COPY . .
 
-# Copy local code to the container image.
-COPY ./src ./src
-COPY ./envs ./envs
+# Make sure ts-node is installed globally
+RUN npm install -g typescript ts-node
+
+# Expose the port
+EXPOSE 8080
 
 # Start the application using ts-node, enabling the transpileOnly option for faster startup
 CMD ["npx", "ts-node", "--transpile-only", "src/index.ts"]
