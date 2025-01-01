@@ -1,5 +1,5 @@
 replicas: 1
-image: kicbase/echo-server:1.0
+image: yuvadius/core:latest
 env: dev
 containerPort: 8080
 ingressPort: 8080
@@ -14,4 +14,4 @@ resources:
     cpu: 250m
     memory: 256Mi
 ingress:
-  host: postrix.io
+  host: core.dev.postrix.io

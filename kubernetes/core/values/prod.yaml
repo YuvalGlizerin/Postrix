@@ -1,0 +1,17 @@
+replicas: 1
+image: yuvadius/core:latest
+env: prod
+containerPort: 8080
+ingressPort: 8080
+servicePort: 8080
+serviceTargetPort: 8080
+serviceType: ClusterIP
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+ingress:
+  host: core.postrix.io
