@@ -41,18 +41,15 @@ jobs:
 
       - uses: ./.github/actions/repo-warm-up
 
-      - uses: ./.github/actions/gcp-warm-up
+      - name: Configure AWS credentials
+        uses: ./.github/actions/aws-warm-up
         with:
-          project_id: ${{ secrets.GCP_DEV_PROJECT_ID }}
-          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.SERVICE_ACCOUNT }}
-          install_components: 'beta,gke-gcloud-auth-plugin'
-          region: ${{ vars.GCP_REGION }}
-          cluster_name: development
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Deploy to Kubernetes
-        run: |
-          helmfile sync -f kubernetes/helmfile.yaml --environment=dev --namespace=${{ inputs.branch_name || github.head_ref || github.ref_name }}
+      # - name: Deploy to Kubernetes
+      #   run: |
+      #     helmfile sync -f kubernetes/helmfile.yaml --environment=dev --namespace=${{ inputs.branch_name || github.head_ref || github.ref_name }}
 
       - name: Comment PR
         uses: ./.github/actions/comment-pr
