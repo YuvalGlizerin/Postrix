@@ -65,13 +65,3 @@ resource "github_actions_secret" "docker_password" {
   repository      = github_repository.repo.name
   secret_name     = "DOCKER_PASSWORD"
 }
-
-resource "github_actions_secret" "aws_access_key_id" {
-  repository      = github_repository.repo.name
-  secret_name     = "AWS_ACCESS_KEY_ID"
-}
-
-resource "github_actions_secret" "aws_secret_access_key" {
-  repository      = github_repository.repo.name
-  secret_name     = "AWS_SECRET_ACCESS_KEY"
-}
