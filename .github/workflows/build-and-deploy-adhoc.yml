@@ -60,5 +60,5 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           title: "Service URLs"
           message: |
-            [Core](${{ inputs.branch_name || github.head_ref || github.ref_name }}-core.postrix.io)
+            [Core](https://${{ inputs.branch_name || github.head_ref || github.ref_name }}-core.postrix.io)
       
