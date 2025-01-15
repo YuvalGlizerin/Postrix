@@ -59,7 +59,7 @@ jobs:
 
     - name: Push Docker image
       run: |
-        docker push yuvadius/${{ inputs.service_name }}:${{ steps.repo_warm_up.outputs.git_hash }} --all-tags
+        docker push yuvadius/${{ inputs.service_name }}:${{ steps.repo_warm_up.outputs.git_hash }}
 
     # - name: Build Docker image
     #   run: |
