@@ -1,13 +1,12 @@
 # Postrix Terraform
 
-# Secrets Terraform/GitHub
+# Secrets Terraform Cloud
 
 We don't want to store secrets in our repo, so we set them in the UI and then import them to terraform.
 
 # Github Secrets
 
-When changing the secret manually on the website, terraform recognizes changes to the secrets and re-applies them on the next terraform apply.
-This is nothing to worry about, since it will not change the value so it is an empty apply run that you will need to only run once.
+Read instructions in [../scripts/encrypt-github-secret.py](../scripts/encrypt-github-secret.py)
 
 # Github Projects
 

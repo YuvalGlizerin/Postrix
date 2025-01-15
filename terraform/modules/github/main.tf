@@ -54,14 +54,17 @@ resource "github_repository_collaborator" "yuval-eb" {
 resource "github_actions_secret" "terraform_api_token" {
   repository      = github_repository.repo.name
   secret_name     = "TERRAFORM_API_TOKEN"
+  encrypted_value = "Ohpp08TDrx0/9cy4wt8MXa6bFaCwCHu01hPBesiwanws0Oz4wW+7xLHvZFEyAtTdybpXlWhI98RshXcjp/mxkgoxObtmozwV8M8Ty+xQOTWMjZj0kBQp2wzasYBpMcy8Z+sGEZ/GeZ0b1r9W1Rl/o/AYcQ6Tdd/ZdnFpXhWGt6f+YR+dz6MibEed"
 }
 
 resource "github_actions_secret" "docker_username" {
   repository      = github_repository.repo.name
   secret_name     = "DOCKER_USERNAME"
+  encrypted_value = "1Itgr11awBCI7VJ+hwH+tNG8fO9A0WqW/T42BRfT5yLk9f7TqNEyk6tFGT7msNQBvZTejhnfxRY="
 }
 
 resource "github_actions_secret" "docker_password" {
   repository      = github_repository.repo.name
   secret_name     = "DOCKER_PASSWORD"
+  encrypted_value = "G4zAqUUMSPw8le1RNmJBNR1uh0UeEkrBTBpaeVNKo3VkaBoTKD6iTQ+W4M/3OtFmAd4SpnS0UqeyzhkVZyw1vUT8s+Z5J0pLoWtzH0MEIMS4TwFN"
 }
