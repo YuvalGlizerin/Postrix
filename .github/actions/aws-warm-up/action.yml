@@ -15,9 +15,17 @@ runs:
         aws eks update-kubeconfig --name postrix --region us-east-1
       shell: bash
 
+    - name: Verify AWS Identity
+      run: aws sts get-caller-identity
+      shell: bash
+    
+    - name: Print Environment Variables
+      run: env
+      shell: bash
+
     - name: Verify kubectl access
       run: |
-        kubectl get pods -A
+        kubectl get nodes
       shell: bash
 
     # - name: Setup helmfile
