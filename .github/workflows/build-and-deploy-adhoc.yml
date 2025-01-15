@@ -44,9 +44,16 @@ jobs:
       - name: Configure AWS credentials
         uses: ./.github/actions/aws-warm-up
 
+      - name: Download Helmfile
+        run: |
+          wget https://github.com/helmfile/helmfile/releases/download/v0.168.0/helmfile_0.168.0_linux_amd64.tar.gz
+          tar xzf helmfile_0.168.0_linux_amd64.tar.gz
+          sudo mv helmfile /usr/local/bin/
+          helmfile version
+
       - name: Deploy to Kubernetes
         run: |
-          helmfile sync -f kubernetes/helmfile.yaml --environment=dev --namespace=${{ inputs.branch_name || github.head_ref || github.ref_name }}
+          helmfile sync -f kubernetes/helmfile.yaml --environment=dev --namespace=${{ inputs.branch_name || github.head_ref || github.ref_name }} -l group=app
 
       - name: Comment PR
         uses: ./.github/actions/comment-pr

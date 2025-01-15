@@ -13,5 +13,4 @@ resources:
   requests:
     cpu: 250m
     memory: 256Mi
-ingress:
-  host: core.dev.postrix.io
+ingress: true
