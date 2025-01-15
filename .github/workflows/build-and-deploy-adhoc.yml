@@ -44,9 +44,9 @@ jobs:
       - name: Configure AWS credentials
         uses: ./.github/actions/aws-warm-up
 
-      # - name: Deploy to Kubernetes
-      #   run: |
-      #     helmfile sync -f kubernetes/helmfile.yaml --environment=dev --namespace=${{ inputs.branch_name || github.head_ref || github.ref_name }}
+      - name: Deploy to Kubernetes
+        run: |
+          helmfile sync -f kubernetes/helmfile.yaml --environment=dev --namespace=${{ inputs.branch_name || github.head_ref || github.ref_name }}
 
       - name: Comment PR
         uses: ./.github/actions/comment-pr
