@@ -10,15 +10,15 @@ runs:
         aws-region: us-east-1
         role-to-assume: arn:aws:iam::384389382109:role/github-actions-role
 
-    # - name: Install kubectl
-    #   uses: azure/setup-kubectl@v3
-    #   with:
-    #     version: 'latest'
+    - name: Install kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'latest'
 
-    # - name: Update kubeconfig
-    #   run: |
-    #     aws eks update-kubeconfig --region us-east-1 --name postrix
-    #   shell: bash
+    - name: Update kubeconfig
+      run: |
+        aws eks update-kubeconfig --region us-east-1 --name postrix
+      shell: bash
 
     # - name: Setup helmfile
     #   uses: mamezou-tech/setup-helmfile@v2.0.0
