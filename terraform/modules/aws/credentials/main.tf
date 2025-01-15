@@ -46,7 +46,7 @@ resource "aws_eks_access_entry" "github_actions" {
 }
 
 resource "aws_eks_access_policy_association" "github_actions_admin" {
-  cluster_name  = aws_eks_cluster.postrix.name
+  cluster_name  = "postrix"
   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
   principal_arn = aws_iam_role.github_actions.arn
 
