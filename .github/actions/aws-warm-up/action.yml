@@ -17,10 +17,9 @@ runs:
 
     - name: Update kubeconfig
       run: |
-        aws eks get-token --cluster-name postrix --region us-east-1
         aws eks update-kubeconfig --name postrix --region us-east-1
       shell: bash
-  
+
     - name: Verify kubectl access
       run: |
         kubectl get nodes
