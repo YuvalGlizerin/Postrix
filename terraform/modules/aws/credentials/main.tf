@@ -45,6 +45,18 @@ resource "aws_eks_access_entry" "github_actions" {
   user_name     = "github-actions"
 }
 
+resource "aws_eks_access_policy_association" "github_actions_admin" {
+  cluster_name  = aws_eks_cluster.postrix.name
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+  principal_arn = aws_iam_role.github_actions.arn
+
+  access_scope {
+    type = "cluster"
+  }
+
+  depends_on = [aws_eks_access_entry.github_actions]
+}
+
 resource "aws_iam_role_policy" "github_actions_policy" {
   name = "github-actions-policy"
   role = aws_iam_role.github_actions.name
