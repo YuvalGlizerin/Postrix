@@ -10,11 +10,6 @@ runs:
         aws-region: us-east-1
         role-to-assume: arn:aws:iam::384389382109:role/github-actions-role
 
-    - name: Install kubectl
-      uses: azure/setup-kubectl@v3
-      with:
-        version: 'latest'
-
     - name: Update kubeconfig
       run: |
         aws eks update-kubeconfig --name postrix --region us-east-1
