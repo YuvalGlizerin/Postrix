@@ -38,6 +38,13 @@ resource "aws_iam_role" "github_actions" {
   })
 }
 
+resource "aws_eks_access_entry" "github_actions" {
+  cluster_name  = "postrix"
+  principal_arn = aws_iam_role.github_actions.arn
+  type          = "STANDARD"
+  user_name     = "github-actions"
+}
+
 resource "aws_iam_role_policy" "github_actions_policy" {
   name = "github-actions-policy"
   role = aws_iam_role.github_actions.name
