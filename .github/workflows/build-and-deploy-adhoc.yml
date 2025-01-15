@@ -51,8 +51,8 @@ jobs:
           --environment=dev \
           --namespace=${{ inputs.branch_name || github.head_ref || github.ref_name }} \
           -l group=app \
-          --set image.repository=yuvadius/core \
-          --set image.tag=${{ steps.repo_warm_up.outputs.git_hash }}
+          --set postrixImage.repository=yuvadius/core \
+          --set postrixImage.tag=${{ steps.repo_warm_up.outputs.git_hash }}
 
       - name: Comment PR
         uses: ./.github/actions/comment-pr

@@ -1,5 +1,5 @@
 replicas: 1
-image:
+postrixImage:
   repository: yuvadius/core
   tag: latest
 env: dev
