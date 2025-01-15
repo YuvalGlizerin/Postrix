@@ -51,7 +51,6 @@ jobs:
           --environment=dev \
           --namespace=${{ inputs.branch_name || github.head_ref || github.ref_name }} \
           -l group=app \
-          --set postrixImage.repository=yuvadius/core \
           --set postrixImage.tag=${{ steps.repo_warm_up.outputs.git_hash }}
 
       - name: Comment PR
