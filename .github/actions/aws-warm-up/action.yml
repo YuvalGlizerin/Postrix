@@ -17,7 +17,12 @@ runs:
 
     - name: Update kubeconfig
       run: |
-        aws eks update-kubeconfig --region us-east-1 --name postrix
+        aws eks update-kubeconfig --region us-east-1 --name postrix --role-arn arn:aws:iam::384389382109:role/github-actions-role
+      shell: bash
+
+    - name: Verify kubectl access
+      run: |
+        kubectl get nodes
       shell: bash
 
     # - name: Setup helmfile
