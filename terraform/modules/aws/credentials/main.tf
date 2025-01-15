@@ -38,6 +38,24 @@ resource "aws_iam_role" "github_actions" {
   })
 }
 
+resource "aws_iam_role_policy" "github_actions_policy" {
+  name = "github-actions-policy"
+  role = aws_iam_role.github_actions.name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "eks:DescribeCluster"
+        ]
+        Resource = "arn:aws:eks:us-east-1:384389382109:cluster/postrix"
+      }
+    ]
+  })
+}
+
 # Create the OIDC provider for GitHub Actions
 resource "aws_iam_openid_connect_provider" "github_actions" {
   url             = "https://token.actions.githubusercontent.com"
