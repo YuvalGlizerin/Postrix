@@ -48,7 +48,9 @@ resource "aws_iam_role_policy" "github_actions_policy" {
       {
         Effect = "Allow"
         Action = [
-          "eks:DescribeCluster"
+          "eks:DescribeCluster",
+          "eks:ListClusters",
+          "eks:AccessKubernetesApi"
         ]
         Resource = "arn:aws:eks:us-east-1:384389382109:cluster/postrix"
       }
