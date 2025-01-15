@@ -1,12 +1,5 @@
 name: 'AWS Warm Up'
 description: 'Warm up AWS resources for GitHub Actions'
-inputs:
-  aws-access-key-id:
-    description: 'AWS Access Key ID'
-    required: true
-  aws-secret-access-key:
-    description: 'AWS Secret Access Key'
-    required: true
 
 runs:
   using: 'composite'

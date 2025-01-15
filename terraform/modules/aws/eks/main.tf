@@ -26,6 +26,25 @@ resource "aws_eks_cluster" "postrix" {
   }
 }
 
+resource "aws_eks_access_entry" "postrix_user" {
+  cluster_name      = aws_eks_cluster.postrix.name
+  principal_arn     = "arn:aws:iam::384389382109:user/postrix"
+  type              = "STANDARD"
+  user_name         = "postrix"
+}
+
+resource "aws_eks_access_policy_association" "postrix_user_admin" {
+  cluster_name  = aws_eks_cluster.postrix.name
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+  principal_arn = "arn:aws:iam::384389382109:user/postrix"
+
+  access_scope {
+    type = "cluster"
+  }
+
+  depends_on = [aws_eks_access_entry.postrix_user]
+}
+
 // Managed node group for the EKS cluster, specifying instance type and scaling
 resource "aws_eks_node_group" "postrix_nodes" {
   cluster_name    = aws_eks_cluster.postrix.name
