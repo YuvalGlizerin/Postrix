@@ -33,6 +33,18 @@ resource "aws_iam_role" "github_actions" {
             "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
           }
         }
+      },
+      {
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Effect = "Allow"
+        Principal = {
+          Federated = "arn:aws:iam::384389382109:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/27822741B2F3481942B42867BB3425A5"
+        }
+        Condition = {
+          StringEquals = {
+            "oidc.eks.us-east-1.amazonaws.com/id/27822741B2F3481942B42867BB3425A5:sub": "system:serviceaccount:kube-system:aws-node"
+          }
+        }
       }
     ]
   })
@@ -51,7 +63,8 @@ resource "aws_iam_role_policy" "github_actions_eks" {
         Action = [
           "eks:DescribeCluster",
           "eks:ListClusters",
-          "eks:AccessKubernetesApi"
+          "eks:AccessKubernetesApi",
+          "sts:GetCallerIdentity"
         ]
         Resource = "*"
       }
