@@ -17,7 +17,7 @@ runs:
 
     - name: Verify kubectl access
       run: |
-        kubectl get nodes
+        kubectl get pods -A
       shell: bash
 
     # - name: Setup helmfile
