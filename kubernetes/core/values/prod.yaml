@@ -1,5 +1,7 @@
 replicas: 1
-image: yuvadius/core:latest
+image:
+  repository: yuvadius/core
+  tag: latest
 env: prod
 containerPort: 8080
 ingressPort: 8080

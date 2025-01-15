@@ -9,7 +9,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: {{ if eq .Release.Namespace "prod" }}{{ printf "%s.postrix.io" .Release.Name }}{{ else }}{{ printf "%s-%s.postrix.io" .Release.Name .Release.Namespace }}{{ end }}
+  - host: {{ if eq .Release.Namespace "prod" }}{{ printf "%s.postrix.io" .Release.Name }}{{ else }}{{ printf "%s-%s.postrix.io" .Release.Namespace .Release.Name }}{{ end }}
     http:
       paths:
       - path: /

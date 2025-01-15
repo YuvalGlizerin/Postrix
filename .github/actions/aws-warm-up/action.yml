@@ -15,20 +15,8 @@ runs:
         aws eks update-kubeconfig --name postrix --region us-east-1
       shell: bash
 
-    - name: Verify AWS Identity
-      run: aws sts get-caller-identity
-      shell: bash
-    
-    - name: Print Environment Variables
-      run: env
-      shell: bash
-
-    - name: Verify kubectl access
+    - name: Download Helmfile
       run: |
-        kubectl get nodes
-      shell: bash
-
-    # - name: Setup helmfile
-    #   uses: mamezou-tech/setup-helmfile@v2.0.0
-    #   with:
-    #     helmfile-version: "v0.168.0"
+        wget https://github.com/helmfile/helmfile/releases/download/v0.168.0/helmfile_0.168.0_linux_amd64.tar.gz
+        tar xzf helmfile_0.168.0_linux_amd64.tar.gz
+        sudo mv helmfile /usr/local/bin/

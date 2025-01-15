@@ -40,20 +40,19 @@ jobs:
         uses: actions/checkout@v4
 
       - uses: ./.github/actions/repo-warm-up
+        id: repo_warm_up
 
       - name: Configure AWS credentials
         uses: ./.github/actions/aws-warm-up
 
-      - name: Download Helmfile
-        run: |
-          wget https://github.com/helmfile/helmfile/releases/download/v0.168.0/helmfile_0.168.0_linux_amd64.tar.gz
-          tar xzf helmfile_0.168.0_linux_amd64.tar.gz
-          sudo mv helmfile /usr/local/bin/
-          helmfile version
-
       - name: Deploy to Kubernetes
         run: |
-          helmfile sync -f kubernetes/helmfile.yaml --environment=dev --namespace=${{ inputs.branch_name || github.head_ref || github.ref_name }} -l group=app
+          helmfile sync -f kubernetes/helmfile.yaml \
+          --environment=dev \
+          --namespace=${{ inputs.branch_name || github.head_ref || github.ref_name }} \
+          -l group=app \
+          --set image.repository=yuvadius/core \
+          --set image.tag=${{ steps.repo_warm_up.outputs.git_hash }}
 
       - name: Comment PR
         uses: ./.github/actions/comment-pr
