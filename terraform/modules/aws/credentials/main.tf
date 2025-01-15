@@ -38,6 +38,27 @@ resource "aws_iam_role" "github_actions" {
   })
 }
 
+# Custom policy for EKS access
+resource "aws_iam_role_policy" "github_actions_eks" {
+  name = "github-actions-eks-policy"
+  role = aws_iam_role.github_actions.name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "eks:DescribeCluster",
+          "eks:ListClusters",
+          "eks:AccessKubernetesApi"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
 # Attach AdministratorAccess policy to the GitHub Actions role
 resource "aws_iam_role_policy_attachment" "github_actions_admin" {
   role       = aws_iam_role.github_actions.name
