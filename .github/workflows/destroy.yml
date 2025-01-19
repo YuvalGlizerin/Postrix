@@ -1,4 +1,4 @@
-name: Destroy PR resources
+name: Destroy all adhoc namespaces on Sunday
 
 permissions:
   contents: read
@@ -6,77 +6,29 @@ permissions:
 
 on:
   workflow_dispatch:
-  # schedule:
-  #   - cron: '0 0 * * *'  # Every day at 00:00 UTC
-  # pull_request:
-  #   types:
-  #     - closed
-
-env:
-  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
-  SERVICE_NAME: ${{ github.head_ref }}-core
+  schedule:
+    - cron: '0 6 * * 0'  # Every Sunday at 06:00 UTC
 
 jobs:
   destroy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - uses: ./.github/actions/gcp-warm-up
-      with:
-        project_id: ${{ secrets.GCP_DEV_PROJECT_ID }}
-        workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
-        service_account: ${{ secrets.SERVICE_ACCOUNT }}
-        region: ${{ vars.GCP_REGION }}
-        install_components: beta
+      - uses: ./.github/actions/repo-warm-up
+        id: repo_warm_up
 
-    - name: Delete expired deployments
-      uses: actions/github-script@v7
-      with:
-        script: |    
-          const { execSync } = require('child_process');
+      - name: Configure AWS credentials
+        uses: ./.github/actions/aws-warm-up
 
-          // Fetch the list of adhoc services
-          const servicesOutput = execSync(`gcloud run services list \
-            --platform=managed \
-            --region=${{ vars.GCP_REGION }} \
-            --format="value(metadata.name, metadata.labels.pr_number)" \
-            --filter="metadata.labels.pr_number:*"`).toString();
-    
-          // Check if servicesOutput is empty
-          if (!servicesOutput.trim()) {
-            console.log("No services found with a pr_number label.");
-            return;
-          }
-    
-          // Convert the servicesOutput string to an array
-          const servicesArray = servicesOutput.trim().split('\n');
-    
-          for (const serviceEntry of servicesArray) {
-            const [serviceName, prNumber] = serviceEntry.split(/\s+/);
-            console.log(`Checking PR #${prNumber} for service ${serviceName}`);
-    
-            try {
-              const pr = await github.rest.pulls.get({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: prNumber,
-              });
-    
-              if (pr.data.state !== 'open') {
-                console.log(`Deleting service ${serviceName} with closed PR #${prNumber}`);
-                execSync(`gcloud run services delete ${serviceName} --platform=managed --region=${{ vars.GCP_REGION }} --quiet`);
-                console.log(`Deleting artifacts of service ${serviceName} with closed PR #${prNumber}`);
-                execSync(`gcloud artifacts docker images delete ${{ vars.GCP_REGION }}-docker.pkg.dev/postrix-development/development-docker/${serviceName} --quiet`);
-              } else {
-                console.log(`Service ${serviceName} has an open PR #${prNumber}`);
-              }
-            } catch (error) {
-              console.log(`Error checking PR #${prNumber}: ${error.message}`);
-              throw error;
-            }
-            
-            console.log(`Finished checking PR #${prNumber} for service ${serviceName}\n\n`);
-          }
+      - name: Delete dev environments
+        run: |
+          echo "Get all namespaces with label environment=adhoc"
+          ADHOC_NAMESPACES=$(kubectl get namespaces -l environment=adhoc -o jsonpath='{.items[*].metadata.name}')
+          
+          for namespace in $ADHOC_NAMESPACES; do
+            echo "Deleting namespace: $namespace"
+            kubectl delete namespace $namespace
+          done

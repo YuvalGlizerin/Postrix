@@ -1,0 +1,63 @@
+name: Build and push docker image
+
+permissions:
+  contents: read
+  id-token: write
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        description: 'The environment to deploy to(dev, prod)'
+        type: string
+      namespace:
+        required: false
+        description: 'The namespace to deploy to, defaults to adhoc namespace'
+        type: string
+      environment_label:
+        required: false
+        description: 'The label to deploy to'
+        default: ''
+        type: string
+      comment_pr:
+        required: false
+        description: 'Whether to comment on the PR'
+        type: boolean
+        default: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: ./.github/actions/repo-warm-up
+        id: repo_warm_up
+
+      - name: Configure AWS credentials
+        uses: ./.github/actions/aws-warm-up
+
+      - name: Deploy to Kubernetes
+        run: |
+          helmfile sync -f kubernetes/helmfile.yaml \
+          --environment=${{ inputs.environment }} \
+          --namespace=${{ inputs.namespace || steps.repo_warm_up.outputs.adhoc_namespace }} \
+          -l group=app \
+          --set postrixImage.tag=${{ steps.repo_warm_up.outputs.git_hash }}
+
+      - name: Label namespace
+        if: ${{ inputs.environment_label }}
+        run: |
+          kubectl label namespace ${{ inputs.namespace || steps.repo_warm_up.outputs.adhoc_namespace }} environment=${{ inputs.environment_label }}
+
+      - name: Comment PR
+        if: ${{ inputs.comment_pr }}
+        uses: ./.github/actions/comment-pr
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          title: "Service URLs"
+          message: |
+            [Core](https://${{ steps.repo_warm_up.outputs.adhoc_namespace }}-core.postrix.io)
