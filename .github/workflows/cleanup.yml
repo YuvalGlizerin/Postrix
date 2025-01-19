@@ -51,7 +51,17 @@ jobs:
             REPOSITORY="${DOCKER_USER}/$repo"
             echo "Cleaning up repository: $REPOSITORY"
             
-            # Delete all tags except latest
-            docker images $REPOSITORY --format "{{.Repository}}:{{.Tag}}" | grep -v "latest" | xargs -r docker rmi
+            # Get all tags except latest
+            TAGS=$(curl -s "https://hub.docker.com/v2/repositories/${REPOSITORY}/tags?page_size=100" | \
+              jq -r '.results[].name' | \
+              grep -v '^latest$')
+            
+            for tag in $TAGS; do
+              echo "Deleting tag: $tag"
+              curl -s -X DELETE \
+                -H "Authorization: JWT ${{ secrets.DOCKER_PASSWORD }}" \
+                "https://hub.docker.com/v2/repositories/${REPOSITORY}/tags/${tag}/"
+            done
+
             echo "Done cleaning up repository: $REPOSITORY"
           done
