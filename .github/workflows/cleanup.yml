@@ -10,7 +10,7 @@ on:
     - cron: '0 6 * * 0'  # Every Sunday at 06:00 UTC
 
 jobs:
-  destroy:
+  cleanup:
     runs-on: ubuntu-latest
 
     steps:
@@ -50,9 +50,6 @@ jobs:
           for repo in $REPOSITORIES; do
             REPOSITORY="${DOCKER_USER}/$repo"
             echo "Cleaning up repository: $REPOSITORY"
-            
-            # Pull all tags
-            docker pull $REPOSITORY --all-tags
             
             # Delete all tags except latest
             docker images $REPOSITORY --format "{{.Repository}}:{{.Tag}}" | grep -v "latest" | xargs -r docker rmi
