@@ -39,7 +39,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           
-      - name: Remove all tags besides "latest" and in-use tags
+      - name: Remove all unused tags
         run: |
           # Set Docker Hub username
           DOCKER_USER="yuvadius"
@@ -60,12 +60,11 @@ jobs:
             
             echo "Tags in use: $USED_TAGS"
             
-            # Get all tags except latest and in-use tags
+            # Get all unused tags
             PAGE=1
             while true; do
               RESPONSE=$(curl -s "https://hub.docker.com/v2/repositories/${REPOSITORY}/tags?page_size=100&page=${PAGE}")
               TAGS=$(echo "$RESPONSE" | jq -r '.results[].name' | \
-                grep -v '^latest$' | \
                 while read -r tag; do
                   if ! echo "$USED_TAGS" | grep -q "^${tag}$"; then
                     echo "$tag"
