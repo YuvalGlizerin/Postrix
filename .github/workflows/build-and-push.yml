@@ -3,6 +3,7 @@ name: Build and push docker image
 permissions:
   contents: read
   id-token: write
+  pull-requests: write
 
 on:
   workflow_call:
