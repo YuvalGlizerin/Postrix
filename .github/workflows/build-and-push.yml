@@ -1,32 +1,15 @@
-name: Build and deploy service
+name: Build and push docker image
 
 permissions:
   contents: read
   id-token: write
 
-# Environment variables to be set dynamically later in the workflow
-env:
-  PROJECT_ID: ''
-  IMAGE: ''
-
 on:
   workflow_call:
     inputs:
-      environment:
-        required: true
-        description: 'The environment to deploy to'
-        type: string
       service_name:
         required: true
-        description: 'The name of the Cloud Run service to deploy'
-        type: string
-      namespace:
-        required: true
-        description: 'The k8s namespace of the deployment'
-        type: string
-      cluster_name:
-        required: true
-        description: 'The name of the Kubernetes cluster to authenticate to'
+        description: 'The name of the service to build and push'
         type: string
 
 jobs:
@@ -57,11 +40,3 @@ jobs:
     - name: Push Docker image
       run: |
         docker push yuvadius/${{ inputs.service_name }}:${{ steps.repo_warm_up.outputs.git_hash }}
-
-    # - name: Build Docker image
-    #   run: |
-    #     docker build -t ${{ env.IMAGE }}:${{ steps.repo_warm_up.outputs.git_hash }} -t ${{ env.IMAGE }}:latest ./services/${{ inputs.service_name }}
-
-    # - name: Push Docker image to Google Artifact Registry
-    #   run: |
-    #     docker push ${{ env.IMAGE }} --all-tags

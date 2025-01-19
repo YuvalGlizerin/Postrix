@@ -5,6 +5,9 @@ outputs:
   git_hash:
     description: 'The git hash of the current commit'
     value: ${{ steps.get_git_hash.outputs.GIT_HASH }}
+  adhoc_namespace:
+    description: 'The k8s namespace to deploy your adhoc service to'
+    value: ${{ steps.adhoc_namespace.outputs.NAMESPACE }}
 
 runs:
   using: 'composite'
@@ -13,6 +16,13 @@ runs:
       id: get_git_hash
       run: |
         echo "GIT_HASH=$(git rev-parse --short=8 HEAD)" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Get namespace
+      id: adhoc_namespace
+      run: |
+        NAMESPACE=$(echo "${{ github.head_ref || github.ref_name }}" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-zA-Z0-9]/-/g' | cut -c -30 | sed 's/-*$//')
+        echo "NAMESPACE=$NAMESPACE" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Install and Build TypeScript Actions
