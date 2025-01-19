@@ -39,7 +39,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           
-      - name: Remove all tags besides "latest"
+      - name: Remove all tags besides "latest" and in-use tags
         run: |
           # Set Docker Hub username
           DOCKER_USER="yuvadius"
@@ -51,11 +51,26 @@ jobs:
             REPOSITORY="${DOCKER_USER}/$repo"
             echo "Cleaning up repository: $REPOSITORY"
             
-            # Get all tags except latest (with pagination)
+            # Get tags that are currently in use by Kubernetes
+            USED_TAGS=$(kubectl get deployments -A -o jsonpath="{.items[*].spec.template.spec.containers[*].image}" | \
+              tr ' ' '\n' | \
+              grep "^${REPOSITORY}:" | \
+              cut -d':' -f2 | \
+              sort -u)
+            
+            echo "Tags in use: $USED_TAGS"
+            
+            # Get all tags except latest and in-use tags
             PAGE=1
             while true; do
               RESPONSE=$(curl -s "https://hub.docker.com/v2/repositories/${REPOSITORY}/tags?page_size=100&page=${PAGE}")
-              TAGS=$(echo "$RESPONSE" | jq -r '.results[].name' | grep -v '^latest$')
+              TAGS=$(echo "$RESPONSE" | jq -r '.results[].name' | \
+                grep -v '^latest$' | \
+                while read -r tag; do
+                  if ! echo "$USED_TAGS" | grep -q "^${tag}$"; then
+                    echo "$tag"
+                  fi
+                done)
               
               # Break if no more tags
               if [ -z "$TAGS" ]; then
@@ -77,6 +92,6 @@ jobs:
               
               PAGE=$((PAGE + 1))
             done
-
+            
             echo "Done cleaning up repository: $REPOSITORY"
           done
