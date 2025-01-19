@@ -1,4 +1,4 @@
-name: Destroy all adhoc namespaces on Sunday
+name: Cleanup namespaces and docker tags
 
 permissions:
   contents: read
