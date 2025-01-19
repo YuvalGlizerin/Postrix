@@ -1,7 +1,6 @@
 replicas: 1
 postrixImage:
   repository: yuvadius/core
-  tag: latest
 env: local
 containerPort: 8080
 ingressPort: 8080
