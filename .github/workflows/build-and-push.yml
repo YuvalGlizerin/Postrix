@@ -37,11 +37,15 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-  
+
     - name: Build Docker image
       run: |
-        docker build -t yuvadius/${{ inputs.service_name }}:${{ steps.repo_warm_up.outputs.git_hash }} ./services/${{ inputs.service_name }}
-
+        TAGS="-t yuvadius/${{ inputs.service_name }}:${{ steps.repo_warm_up.outputs.git_hash }}"
+        if [ "${{ inputs.latest_tag }}" = "true" ]; then
+          TAGS="$TAGS -t yuvadius/${{ inputs.service_name }}:latest"
+        fi
+        docker build $TAGS ./services/${{ inputs.service_name }}
+  
     - name: Push Docker image
       run: |
-        docker push yuvadius/${{ inputs.service_name }}:${{ steps.repo_warm_up.outputs.git_hash }}
+        docker push yuvadius/${{ inputs.service_name }} --all-tags
