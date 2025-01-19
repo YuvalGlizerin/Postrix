@@ -1,0 +1,23 @@
+name: 'AWS Warm Up'
+description: 'Warm up AWS resources for GitHub Actions'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: us-east-1
+        role-to-assume: arn:aws:iam::384389382109:role/github-actions-role
+
+    - name: Update kubeconfig
+      run: |
+        aws eks update-kubeconfig --name postrix --region us-east-1
+      shell: bash
+
+    - name: Download Helmfile
+      run: |
+        wget https://github.com/helmfile/helmfile/releases/download/v0.168.0/helmfile_0.168.0_linux_amd64.tar.gz
+        tar xzf helmfile_0.168.0_linux_amd64.tar.gz
+        sudo mv helmfile /usr/local/bin/
+      shell: bash

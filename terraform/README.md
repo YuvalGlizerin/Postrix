@@ -1,12 +1,22 @@
 # Postrix Terraform
 
-# Secrets Terraform/GitHub
+# Secrets Terraform Cloud
 
 We don't want to store secrets in our repo, so we set them in the UI and then import them to terraform.
+
+# Github Secrets
+
+Read instructions in [../scripts/encrypt-github-secret.py](../scripts/encrypt-github-secret.py)
 
 # Github Projects
 
 I failed to find a way to create/import a github project via terraform, so we will manage them manually.
+
+# Import example
+
+```
+terraform import module.aws_credentials.aws_iam_access_key.postrix <resource_id>
+```
 
 # Renaming Terraform Modules
 

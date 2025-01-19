@@ -42,6 +42,7 @@ releases:
     chart: bitnami/redis
     labels:
       app: redis
+      group: app
     values:
       - ./redis/values/{{ .Environment.Name }}.yaml
   
@@ -58,5 +59,6 @@ releases:
     chart: ./common
     labels:
       app: core
+      group: app
     values:
       - ./core/values/{{ .Environment.Name }}.yaml

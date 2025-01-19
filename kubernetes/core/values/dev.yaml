@@ -1,5 +1,7 @@
 replicas: 1
-image: yuvadius/core:latest
+postrixImage:
+  repository: yuvadius/core
+  tag: latest
 env: dev
 containerPort: 8080
 ingressPort: 8080
@@ -13,5 +15,4 @@ resources:
   requests:
     cpu: 250m
     memory: 256Mi
-ingress:
-  host: core.dev.postrix.io
+ingress: true

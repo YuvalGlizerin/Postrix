@@ -7,7 +7,7 @@ const app = express();
 const PORT = process.env.PORT;
 
 app.get('/', (req: Request, res: Response) => {
-  res.send(`Core service is running on ${process.env.ENV}.\nFixed service URL!`);
+  res.send(`Full CI/CD is running on ${process.env.ENV}.\nFixed service URL!`);
 });
 
 const server = app.listen(PORT, () => {

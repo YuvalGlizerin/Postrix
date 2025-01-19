@@ -82,6 +82,13 @@ module "aws_certificate_manager" {
   }
 }
 
+module "aws_credentials" {
+  source = "./modules/aws/credentials"
+  providers = {
+    aws = aws
+  }
+}
+
 module "github" {
   source = "./modules/github"
   domain = var.domain

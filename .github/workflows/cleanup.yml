@@ -1,0 +1,57 @@
+name: Cleanup namespaces and docker tags
+
+permissions:
+  contents: read
+  id-token: write
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 0'  # Every Sunday at 06:00 UTC
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: ./.github/actions/repo-warm-up
+        id: repo_warm_up
+
+      - name: Configure AWS credentials
+        uses: ./.github/actions/aws-warm-up
+
+      - name: Delete dev environments
+        run: |
+          echo "Get all namespaces with label environment=adhoc"
+          ADHOC_NAMESPACES=$(kubectl get namespaces -l environment=adhoc -o jsonpath='{.items[*].metadata.name}')
+          
+          for namespace in $ADHOC_NAMESPACES; do
+            echo "Deleting namespace: $namespace"
+            kubectl delete namespace $namespace
+          done
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          
+      - name: Remove all tags besides "latest"
+        run: |
+          # Set Docker Hub username
+          DOCKER_USER="yuvadius"
+          
+          # Get all repositories for user
+          REPOSITORIES=$(docker search ${DOCKER_USER}/ --format "{{.Name}}" | grep "^${DOCKER_USER}/" | cut -d'/' -f2)
+          
+          for repo in $REPOSITORIES; do
+            REPOSITORY="${DOCKER_USER}/$repo"
+            echo "Cleaning up repository: $REPOSITORY"
+            
+            # Delete all tags except latest
+            docker images $REPOSITORY --format "{{.Repository}}:{{.Tag}}" | grep -v "latest" | xargs -r docker rmi
+            echo "Done cleaning up repository: $REPOSITORY"
+          done
