@@ -26,6 +26,12 @@ on:
         description: 'Whether to comment on the PR with the service adhoc URLs'
         type: boolean
         default: false
+      image_tag:
+        required: false
+        description: 'The tag to deploy, defaults to git hash'
+        type: string
+        default: ''
+
 
 jobs:
   deploy:
@@ -47,7 +53,7 @@ jobs:
           --environment=${{ inputs.environment }} \
           --namespace=${{ inputs.namespace || steps.repo_warm_up.outputs.adhoc_namespace }} \
           -l group=app \
-          --set postrixImage.tag=${{ steps.repo_warm_up.outputs.git_hash }}
+          --set postrixImage.tag=${{ inputs.image_tag || steps.repo_warm_up.outputs.git_hash }}
 
       - name: Label namespace
         if: ${{ inputs.environment_label }}

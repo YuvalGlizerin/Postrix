@@ -39,4 +39,5 @@ jobs:
     with:
       environment: ${{ matrix.environment }}
       namespace: ${{ matrix.environment }}
+      image_tag: latest
     secrets: inherit
