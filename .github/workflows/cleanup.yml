@@ -51,7 +51,32 @@ jobs:
             REPOSITORY="${DOCKER_USER}/$repo"
             echo "Cleaning up repository: $REPOSITORY"
             
-            # Delete all tags except latest
-            docker images $REPOSITORY --format "{{.Repository}}:{{.Tag}}" | grep -v "latest" | xargs -r docker rmi
+            # Get all tags except latest (with pagination)
+            PAGE=1
+            while true; do
+              RESPONSE=$(curl -s "https://hub.docker.com/v2/repositories/${REPOSITORY}/tags?page_size=100&page=${PAGE}")
+              TAGS=$(echo "$RESPONSE" | jq -r '.results[].name' | grep -v '^latest$')
+              
+              # Break if no more tags
+              if [ -z "$TAGS" ]; then
+                break
+              fi
+              
+              for tag in $TAGS; do
+                echo "Deleting tag: $tag"
+                curl -s -X DELETE \
+                  -H "Authorization: JWT ${{ secrets.DOCKER_PASSWORD }}" \
+                  "https://hub.docker.com/v2/repositories/${REPOSITORY}/tags/${tag}/"
+              done
+              
+              # Check if there are more pages
+              HAS_NEXT=$(echo "$RESPONSE" | jq -r '.next')
+              if [ "$HAS_NEXT" = "null" ]; then
+                break
+              fi
+              
+              PAGE=$((PAGE + 1))
+            done
+
             echo "Done cleaning up repository: $REPOSITORY"
           done
