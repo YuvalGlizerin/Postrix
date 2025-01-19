@@ -41,10 +41,17 @@ jobs:
           
       - name: Remove all tags besides "latest"
         run: |
-          REPOSITORY="yuvadius/core"
+          # Get all repositories for user yuvadius
+          REPOSITORIES=$(docker search yuvadius/ --format "{{.Name}}" | grep "^yuvadius/" | cut -d'/' -f2)
           
-          # Pull all tags
-          docker pull $REPOSITORY --all-tags
-          
-          # Delete all tags except latest
-          docker images $REPOSITORY --format "{{.Repository}}:{{.Tag}}" | grep -v "latest" | xargs -r docker rmi 
+          for repo in $REPOSITORIES; do
+            REPOSITORY="yuvadius/$repo"
+            echo "Cleaning up repository: $REPOSITORY"
+            
+            # Pull all tags
+            docker pull $REPOSITORY --all-tags
+            
+            # Delete all tags except latest
+            docker images $REPOSITORY --format "{{.Repository}}:{{.Tag}}" | grep -v "latest" | xargs -r docker rmi
+            echo "Done cleaning up repository: $REPOSITORY"
+          done
