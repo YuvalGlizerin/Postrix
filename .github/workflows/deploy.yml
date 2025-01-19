@@ -23,7 +23,7 @@ on:
         type: string
       comment_pr:
         required: false
-        description: 'Whether to comment on the PR'
+        description: 'Whether to comment on the PR with the service adhoc URLs'
         type: boolean
         default: true
 

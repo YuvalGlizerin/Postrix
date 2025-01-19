@@ -20,6 +20,7 @@ jobs:
     uses: ./.github/workflows/build-and-push.yml
     with:
       service_name: ${{ matrix.service }}
+      latest_tag: true
     secrets: inherit
 
   deploy:
