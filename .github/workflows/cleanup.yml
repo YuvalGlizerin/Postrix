@@ -41,11 +41,14 @@ jobs:
           
       - name: Remove all tags besides "latest"
         run: |
-          # Get all repositories for user yuvadius
-          REPOSITORIES=$(docker search yuvadius/ --format "{{.Name}}" | grep "^yuvadius/" | cut -d'/' -f2)
+          # Set Docker Hub username
+          DOCKER_USER="yuvadius"
+          
+          # Get all repositories for user
+          REPOSITORIES=$(docker search ${DOCKER_USER}/ --format "{{.Name}}" | grep "^${DOCKER_USER}/" | cut -d'/' -f2)
           
           for repo in $REPOSITORIES; do
-            REPOSITORY="yuvadius/$repo"
+            REPOSITORY="${DOCKER_USER}/$repo"
             echo "Cleaning up repository: $REPOSITORY"
             
             # Pull all tags
