@@ -10,9 +10,9 @@ serviceTargetPort: 8080
 serviceType: ClusterIP
 resources:
   limits:
-    cpu: 500m
+    cpu: 200m
     memory: 512Mi
   requests:
-    cpu: 250m
+    cpu: 100m
     memory: 256Mi
 ingress: true

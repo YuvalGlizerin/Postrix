@@ -6,10 +6,10 @@ const request = supertest(core);
 
 // Test the / endpoint
 describe('GET /', () => {
-  it('responds with "Full CI/CD is running on"', async () => {
+  it('responds with "Full CI/CD running on"', async () => {
     const response = await request.get('/');
     expect(response.status).toBe(200);
-    expect(response.text).toContain('Full CI/CD is running on');
+    expect(response.text).toContain('Full CI/CD running on');
   });
 });
 
