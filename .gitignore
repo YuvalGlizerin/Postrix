@@ -151,3 +151,6 @@ dist
 # To create binaries, containers, pull requests, or other releases, add the following to your .gitignore, .dockerignore
 # and similar files to prevent accidentally committing credentials to your release artifact:
 gha-creds-*.json
+
+# MacOS auto generated files
+.DS_Store

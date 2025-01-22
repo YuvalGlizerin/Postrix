@@ -11,7 +11,9 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 const server = app.listen(PORT, () => {
-  console.log(`Core service is running on ${process.env.ENV}: http://localhost:${PORT}`);
+  console.log(
+    `Core service is running on ${process.env.ENV}: http://localhost:${PORT}`
+  );
 });
 
 export default server;
