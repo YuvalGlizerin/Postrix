@@ -33,4 +33,3 @@ jobs:
       environment_label: adhoc
       comment_pr: true
     secrets: inherit
-    
