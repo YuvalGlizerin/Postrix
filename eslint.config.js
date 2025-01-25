@@ -93,15 +93,17 @@ export default [
       jsonc: jsoncPlugin
     },
     rules: {
-      'indent': ['error', 2],
-      'quote-props': ['error', 'always'],
-      'quotes': ['error', 'double'],
-      'jsonc/comma-dangle': ['error', 'never'],  // Using jsonc specific rule
+      'jsonc/indent': ['error', 2, {
+        'SwitchCase': 1,
+        'ignoredNodes': [],
+        'ArrayExpression': 1,
+        'ObjectExpression': 1
+      }],
+      'jsonc/comma-dangle': ['error', 'never'],
       'no-multiple-empty-lines': ['error', {
         'max': 0,
         'maxEOF': 0
-      }],
-      'semi': ['error', 'never']
+      }]
     }
   }
 ];
