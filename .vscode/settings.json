@@ -8,7 +8,8 @@
     "typescript",
     "typescriptreact",
     "yaml",
-    "github-actions-workflow"
+    "github-actions-workflow",
+    "json"
   ],
   "editor.tabSize": 2,
   "editor.detectIndentation": false,
@@ -21,7 +22,14 @@
       "file:///home/yuvadius/Desktop/Postrix/kubernetes/core/helmfile.yaml"
     ]
   },
-  "cSpell.words": ["bitnami", "helmfile", "postrix", "rabbitmq", "yuvadius"],
+  "cSpell.words": [
+    "bitnami",
+    "helmfile",
+    "postrix",
+    "rabbitmq",
+    "sealedbox",
+    "yuvadius"
+  ],
   "files.exclude": {
     "**/.git": true
   }

@@ -4,6 +4,7 @@ import eslintPluginYml from 'eslint-plugin-yml';
 import yamlParser from 'yaml-eslint-parser';
 import tsParser from '@typescript-eslint/parser';
 import importPlugin from 'eslint-plugin-import';
+import jsonParser from 'jsonc-eslint-parser';
 import globals from 'globals';
 
 export default [
@@ -13,7 +14,8 @@ export default [
       'dist/**',
       '.history/**',
       '.git/**',
-      'coverage/**'
+      'coverage/**',
+      '**/kubernetes/**/templates/**/*.{yml,yaml}'  // Ignore helm files
     ]
   },
   js.configs.recommended,
@@ -24,15 +26,7 @@ export default [
       parser: yamlParser,
       parserOptions: {
         defaultYAMLVersion: '1.2',
-        tokens: true,
-        // Add support for Helm/Go template syntax
-        customTags: [
-          '!include',
-          '!Ref',
-          '!{{',
-          '!{{-',
-          '!}}'
-        ]
+        tokens: true
       }
     },
     plugins: {
@@ -86,6 +80,23 @@ export default [
         'maxEOF': 0
       }],
       'indent': ['error', 2]
+    }
+  },
+  {
+    files: ['**/*.json'],
+    languageOptions: {
+      parser: jsonParser
+    },
+    rules: {
+      'indent': ['error', 2],
+      'quote-props': ['error', 'always'],
+      'quotes': ['error', 'double'],
+      'comma-dangle': ['error', 'never'],
+      'no-multiple-empty-lines': ['error', {
+        'max': 0,
+        'maxEOF': 0
+      }],
+      'semi': ['error', 'never']
     }
   }
 ];
