@@ -14,14 +14,14 @@ async function run() {
     const { data: comments } = await octokit.rest.issues.listComments({
       owner: context.repo.owner,
       repo: context.repo.repo,
-      issue_number: context.issue.number,
+      issue_number: context.issue.number
     });
     comments.forEach((comment) => {
       if (comment?.user?.type === 'Bot' && comment?.body?.includes(title)) {
         octokit.rest.issues.deleteComment({
           owner: context.repo.owner,
           repo: context.repo.repo,
-          comment_id: comment.id,
+          comment_id: comment.id
         });
       }
     });
@@ -32,7 +32,7 @@ async function run() {
       issue_number: context.issue.number,
       owner: context.repo.owner,
       repo: context.repo.repo,
-      body: output,
+      body: output
     });
   } catch (error) {
     core.setFailed(<Error>error);

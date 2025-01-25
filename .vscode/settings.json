@@ -1,4 +1,7 @@
 {
+  "launches": {
+    "Core": "Core"
+  },
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },

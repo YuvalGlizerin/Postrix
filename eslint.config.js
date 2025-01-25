@@ -5,6 +5,7 @@ import yamlParser from 'yaml-eslint-parser';
 import tsParser from '@typescript-eslint/parser';
 import importPlugin from 'eslint-plugin-import';
 import jsonParser from 'jsonc-eslint-parser';
+import jsoncPlugin from 'eslint-plugin-jsonc';
 import globals from 'globals';
 
 export default [
@@ -79,7 +80,8 @@ export default [
         'max': 1,
         'maxEOF': 0
       }],
-      'indent': ['error', 2]
+      'indent': ['error', 2],
+      'comma-dangle': ['error', 'never']
     }
   },
   {
@@ -87,11 +89,14 @@ export default [
     languageOptions: {
       parser: jsonParser
     },
+    plugins: {
+      jsonc: jsoncPlugin
+    },
     rules: {
       'indent': ['error', 2],
       'quote-props': ['error', 'always'],
       'quotes': ['error', 'double'],
-      'comma-dangle': ['error', 'never'],
+      'jsonc/comma-dangle': ['error', 'never'],  // Using jsonc specific rule
       'no-multiple-empty-lines': ['error', {
         'max': 0,
         'maxEOF': 0
