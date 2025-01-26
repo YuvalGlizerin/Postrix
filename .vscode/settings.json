@@ -20,11 +20,6 @@
     "**/.github/**/*.yml": "github-actions-workflow",
     "**/.github/**/*.yaml": "github-actions-workflow"
   },
-  "yaml.schemas": {
-    "https://json.schemastore.org/helmfile.json": [
-      "file:///home/yuvadius/Desktop/Postrix/kubernetes/core/helmfile.yaml"
-    ]
-  },
   "cSpell.words": [
     "bitnami",
     "helmfile",
