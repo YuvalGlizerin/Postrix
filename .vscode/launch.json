@@ -1,63 +1,63 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "node-terminal",
-            "request": "launch",
-            "name": "Core",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "command": "npm run start-local nodemon --prefix services/core",
-            "presentation": {
-                "group": "Local Services"
-            }
-        },
-        {
-            "name": "GHA: Test",
-            "type": "node-terminal",
-            "request": "launch",
-            "command": "act -j test",
-            "internalConsoleOptions": "neverOpen",
-            "presentation": {
-                "group": "Github Actions"
-            }
-        },
-        {
-            "name": "GHA: Plan",
-            "type": "node-terminal",
-            "request": "launch",
-            "command": "act -j terraform-plan",
-            "internalConsoleOptions": "neverOpen",
-            "presentation": {
-                "group": "Github Actions"
-            }
-        },
-        {
-            "name": "GHA: Typescript",
-            "type": "node-terminal",
-            "request": "launch",
-            "command": "ts-node ${file}",
-            "env": {
-                // "INPUT_RUN_LINK": "https://app.terraform.io/app/postrix/workspaces/postrix/runs/run-8ggL4H2QSHk77WQY"
-            },
-            "presentation": {
-                "group": "Github Actions"
-            }
-        }
-    ],
-    "compounds": [
-        {
-            "name": "Local Services",
-            "configurations": ["Core"],
-            "stopAll": true,
-            "presentation": {
-                "group": "Local Services",
-                "order": 1
-            }
-        }
-    ]
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node-terminal",
+      "request": "launch",
+      "name": "Core",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "command": "npm run start-local nodemon --prefix services/core",
+      "presentation": {
+        "group": "Local Services"
+      }
+    },
+    {
+      "name": "GHA: Test",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "act -j test",
+      "internalConsoleOptions": "neverOpen",
+      "presentation": {
+        "group": "Github Actions"
+      }
+    },
+    {
+      "name": "GHA: Plan",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "act -j terraform-plan",
+      "internalConsoleOptions": "neverOpen",
+      "presentation": {
+        "group": "Github Actions"
+      }
+    },
+    {
+      "name": "GHA: Typescript",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "ts-node ${file}",
+      "env": {
+        // "INPUT_RUN_LINK": "https://app.terraform.io/app/postrix/workspaces/postrix/runs/run-8ggL4H2QSHk77WQY"
+      },
+      "presentation": {
+        "group": "Github Actions"
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Local Services",
+      "configurations": ["Core"],
+      "stopAll": true,
+      "presentation": {
+        "group": "Local Services",
+        "order": 1
+      }
+    }
+  ]
 }

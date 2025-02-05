@@ -1,28 +1,34 @@
 {
-    "files.exclude": {
-        "**/.git": false
-    },
-    "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": "always"
-    },
-    "eslint.format.enable": true,
-    "editor.tabSize": 2,
-    "editor.detectIndentation": false,
-    "files.associations": {
-        "**/.github/**/*.yml": "github-actions-workflow",
-        "**/.github/**/*.yaml": "github-actions-workflow"
-    },
-    "yaml.schemas": {
-      "https://json.schemastore.org/helmfile.json": [
-        "file:///home/yuvadius/Desktop/Postrix/kubernetes/core/helmfile-dev.yaml",
-        "file:///home/yuvadius/Desktop/Postrix/kubernetes/core/helmfile-prod.yaml"
-      ]
-    },
-    "cSpell.words": [
-      "bitnami",
-      "helmfile",
-      "postrix",
-      "rabbitmq",
-      "yuvadius"
-    ]
+  "launches": {
+    "Core": "Core"
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "yaml",
+    "github-actions-workflow",
+    "json"
+  ],
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "files.associations": {
+    "**/.github/**/*.yml": "github-actions-workflow",
+    "**/.github/**/*.yaml": "github-actions-workflow"
+  },
+  "cSpell.words": [
+    "bitnami",
+    "helmfile",
+    "postrix",
+    "rabbitmq",
+    "sealedbox",
+    "yuvadius"
+  ],
+  "files.exclude": {
+    "**/.git": true
+  }
 }

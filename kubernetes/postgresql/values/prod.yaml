@@ -1,0 +1,19 @@
+architecture: standalone
+auth:
+  postgresPassword: postgres
+  username: postgres
+  password: postgres
+  database: postgres
+
+primary:
+  persistence:
+    enabled: true
+    size: 10Gi
+    storageClass: gp2  # Remove quotes and use the existing storage class
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi

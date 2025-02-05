@@ -50,10 +50,10 @@ provider "docker" {
 }
 
 module "aws_eks" {
-  source            = "./modules/aws/eks"
-  cluster_name      = "postrix"
-  region            = var.aws_region
-  subnet_ids        = [
+  source       = "./modules/aws/eks"
+  cluster_name = "postrix"
+  region       = var.aws_region
+  subnet_ids = [
     "subnet-02a3fb65864cb921f", # us-east-1a
     "subnet-0f5f53463472c2445"  # us-east-1b
   ]
@@ -73,8 +73,8 @@ module "aws_route53" {
 }
 
 module "aws_certificate_manager" {
-  source = "./modules/aws/certificate-manager"
-  domain = var.domain
+  source  = "./modules/aws/certificate-manager"
+  domain  = var.domain
   zone_id = module.aws_route53.zone_id
 
   providers = {

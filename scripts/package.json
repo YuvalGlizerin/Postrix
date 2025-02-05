@@ -1,0 +1,10 @@
+{
+  "name": "scripts",
+  "version": "1.0.0",
+  "scripts": {
+    "script": "ts-node"
+  },
+  "dependencies": {
+    "tweetnacl-sealedbox-js": "^1.2.0"
+  }
+}
