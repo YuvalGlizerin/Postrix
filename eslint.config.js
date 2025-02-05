@@ -7,6 +7,7 @@ import importPlugin from 'eslint-plugin-import';
 import jsonParser from 'jsonc-eslint-parser';
 import jsoncPlugin from 'eslint-plugin-jsonc';
 import globals from 'globals';
+import prettier from 'eslint-plugin-prettier';
 
 export default [
   {
@@ -16,7 +17,7 @@ export default [
       '.history/**',
       '.git/**',
       'coverage/**',
-      '**/kubernetes/**/templates/**/*.{yml,yaml}'  // Ignore helm files
+      '**/kubernetes/**/templates/**/*.{yml,yaml}' // Ignore helm files
     ]
   },
   js.configs.recommended,
@@ -30,19 +31,24 @@ export default [
         tokens: true
       }
     },
-    plugins: {
-      yml: eslintPluginYml
-    },
+    plugins: { yml: eslintPluginYml },
     rules: {
-      'yml/no-multiple-empty-lines': ['error', { 
-        max: 1,
-        maxEOF: 0
-      }],
+      'yml/no-multiple-empty-lines': [
+        'error',
+        {
+          max: 1,
+          maxEOF: 0
+        }
+      ],
       'yml/no-empty-mapping-value': 'off',
-      'yml/indent': ['error', 2, {
-        indentBlockSequences: true,
-        indicatorValueIndent: 2
-      }]
+      'yml/indent': [
+        'error',
+        2,
+        {
+          indentBlockSequences: true,
+          indicatorValueIndent: 2
+        }
+      ]
     }
   },
   {
@@ -58,52 +64,58 @@ export default [
     },
     plugins: {
       '@typescript-eslint': eslint,
-      'import': importPlugin
+      import: importPlugin,
+      prettier: prettier
     },
     rules: {
-      'quotes': ['error', 'single'],
-      'semi': ['error', 'always'],
-      'import/order': ['warn', {
-        'newlines-between': 'always'
-      }],
+      ...eslint.configs['recommended'].rules,
+      'import/order': ['warn', { 'newlines-between': 'always' }],
       'no-debugger': 'error',
-      'no-extra-semi': 'error',
       'no-var': 'error',
       'prefer-const': 'error',
       'prefer-template': 'error',
-      'camelcase': ['error', {
-        'properties': 'never'
-      }],
-      'curly': ['error', 'all'],
-      'yoda': 'error',
-      'no-multiple-empty-lines': ['error', {
-        'max': 1,
-        'maxEOF': 0
-      }],
-      'indent': ['error', 2],
-      'comma-dangle': ['error', 'never']
+      camelcase: ['error', { properties: 'never' }],
+      curly: ['error', 'all'],
+      'prettier/prettier': [
+        'error',
+        {
+          printWidth: 120,
+          tabWidth: 2,
+          singleQuote: true,
+          trailingComma: 'none',
+          bracketSpacing: true,
+          semi: true,
+          useTabs: false,
+          arrowParens: 'avoid',
+          endOfLine: 'auto'
+        }
+      ]
     }
   },
   {
     files: ['**/*.json'],
-    languageOptions: {
-      parser: jsonParser
-    },
-    plugins: {
-      jsonc: jsoncPlugin
-    },
+    languageOptions: { parser: jsonParser },
+    plugins: { jsonc: jsoncPlugin },
     rules: {
-      'jsonc/indent': ['error', 2, {
-        'SwitchCase': 1,
-        'ignoredNodes': [],
-        'ArrayExpression': 1,
-        'ObjectExpression': 1
-      }],
+      ...jsoncPlugin.configs['flat/recommended'],
+      'jsonc/indent': [
+        'error',
+        2,
+        {
+          SwitchCase: 1,
+          ignoredNodes: [],
+          ArrayExpression: 1,
+          ObjectExpression: 1
+        }
+      ],
       'jsonc/comma-dangle': ['error', 'never'],
-      'no-multiple-empty-lines': ['error', {
-        'max': 0,
-        'maxEOF': 0
-      }]
+      'no-multiple-empty-lines': [
+        'error',
+        {
+          max: 0,
+          maxEOF: 0
+        }
+      ]
     }
   }
 ];

@@ -16,7 +16,7 @@ async function run() {
       repo: context.repo.repo,
       issue_number: context.issue.number
     });
-    comments.forEach((comment) => {
+    comments.forEach(comment => {
       if (comment?.user?.type === 'Bot' && comment?.body?.includes(title)) {
         octokit.rest.issues.deleteComment({
           owner: context.repo.owner,

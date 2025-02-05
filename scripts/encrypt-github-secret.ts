@@ -15,19 +15,20 @@ Step 3, Update the terraform file with the encrypted value for example:
   }
 */
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const sodium = require('tweetnacl-sealedbox-js');
 
 function encrypt(publicKey: string, secretValue: string): string {
   try {
     // Convert the public key from base64 to Uint8Array
     const keyBytes = Buffer.from(publicKey, 'base64');
-        
+
     // Convert the secret value to Uint8Array
     const messageBytes = Buffer.from(secretValue);
-        
+
     // Encrypt the secret
     const encryptedBytes = sodium.seal(messageBytes, keyBytes);
-        
+
     // Return base64 encoded encrypted value
     return Buffer.from(encryptedBytes).toString('base64');
   } catch (error) {
@@ -45,4 +46,4 @@ if (!publicKey || !secretValue) {
   process.exit(1);
 }
 
-console.log(encrypt(publicKey, secretValue)); 
+console.log(encrypt(publicKey, secretValue));

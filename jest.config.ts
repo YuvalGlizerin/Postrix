@@ -6,20 +6,11 @@ const config: Config.InitialOptions = {
   verbose: true,
   preset: 'ts-jest',
   testEnvironment: 'node',
-  transform: {
-    '^.+\\.ts?$': 'ts-jest'
-  },
+  transform: { '^.+\\.ts?$': 'ts-jest' },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-  testMatch: [
-    '**/tests/**/*.test.ts',
-    '**/tests/**/*.spec.ts'
-  ],
-  
+  testMatch: ['**/tests/**/*.test.ts', '**/tests/**/*.spec.ts'],
   collectCoverage: true,
-  collectCoverageFrom: [
-    'src/**/*.{ts,tsx}',
-    '!src/**/*.d.ts'
-  ],
+  collectCoverageFrom: ['src/**/*.{ts,tsx}', '!src/**/*.d.ts'],
   coverageDirectory: '<rootDir>/coverage',
   coverageReporters: ['json', 'lcov', 'text', 'clover']
 };
