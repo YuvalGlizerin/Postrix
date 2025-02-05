@@ -14,7 +14,6 @@ WORKDIR /usr/src/app
 # Copying this separately prevents re-running npm install on every code change.
 COPY package*.json ./
 COPY tsconfig.json ./
-COPY ../../tsconfig.json /usr/
 
 # Install dependencies.
 RUN npm install
