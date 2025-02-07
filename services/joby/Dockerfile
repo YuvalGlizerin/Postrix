@@ -1,6 +1,6 @@
-# docker build -t yuvadius/core:latest .
-# docker push yuvadius/core:latest
-# docker run -p 8080:8080 -e ENV=local  yuvadius/core:latest
+# docker build -t yuvadius/joby:latest .
+# docker push yuvadius/joby:latest
+# docker run -p 8080:8080 -e ENV=local  yuvadius/joby:latest
 
 # Use the official lightweight Node.js image.
 # https://hub.docker.com/_/node

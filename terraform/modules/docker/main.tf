@@ -1,8 +1,8 @@
 # The access token was created manually in Docker Hub, not managed by Terraform
 
-resource "docker_hub_repository" "core" {
+resource "docker_hub_repository" "joby" {
   namespace   = var.namespace
-  name        = "core"
-  description = "Core docker repository"
+  name        = "joby"
+  description = "Joby docker repository"
   private     = false
 }

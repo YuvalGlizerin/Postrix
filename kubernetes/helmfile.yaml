@@ -54,11 +54,11 @@ releases:
   #   values:
   #     - ./rabbitmq/values/{{ .Environment.Name }}.yaml
 
-  - name: core
+  - name: joby
     namespace: "{{ default .Namespace .Environment.Name }}"
     chart: ./common
     labels:
-      app: core
+      app: joby
       group: app
     values:
-      - ./core/values/{{ .Environment.Name }}.yaml
+      - ./joby/values/{{ .Environment.Name }}.yaml

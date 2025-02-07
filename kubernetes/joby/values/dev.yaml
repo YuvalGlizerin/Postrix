@@ -1,6 +1,6 @@
 replicas: 1
 postrixImage:
-  repository: yuvadius/core
+  repository: yuvadius/joby
   tag: latest
 env: dev
 containerPort: 8080

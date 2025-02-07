@@ -1,9 +1,9 @@
 import supertest from 'supertest';
 
-import core from '../src/index'; // Replace './index' with the actual path to your Cloud Function file
+import joby from '../src/index'; // Replace './index' with the actual path to your Cloud Function file
 
 // Since myFunction is an Express app, we can use it directly with supertest
-const request = supertest(core);
+const request = supertest(joby);
 
 // Test the / endpoint
 describe('GET /', () => {
@@ -16,6 +16,6 @@ describe('GET /', () => {
 
 // Close the server after all tests
 afterAll(done => {
-  core.close();
+  joby.close();
   done();
 });

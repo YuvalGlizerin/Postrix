@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        service: [core]
+        service: [joby]
 
     uses: ./.github/workflows/build-and-push.yml
     with:

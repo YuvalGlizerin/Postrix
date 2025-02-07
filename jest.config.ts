@@ -1,4 +1,3 @@
-// jest.config.ts in services/core directory
 import type { Config } from '@jest/types';
 
 // Sync object

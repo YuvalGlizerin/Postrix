@@ -7,11 +7,11 @@
     {
       "type": "node-terminal",
       "request": "launch",
-      "name": "Core",
+      "name": "Joby",
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "command": "npm run start-local nodemon --prefix services/core",
+      "command": "npm run start-local nodemon --prefix services/joby",
       "presentation": {
         "group": "Local Services"
       }
@@ -52,7 +52,7 @@
   "compounds": [
     {
       "name": "Local Services",
-      "configurations": ["Core"],
+      "configurations": ["Joby"],
       "stopAll": true,
       "presentation": {
         "group": "Local Services",

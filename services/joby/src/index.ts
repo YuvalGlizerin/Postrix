@@ -2,7 +2,7 @@ import express, { type Request, type Response } from 'express';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: `envs/${process.env.ENV}.env` });
-process.title = 'core';
+process.title = 'joby';
 const app = express();
 const PORT = process.env.PORT;
 
@@ -11,7 +11,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 const server = app.listen(PORT, () => {
-  console.log(`Core service is running on ${process.env.ENV}: http://localhost:${PORT}`);
+  console.log(`Joby service is running on ${process.env.ENV}: http://localhost:${PORT}`);
 });
 
 export default server;

@@ -1,13 +1,13 @@
 replicas: 1
 postrixImage:
-  repository: yuvadius/core
+  repository: yuvadius/joby
   tag: latest
-env: prod
+env: local
 containerPort: 8080
 ingressPort: 8080
 servicePort: 8080
 serviceTargetPort: 8080
-serviceType: ClusterIP
+serviceType: LoadBalancer
 resources:
   limits:
     cpu: 200m
@@ -15,4 +15,3 @@ resources:
   requests:
     cpu: 100m
     memory: 256Mi
-ingress: true
