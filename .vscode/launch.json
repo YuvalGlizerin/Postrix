@@ -17,32 +17,12 @@
       }
     },
     {
-      "name": "GHA: Test",
-      "type": "node-terminal",
-      "request": "launch",
-      "command": "act -j test",
-      "internalConsoleOptions": "neverOpen",
-      "presentation": {
-        "group": "Github Actions"
-      }
-    },
-    {
-      "name": "GHA: Plan",
-      "type": "node-terminal",
-      "request": "launch",
-      "command": "act -j terraform-plan",
-      "internalConsoleOptions": "neverOpen",
-      "presentation": {
-        "group": "Github Actions"
-      }
-    },
-    {
       "name": "GHA: Typescript",
       "type": "node-terminal",
       "request": "launch",
       "command": "ts-node ${file}",
       "env": {
-        // "INPUT_RUN_LINK": "https://app.terraform.io/app/postrix/workspaces/postrix/runs/run-8ggL4H2QSHk77WQY"
+        "INPUT_TITLE": "title" // Value of core.getInput('title')
       },
       "presentation": {
         "group": "Github Actions"

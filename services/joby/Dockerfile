@@ -16,7 +16,7 @@ COPY package*.json ./
 COPY tsconfig.json ./
 
 # Install dependencies.
-RUN npm install
+RUN npm install --production
 
 # Copy the rest of the application
 COPY . .
