@@ -1,6 +1,6 @@
 import supertest from 'supertest';
 
-import joby from '../src/index'; // Replace './index' with the actual path to your Cloud Function file
+import joby from '../src/index.js';
 
 // Since myFunction is an Express app, we can use it directly with supertest
 const request = supertest(joby);

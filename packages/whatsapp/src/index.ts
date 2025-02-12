@@ -1,4 +1,4 @@
-import { type Request, type Response } from 'express';
+import { Request, Response } from 'express';
 
 /**
  * Verifies the whatsapp webhook verification token.

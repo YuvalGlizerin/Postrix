@@ -4,7 +4,7 @@
 
 # Use the official lightweight Node.js image.
 # https://hub.docker.com/_/node
-FROM --platform=linux/amd64 node:20.11-slim
+FROM --platform=linux/amd64 node:22.14-slim AS builder
 
 # Create and change to the app directory.
 WORKDIR /usr/src/app
@@ -14,18 +14,21 @@ WORKDIR /usr/src/app
 # Copying this separately prevents re-running npm install on every code change.
 COPY package*.json ./
 COPY tsconfig.json ./
+COPY ./packages ../packages
 
 # Install dependencies.
 RUN npm install --production
 
-# Copy the rest of the application
-COPY . .
+# Build the application
+RUN npm run build
 
-# Make sure ts-node is installed globally
-RUN npm install -g typescript ts-node
+FROM --platform=linux/amd64 node:22.14-slim
+
+# Copy the rest of the application
+COPY --from=builder /usr/src/app/dist ./dist
 
 # Expose the port
 EXPOSE 8080
 
-# Start the application using ts-node, enabling the transpileOnly option for faster startup
-CMD ["npx", "ts-node", "--transpile-only", "src/index.ts"]
+# Start the application
+CMD ["node", "dist/index.js"]

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import whatsapp from '../src';
+import whatsapp from '../src/index.js';
 
 describe('WhatsApp Webhook Tests', () => {
   let mockRequest: Partial<Request>;

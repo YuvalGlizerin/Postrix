@@ -11,7 +11,7 @@
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "command": "npm run start-local --prefix services/joby",
+      "command": "npm run start:local --prefix services/joby",
       "presentation": {
         "group": "Local Services"
       }
