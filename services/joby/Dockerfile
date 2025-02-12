@@ -1,34 +1,52 @@
-# docker build -t yuvadius/joby:latest .
+# Local Build: docker build --platform linux/arm64 -t yuvadius/joby:latest -f services/joby/Dockerfile .
+# Server Build: docker build --platform linux/amd64 -t yuvadius/joby:latest -f services/joby/Dockerfile .
 # docker push yuvadius/joby:latest
-# docker run -p 8080:8080 -e ENV=local  yuvadius/joby:latest
+# docker run -p 8080:8080 -e ENV=local yuvadius/joby:latest
 
 # Use the official lightweight Node.js image.
 # https://hub.docker.com/_/node
-FROM --platform=linux/amd64 node:22.13.1-slim AS builder
+FROM node:22.13.1-slim AS builder
 
-# Create and change to the app directory.
-WORKDIR /usr/src/app
+# Set up the workspace structure
+WORKDIR /usr/workspace
 
-# Copy application dependency manifests to the container image.
-# A wildcard is used to ensure both package.json AND package-lock.json are copied.
-# Copying this separately prevents re-running npm install on every code change.
+# Copy root package files
 COPY package*.json ./
 COPY tsconfig.json ./
-COPY ./packages ../packages
 
-# Install dependencies.
-RUN npm install --production
+# Copy all packages
+COPY packages packages/
 
-# Build the application
+# Copy the service
+COPY services/joby services/joby/
+
+# Install dependencies, build, and remove dev dependencies
+WORKDIR /usr/workspace
+RUN npm ci
 RUN npm run build
+# RUN cd services/joby && npm prune --production
 
-FROM --platform=linux/amd64 node:22.13.1-slim
+# Production image
+FROM node:22.13.1-slim
 
-# Copy the rest of the application
-COPY --from=builder /usr/src/app/dist ./dist
+# Create and set working directory
+WORKDIR /usr/workspace/services/joby
+
+# Copy package.json files needed for running the application
+COPY --from=builder /usr/workspace/services/joby/package*.json ./
+COPY --from=builder /usr/workspace/services/joby/dist ./dist
+
+# Copy the complete node_modules from workspace root
+COPY --from=builder /usr/workspace/node_modules ../../node_modules
+
+# Copy the entire packages folder so that local dependencies are intact
+COPY --from=builder /usr/workspace/packages ../../packages
+
+# Copy environment files
+COPY services/joby/envs ./envs
 
 # Expose the port
 EXPOSE 8080
 
 # Start the application
-CMD ["node", "dist/index.js"]
+CMD ["npm", "run", "start:server"]
