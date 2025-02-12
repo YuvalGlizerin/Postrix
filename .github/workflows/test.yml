@@ -32,8 +32,8 @@ jobs:
       - name: Generate Coverage Report
         id: coverage
         run: |
-          COVERAGE=$(cat coverage/coverage-final.json | jq -r '.total.lines.pct')
-          SUMMARY=$(cat coverage/coverage-final.json | jq -r '
+          COVERAGE=$(cat coverage/coverage-summary.json | jq -r '.total.lines.pct')
+          SUMMARY=$(cat coverage/coverage-summary.json | jq -r '
             "| Category | Coverage |\n" +
             "|----------|----------|\n" +
             "| Lines | \(.total.lines.pct)% |\n" +

@@ -19,7 +19,7 @@ const config: Config.InitialOptions = {
   collectCoverage: true,
   collectCoverageFrom: ['**/src/**/*.{ts,tsx}', '!**/node_modules/**', '!**/dist/**', '!**/*.d.ts'],
   coverageDirectory: '<rootDir>/coverage',
-  coverageReporters: ['json', 'lcov', 'text', 'clover'],
+  coverageReporters: ['json-summary', 'lcov', 'text', 'clover'],
   projects: ['<rootDir>/services/*', '<rootDir>/packages/*'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1'
