@@ -29,6 +29,12 @@ jobs:
         env:
           CI: true
 
+      - name: Upload Test Report Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: coverage/lcov-report/index.html
+
       - name: Generate Coverage Report
         id: coverage
         run: |
@@ -55,3 +61,5 @@ jobs:
             Coverage: ${{ steps.coverage.outputs.coverage }}%
           message: |
             ${{ steps.coverage.outputs.summary }}
+
+            **Test Report:** [View details here](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
