@@ -5,7 +5,7 @@
   "description": "A simple Hello World Cloud Function",
   "main": "dist/index.js",
   "engines": {
-    "node": "22.14.0"
+    "node": "22.13.1"
   },
   "scripts": {
     "build": "tsc",

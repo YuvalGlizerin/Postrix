@@ -4,7 +4,7 @@
   "description": "Open source generic project",
   "type": "module",
   "engines": {
-    "node": "22.14.0"
+    "node": "22.13.1"
   },
   "workspaces": [
     "packages/*",
