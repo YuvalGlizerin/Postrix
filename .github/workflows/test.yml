@@ -13,7 +13,11 @@ jobs:
       pull-requests: write
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: ./.github/actions/repo-warm-up
+
       - name: Use Node.js 22.x
         uses: actions/setup-node@v2
         with:
