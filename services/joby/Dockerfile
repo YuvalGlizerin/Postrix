@@ -4,7 +4,7 @@
 
 # Use the official lightweight Node.js image.
 # https://hub.docker.com/_/node
-FROM --platform=linux/amd64 node:22.14-slim AS builder
+FROM --platform=linux/amd64 node:22.13.1-slim AS builder
 
 # Create and change to the app directory.
 WORKDIR /usr/src/app
@@ -22,7 +22,7 @@ RUN npm install --production
 # Build the application
 RUN npm run build
 
-FROM --platform=linux/amd64 node:22.14-slim
+FROM --platform=linux/amd64 node:22.13.1-slim
 
 # Copy the rest of the application
 COPY --from=builder /usr/src/app/dist ./dist
