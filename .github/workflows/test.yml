@@ -66,6 +66,14 @@ jobs:
 
             **Test Report:** [View details here](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
 
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
         with:
