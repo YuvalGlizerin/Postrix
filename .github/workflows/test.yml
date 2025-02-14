@@ -52,6 +52,12 @@ jobs:
           echo "$SUMMARY" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
+      - name: Deploy Coverage Report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./coverage/lcov-report
+
       - name: Comment PR
         uses: ./.github/actions/comment-pr
         with:
@@ -63,3 +69,4 @@ jobs:
             ${{ steps.coverage.outputs.summary }}
 
             **Test Report:** [View details here](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            **Coverage Report:** [View Report](https://<YOUR_GITHUB_USERNAME>.github.io/<YOUR_REPOSITORY>/coverage/lcov-report/index.html)
