@@ -12,12 +12,6 @@ resource "github_repository" "repo" {
   has_issues      = true
   has_projects    = true
   vulnerability_alerts = true
-
-  pages {
-    source {
-      branch = "main"
-    }
-  }
 }
 
 resource "github_branch" "main" {

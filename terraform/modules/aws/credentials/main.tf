@@ -77,6 +77,28 @@ resource "aws_iam_role_policy" "github_actions_policy" {
   })
 }
 
+resource "aws_iam_role_policy" "github_actions_s3_policy" {
+  name = "github-actions-s3-policy"
+  role = aws_iam_role.github_actions.name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          "arn:aws:s3:::postrix-test-reports",
+          "arn:aws:s3:::postrix-test-reports/*"
+        ]
+      }
+    ]
+  })
+}
+
 # Create the OIDC provider for GitHub Actions
 resource "aws_iam_openid_connect_provider" "github_actions" {
   url             = "https://token.actions.githubusercontent.com"

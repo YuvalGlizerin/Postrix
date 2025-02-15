@@ -20,6 +20,9 @@ jobs:
 
       - uses: ./.github/actions/repo-warm-up
 
+      - name: Configure AWS credentials
+        uses: ./.github/actions/aws-warm-up
+
       - name: Use Node.js 22.x
         uses: actions/setup-node@v4
         with:
@@ -31,11 +34,11 @@ jobs:
         env:
           CI: true
 
-      - name: Upload Test Report Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-report
-          path: coverage/lcov-report/index.html
+      - name: Upload Test Report to S3
+        run: |
+          aws s3 sync coverage/lcov-report/ s3://postrix-test-reports/${{ github.sha }}/
+        env:
+          AWS_DEFAULT_REGION: us-east-1
 
       - name: Generate Coverage Report
         id: coverage
@@ -65,17 +68,4 @@ jobs:
             ${{ steps.coverage.outputs.summary }}
 
             **Test Report:** [View details here](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: test
-    environment:
-      name: github-pages
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
-        with:
-          artifact_name: test-report
+            **Test Report:** [View detailed coverage report](http://postrix-test-reports.s3-website-us-east-1.amazonaws.com/${{ github.sha }})
