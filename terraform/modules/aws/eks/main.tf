@@ -212,8 +212,31 @@ resource "aws_eks_addon" "ebs_csi" {
   service_account_role_arn = aws_iam_role.ebs_csi_driver.arn
 }
 
-resource "aws_iam_policy" "cluster_autoscaler" {
-  name = "${var.cluster_name}-cluster-autoscaler-policy"
+resource "aws_iam_role" "cluster_autoscaler" {
+  name = "postrix-cluster-autoscaler-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Federated = aws_iam_openid_connect_provider.eks.arn
+        }
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Condition = {
+          StringEquals = {
+            "${replace(aws_eks_cluster.postrix.identity[0].oidc[0].issuer, "https://", "")}:sub": "system:serviceaccount:kube-system:cluster-autoscaler-aws-cluster-autoscaler"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "cluster_autoscaler" {
+  name = "postrix-cluster-autoscaler-policy"
+  role = aws_iam_role.cluster_autoscaler.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -227,37 +250,11 @@ resource "aws_iam_policy" "cluster_autoscaler" {
           "autoscaling:DescribeTags",
           "autoscaling:SetDesiredCapacity",
           "autoscaling:TerminateInstanceInAutoScalingGroup",
-          "ec2:DescribeLaunchTemplateVersions"
+          "ec2:DescribeLaunchTemplateVersions",
+          "ec2:DescribeInstanceTypes"
         ]
         Resource = ["*"]
       }
     ]
   })
-}
-
-resource "aws_iam_role" "cluster_autoscaler" {
-  name = "${var.cluster_name}-cluster-autoscaler-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Principal = {
-          Federated = aws_iam_openid_connect_provider.eks.arn
-        }
-        Action = "sts:AssumeRoleWithWebIdentity"
-        Condition = {
-          StringEquals = {
-            "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:sub": "system:serviceaccount:kube-system:cluster-autoscaler"
-          }
-        }
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "cluster_autoscaler" {
-  policy_arn = aws_iam_policy.cluster_autoscaler.arn
-  role       = aws_iam_role.cluster_autoscaler.name
 }
