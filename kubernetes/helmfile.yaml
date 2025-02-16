@@ -62,3 +62,12 @@ releases:
       group: app
     values:
       - ./joby/values/{{ .Environment.Name }}.yaml
+
+  - name: capish
+    namespace: "{{ default .Namespace .Environment.Name }}"
+    chart: ./common
+    labels:
+      app: capish
+      group: app
+    values:
+      - ./capish/values/{{ .Environment.Name }}.yaml

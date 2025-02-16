@@ -17,6 +17,18 @@
       }
     },
     {
+      "type": "node-terminal",
+      "request": "launch",
+      "name": "Capish",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "command": "npm run start:local --prefix services/capish",
+      "presentation": {
+        "group": "Local Services"
+      }
+    },
+    {
       "name": "GHA: Typescript",
       "type": "node-terminal",
       "request": "launch",
