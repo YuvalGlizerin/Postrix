@@ -11,7 +11,9 @@
     "build": "tsc",
     "clean": "rm -rf dist",
     "start:local": "NODE_ENV=development ENV=local nodemon",
-    "start:server": "NODE_ENV=production ENV=prod node --conditions production dist/index.js",
+    "start:server": "node --conditions production dist/index.js",
+    "start:server-dev": "ENV=dev node --conditions production dist/index.js",
+    "start:server-prod": "ENV=prod node --conditions production dist/index.js",
     "test": "jest --config jest.config.ts"
   },
   "dependencies": {
