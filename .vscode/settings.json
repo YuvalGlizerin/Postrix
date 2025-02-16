@@ -1,6 +1,6 @@
 {
   "launches": {
-    "Core": "Core"
+    "Joby": "Joby"
   },
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
@@ -23,6 +23,7 @@
   "cSpell.words": [
     "bitnami",
     "helmfile",
+    "joby",
     "postrix",
     "rabbitmq",
     "sealedbox",

@@ -18,10 +18,10 @@ Deploy services local(Will only work on local): `helmfile sync -f helmfile.yaml 
 Deploy services dev(Will not work on local): `helmfile sync -f helmfile.yaml --environment=dev`
 Deploy services prod(Will not work on local): `helmfile sync -f helmfile.yaml --environment=prod`
 
-You might also only want to sync a single service, for example: `helmfile sync -f helmfile.yaml --environment=local -l app=core`
+You might also only want to sync a single service, for example: `helmfile sync -f helmfile.yaml --environment=local -l app=joby`
 
 # View service locally on browser
 You might want to view you service locally on the browser
 
 View all services local(Defined ports): `minikube tunnel`
-View core service local(Random port): `minikube service core --namespace=local`
+View joby service local(Random port): `minikube service joby --namespace=local`

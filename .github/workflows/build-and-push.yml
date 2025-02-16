@@ -44,7 +44,7 @@ jobs:
           if [ "${{ inputs.latest_tag }}" = "true" ]; then
             TAGS="$TAGS -t yuvadius/${{ inputs.service_name }}:latest"
           fi
-          docker build $TAGS ./services/${{ inputs.service_name }}
+          docker build $TAGS -f services/${{ inputs.service_name }}/Dockerfile .
   
       - name: Push Docker image
         run: |

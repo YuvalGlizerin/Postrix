@@ -1,21 +1,27 @@
 {
   "name": "postrix",
   "version": "1.0.0",
-  "description": "Open source algo trading",
+  "description": "Open source generic project",
   "type": "module",
   "engines": {
-    "node": "20"
+    "node": "22.13.1"
   },
+  "workspaces": [
+    "packages/*",
+    "services/*"
+  ],
   "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "clean": "npm run clean --workspaces --if-present",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx,json,yml,yaml}\"",
     "lint:fix": "eslint \"**/*.{js,jsx,ts,tsx,json,yml,yaml}\" --fix",
-    "test": "jest --config jest.config.ts"
+    "test": "jest --config jest.config.ts --coverage"
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.12",
-    "@types/node": "^20.11.19",
+    "@types/node": "^22.13.1",
     "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^8.21.0",
     "@typescript-eslint/parser": "^8.21.0",

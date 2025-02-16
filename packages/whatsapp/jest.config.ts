@@ -17,14 +17,14 @@ const config: Config.InitialOptions = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   testMatch: ['**/tests/**/*.test.ts', '**/tests/**/*.spec.ts'],
   collectCoverage: true,
-  collectCoverageFrom: ['**/src/**/*.{ts,tsx}', '!**/node_modules/**', '!**/dist/**', '!**/*.d.ts'],
+  collectCoverageFrom: ['src/**/*.{ts,tsx}', '!src/**/*.d.ts'],
   coverageDirectory: '<rootDir>/coverage',
-  coverageReporters: ['json-summary', 'lcov', 'text', 'clover'],
-  projects: ['<rootDir>/services/*', '<rootDir>/packages/*'],
+  coverageReporters: ['json', 'lcov', 'text', 'clover'],
+  extensionsToTreatAsEsm: ['.ts'],
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1'
-  },
-  extensionsToTreatAsEsm: ['.ts']
+    '^(\\.{1,2}/.*)\\.js$': '$1',
+    '^(\\.{1,2}/.*)\\.ts$': '$1'
+  }
 };
 
 export default config;

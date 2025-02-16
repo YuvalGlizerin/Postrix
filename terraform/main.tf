@@ -84,6 +84,15 @@ module "aws_certificate_manager" {
 
 module "aws_credentials" {
   source = "./modules/aws/credentials"
+
+  providers = {
+    aws = aws
+  }
+}
+
+module "aws_s3" {
+  source = "./modules/aws/s3"
+
   providers = {
     aws = aws
   }

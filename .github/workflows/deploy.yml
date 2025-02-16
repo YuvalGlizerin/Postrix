@@ -61,4 +61,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           title: "Service URLs"
           message: |
-            [Core](https://${{ steps.repo_warm_up.outputs.adhoc_namespace }}-core.postrix.io)
+            [Joby](https://${{ steps.repo_warm_up.outputs.adhoc_namespace }}-joby.postrix.io)

@@ -8,16 +8,71 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      pages: write      # required for deploy-pages
+      id-token: write   # required for deploy-pages
 
     steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20.x'
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - run: npm ci && npm ci --prefix services/core
+      - uses: ./.github/actions/repo-warm-up
+
+      - name: Configure AWS credentials
+        uses: ./.github/actions/aws-warm-up
+
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+
+      - run: npm ci && npm ci --prefix services/joby
       - name: Run Jest Test Suite
         run: npm test
         env:
           CI: true
+
+      - name: Upload Test Report to S3
+        run: |
+          aws s3 sync coverage/lcov-report/ s3://postrix-test-reports/${{ github.sha }}/
+        env:
+          AWS_DEFAULT_REGION: us-east-1
+
+      - name: Generate Coverage Report
+        id: coverage
+        run: |
+          COVERAGE=$(cat coverage/coverage-summary.json | jq -r '.total.lines.pct')
+          SUMMARY=$(cat coverage/coverage-summary.json | jq -r '
+            "| Category | Coverage |\n" +
+            "|----------|----------|\n" +
+            "| Lines | \(.total.lines.pct)% |\n" +
+            "| Statements | \(.total.statements.pct)% |\n" +
+            "| Functions | \(.total.functions.pct)% |\n" +
+            "| Branches | \(.total.branches.pct)% |"
+          ')
+          echo "coverage=$COVERAGE" >> $GITHUB_OUTPUT
+          echo "summary<<EOF" >> $GITHUB_OUTPUT
+          echo "$SUMMARY" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Comment PR
+        uses: ./.github/actions/comment-pr
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          title: "Test Coverage Report"
+          block: |
+            Coverage: ${{ steps.coverage.outputs.coverage }}%
+          message: |
+            ${{ steps.coverage.outputs.summary }}
+
+            **Test Report:** [View detailed coverage report](http://postrix-test-reports.s3-website-us-east-1.amazonaws.com/${{ github.sha }})
+
+      - name: Check 100% Coverage
+        run: |
+          COVERAGE=$(cat coverage/coverage-summary.json | jq -r '.total.lines.pct')
+          if [ "$COVERAGE" != "100" ]; then
+            echo "Error: Test coverage is not 100%. Current coverage: $COVERAGE%"
+            exit 1
+          fi
