@@ -55,10 +55,15 @@ resource "aws_eks_node_group" "postrix_nodes" {
   scaling_config {
     desired_size = 1
     min_size     = 1
-    max_size     = 2
+    max_size     = 5
   }
 
   instance_types = ["t3.medium"]
+
+  tags = {
+    "k8s.io/cluster-autoscaler/enabled" = "true"
+    "k8s.io/cluster-autoscaler/${var.cluster_name}" = "owned"
+  }
 }
 
 // IAM role for EKS nodes, allowing EC2 instances to assume this role
@@ -205,4 +210,54 @@ resource "aws_eks_addon" "ebs_csi" {
   addon_name   = "aws-ebs-csi-driver"
 
   service_account_role_arn = aws_iam_role.ebs_csi_driver.arn
+}
+
+resource "aws_iam_policy" "cluster_autoscaler" {
+  name = "${var.cluster_name}-cluster-autoscaler-policy"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "autoscaling:DescribeAutoScalingGroups",
+          "autoscaling:DescribeAutoScalingInstances",
+          "autoscaling:DescribeLaunchConfigurations",
+          "autoscaling:DescribeTags",
+          "autoscaling:SetDesiredCapacity",
+          "autoscaling:TerminateInstanceInAutoScalingGroup",
+          "ec2:DescribeLaunchTemplateVersions"
+        ]
+        Resource = ["*"]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role" "cluster_autoscaler" {
+  name = "${var.cluster_name}-cluster-autoscaler-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Federated = aws_iam_openid_connect_provider.eks.arn
+        }
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Condition = {
+          StringEquals = {
+            "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:sub": "system:serviceaccount:kube-system:cluster-autoscaler"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "cluster_autoscaler" {
+  policy_arn = aws_iam_policy.cluster_autoscaler.arn
+  role       = aws_iam_role.cluster_autoscaler.name
 }
