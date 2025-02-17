@@ -45,6 +45,14 @@ resource "aws_eks_access_policy_association" "postrix_user_admin" {
   depends_on = [aws_eks_access_entry.postrix_user]
 }
 
+// TODO: Get this approved
+// Increase quota for ec2 instances
+resource "aws_servicequotas_service_quota" "ec2_fleet" {
+  quota_code   = "L-1216C47A" // Running On-Demand Standard (A, C, D, H, I, M, R, T, Z) instances
+  service_code = "ec2"
+  value        = 3
+}
+
 // Managed node group for the EKS cluster, specifying instance type and scaling
 resource "aws_eks_node_group" "postrix_nodes" {
   cluster_name    = aws_eks_cluster.postrix.name
