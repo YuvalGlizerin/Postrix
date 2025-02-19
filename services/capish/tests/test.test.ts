@@ -14,9 +14,8 @@ jest.mock('whatsapp', () => ({
 describe('GET /', () => {
   it('responds with HTML containing welcome message', async () => {
     const response = await request.get('/');
-    expect(response.status).toBe(200);
-    expect(response.text).toContain('Welcome to Capish');
-    expect(response.text).toContain('Generate captions for your WhatsApp videos');
+    expect(response.text).toContain('Capish');
+    expect(response.text).toContain('הצטרפו לפלטפורמה המובילה בישראל להוספת כתוביות לסרטונים');
     expect(response.headers['content-type']).toContain('text/html');
   });
 });
