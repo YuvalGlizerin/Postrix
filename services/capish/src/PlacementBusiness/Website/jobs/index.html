@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<title>Joblify Dashboard</title>
+	<meta http-equiv="Content-Type" content="charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<!-- Icons -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<!-- Login Page CSS -->
+	<link rel="stylesheet" type="text/css" href="css/util.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<!-- VENDOR CSS -->
+	<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="assets/vendor/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="assets/vendor/linearicons/style.css">
+	<link rel="stylesheet" href="assets/vendor/chartist/css/chartist-custom.css">
+	<!-- MAIN CSS -->
+	<link rel="stylesheet" href="assets/css/main.css">
+	<!-- FOR DEMO PURPOSES ONLY. You should remove this in your project -->
+	<link rel="stylesheet" href="assets/css/demo.css">
+	<!-- GOOGLE FONTS -->
+	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700" rel="stylesheet">
+	<!-- ICONS -->
+	<link rel='shortcut icon' type='image/x-icon' href='images/favicon.ico' />
+	<!-- Date Range Picker -->
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+	<!-- Filter Icon -->
+	
+	<style>
+		td {
+			direction: rtl;
+		}
+		.unselectable {
+			-webkit-touch-callout: none;
+			-webkit-user-select: none;
+			-khtml-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+		}
+		#myModalApplicant {
+			padding-right: 17px !important;
+    		padding-left: 17px !important;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- Admin Page -->
+	<div id="adminPage">
+		<!-- WRAPPER -->
+		<div id="wrapper">
+			<!-- NAVBAR -->
+			<nav class="navbar navbar-default navbar-fixed-top" style="position: static;">
+					<div class="ua" style="float: right;margin: 19px 0 0 0;position: relative;min-width: 180px;">
+						<a class="fn" href="#" style="margin: 10px 14px 0 0;float: right;margin-top: 5px;font-size: 20px;color: #333;pointer-events: none;">
+							<b>שלום </b>
+							<span id="navbarNameTitle"></span>
+						</a>
+					</div>
+				<img src="../logo/logo-small.jpg" style="float: left;display: block;height: 100%;">
+			</nav>
+							
+						</nav>
+			<!-- END LEFT SIDEBAR -->
+			<!-- MAIN -->
+			<div style="width: 100%;" class="main">
+				<!-- MAIN CONTENT -->
+				<div class="main-content">
+					<div class="container-fluid">
+						<div class="row" style="direction: ltr;">
+							<div>
+								<div id="jobsPanel" class="panel">
+									<div class="panel-heading">
+										<h3 id="titleActiveJobs" style="float: right; direction: rtl;" class="panel-title">משרות</h3>
+									</div>
+									<div id="search" style="width: 100%;margin-top: 12px;margin-bottom: 0px;">
+										<input type="text" id="freeSearch" value="" class="form-control" placeholder="חיפוש חופשי..." style="direction: rtl;text-align: right;float: right;display: inline;width: 98%;margin-right: 1%;margin-left: 1%;margin-bottom: 10px;">
+										<span onclick="search()" class="input-group-btn" style="display: none;"><button id="search_button" type="button" class="btn btn-primary" style="">הפעל סינון</button></span>
+										<select class="form-control" id="categorySearch" style="direction: rtl;text-align: right;float: left;width: 98%;margin-right: 1%;margin-left: 1%;margin-bottom: 10px;">
+											<option class="category" value="" selected>כל הקטגוריות</option>
+											<option class="category" value="אדמיניסטרציה">אדמיניסטרציה</option>
+											<option class="category" value="ביוטכנולוגיה">ביוטכנולוגיה</option>
+											<option class="category" value="הייטק">הייטק</option>
+											<option class="category" value="הנדסה">הנדסה</option>
+											<option class="category" value="חוק ומשפט">חוק ומשפט</option>
+											<option class="category" value="כללי">כללי</option>
+											<option class="category" value="כספים כלכלה וביטוח">כספים כלכלה וביטוח</option>
+											<option class="category" value="מכירות ושירות לקוחות">מכירות ושירות לקוחות</option>
+										</select>
+										<select class="form-control" id="areaSearch" style="direction: rtl;text-align: right;float: left;width: 98%;margin-right: 1%;margin-left: 1%;margin-bottom: 10px;">
+											<option class="area" value="" selected>כל האזורים</option>
+											<option class="area" value="צפון">צפון</option>
+											<option class="area" value="מרכז">מרכז</option>
+											<option class="area" value="ירושלים והסביבה">ירושלים והסביבה</option>
+											<option class="area" value="דרום">דרום</option>
+										</select>
+									</div>
+									<div class="panel-body no-padding">
+										<table id="tableJobs" class="table table-striped">
+											<thead>
+												<tr>
+													<th>מיקום המשרה</th>
+													<th>שם המשרה</th>
+												</tr>
+											</thead>
+											<tbody id="tbodyJobs">
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- END MAIN CONTENT -->
+			</div>
+			<!-- END MAIN -->
+			<div class="clearfix"></div>
+		</div>
+		<!-- END WRAPPER -->
+		<!-- Modal Job -->
+		<div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="vertical-alignment-helper">
+				<div class="modal-dialog vertical-align-center" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="float: left; margin-top: 8px;">
+								<span aria-hidden="true">×</span>
+							</button>
+						</div>
+						<form id="submitApplicant">
+							<div class="modal-body">
+								<!-- Job Description -->
+								<div style="display: none !important;" class="form-group marginform">
+									<label for="recipient-name" class="col-form-label">מספר משרה:</label>
+									<textarea class="form-control" id="jobID" name="jobID" type="text" readonly=readonly></textarea>
+								</div>
+								<div class="form-group marginform">
+									<label for="recipient-name" class="col-form-label">שם המשרה:</label>
+									<textarea class="form-control" id="jobTitle" name="jobTitle" type="text" readonly=readonly></textarea>
+								</div>
+								<div id="mailForm" class="form-group marginform">
+									<label for="recipient-name" class="col-form-label">מיקום המשרה:</label>
+									<textarea class="form-control" id="jobLocations" name="jobLocations" type="text" readonly=readonly></textarea>
+								</div>
+								<div style="display: none !important;" class="form-group marginform">
+									<label for="recipient-name" class="col-form-label">עמלת השמה:</label>
+									<textarea class="form-control" id="jobCommission" name="jobCommission" type="text" readonly=readonly></textarea>
+								</div>
+								<div style="display: none !important;" class="form-group marginform">
+									<label for="recipient-name" class="col-form-label">תקופת אחריות:</label>
+									<textarea class="form-control" id="jobPeriod" name="jobPeriod" type="text" readonly=readonly></textarea>
+								</div>
+								<div class="form-group marginform">
+									<label for="recipient-name" class="col-form-label">היקף המשרה:</label>
+									<textarea class="form-control" id="jobType" name="jobType" type="text" readonly=readonly></textarea>
+								</div>
+								<div class="form-group marginform">
+									<label for="recipient-name" class="col-form-label">קטגוריות:</label>
+									<textarea class="form-control" id="jobCategories" name="jobCategories" type="text" readonly=readonly></textarea>
+								</div>
+								<div class="form-group marginform">
+									<label for="recipient-name" class="col-form-label">תיאור המשרה:</label>
+									<svg style="display: none !important;" onclick="copyJobDescription('jobDescription')" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="float: left;cursor: pointer;"><path d="M13 17h4v1h-4v-1zm0-1h4v-1h-4v1zm9-14v22h-20v-22h3c1.23 0 2.181-1.084 3-2h8c.82.916 1.771 2 3 2h3zm-11 1c0 .552.448 1 1 1 .553 0 1-.448 1-1s-.447-1-1-1c-.552 0-1 .448-1 1zm9 1h-4l-2 2h-3.897l-2.103-2h-4v18h16v-18zm-7 9h4v-1h-4v1zm0-2h4v-1h-4v1zm-6.5.077l.386-.355c.449.218.735.383 1.241.745.952-1.081 1.58-1.627 2.748-2.355l.125.288c-.963.841-1.669 1.777-2.686 3.6-.626-.738-1.044-1.208-1.814-1.923zm.098 5l.386-.355c.449.218.735.383 1.241.745.952-1.081 1.58-1.627 2.748-2.355l.125.289c-.963.841-1.669 1.777-2.686 3.6-.627-.739-1.045-1.209-1.814-1.924z"></path></svg>
+									<textarea class="form-control" id="jobDescription" name="jobDescription" type="text" readonly=readonly></textarea>
+								</div>
+								<div style="display: none !important;" class="form-group marginform">
+									<label for="recipient-name" class="col-form-label">מידע לסוכנים:</label>
+									<textarea class="form-control" id="jobAgentDescription" name="jobAgentDescription" type="text" readonly=readonly></textarea>
+								</div>
+								<div class="form-group marginform">
+									<label for="recipient-name" class="col-form-label">תיאור החברה:</label>
+									<textarea class="form-control" id="jobCompanyDescription" name="jobCompanyDescription" type="text"
+									readonly=readonly></textarea>
+								</div>
+								<!-- Applicant Details -->
+								<div style="display: none !important;" class="form-group marginform">
+									<label for="recipient-name" class="col-form-label">שם המועמד(שדה חובה):</label>
+									<input class="form-control" id="applicantName" name="applicantName" type="text" />
+								</div>
+								<div style="display: none !important;" class="form-group marginform">
+									<label for="recipient-name" class="col-form-label">דואר אלקטרוני של המועמד(שדה חובה):</label>
+									<input class="form-control" id="applicantMail" name="applicantMail" type="text" />
+								</div>
+								<div style="display: none !important;" class="form-group marginform">
+									<label for="recipient-name" class="col-form-label">נייד המועמד(שדה חובה):</label>
+									<input class="form-control" id="applicantPhone" name="applicantPhone" type="text" />
+								</div>
+								<div style="display: none !important;" class="form-group marginform">
+									<label for="recipient-name" class="col-form-label">כתובת המועמד(שדה חובה):</label>
+									<input class="form-control" id="applicantAddress" name="applicantAddress" type="text" />
+								</div>
+								<div id="applicantQuestions">
+									
+								</div>
+								<div style="display: none !important;" class="form-group marginform">
+									<label for="recipient-name" class="col-form-label">תקציר המועמד:</label>
+									<textarea class="form-control" id="applicantDescription" name="applicantDescription" type="text"></textarea>
+								</div>
+								<div style="display: none !important;" class="field_wrap field_file field_file_file"><input class="field" type="file"
+										id="applicantResume" name="file[0]" data-validate="true"
+										autocomplete="off" default_value="" mandatory="1" allowed_size="5000000"
+										allowed_ext="pdf,doc,docx,jpg,jpeg,png" data-upload="" style="
+									cursor: pointer;
+									position: relative;
+									opacity: 0;
+									width: 100%;
+									height: 0;
+								">
+									<div id="applicantResumeLabel" onclick="$('#applicantResume').click()" class="u_button" style="
+									overflow: hidden;
+									float: none;
+									margin: auto;
+									width: 100%;
+									display: block;
+									box-sizing: border-box;
+									opacity: 0.9;
+									text-align: center;
+									background: #fff;
+									border: #7EE7E8 1px solid;
+									border-radius: 5px;
+									padding: 10px;
+									color: #02acf6;
+									font-size: 15px;
+									cursor: pointer;
+								">העלה קורות חיים(חובה) +</div>
+									<div class="allowed_file_ext"><span>סיומות אפשריות: pdf ,doc ,docx ,jpg ,jpeg ,png.</span></div>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" name="close" class="btn btn-secondary" data-dismiss="modal"
+									style="float: left;">סגור</button>
+								<button id="submit" name="submit" type="submit" class="btn btn-primary"
+									style="float: left;">הגש מועמדות</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Javascript -->
+	<script src="assets/vendor/jquery/jquery.min.js"></script>
+	<script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>
+	<script src="assets/vendor/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+	<script src="assets/vendor/jquery.easy-pie-chart/jquery.easypiechart.min.js"></script>
+	<script src="assets/vendor/chartist/js/chartist.min.js"></script>
+	<script src="assets/scripts/klorofil-common.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.6/dist/loadingoverlay.min.js"></script>
+	<!-- Date Range Picker -->
+	<script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+	<!-- Form Validator -->
+	<script type="text/javascript" src="assets/scripts/FormValidator.js?ver=2.4"></script>
+
+	<script src="https://www.gstatic.com/firebasejs/6.2.2/firebase.js"></script>
+	<script>
+		var loading = true
+		showBackground("טוען משרות...")
+
+		var firestoreUser = null
+		// Initialize Firebase
+		var config = {
+			apiKey: "AIzaSyCSavrZTK9jWXLYmIC3ahYuBFm-FdSPkkc",
+			authDomain: "manpower-598c9.firebaseapp.com",
+			databaseURL: "https://manpower-598c9.firebaseio.com",
+			projectId: "manpower-598c9",
+			storageBucket: "manpower-598c9.appspot.com",
+			messagingSenderId: "496181078375"
+		}
+		firebase.initializeApp(config)
+		// Initialize Cloud Firestore through Firebase
+		var db = firebase.firestore()
+		// Disable deprecated features
+		db.settings({
+			timestampsInSnapshots: true
+		})
+		//insertUser(decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent('UID').replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1")))
+
+		function insertUser(UID) {
+			db.collection("Users").doc(UID).get().then(function(doc) {
+				if (doc.exists) {
+					$("#navbarNameTitle").text(doc.data().Name)
+					$("#applicantName").val(doc.data().Name)
+					$("#applicantMail").val(doc.data().Mail)
+					$("#applicantPhone").val(doc.data().Phone)
+					$("#applicantAddress").val(doc.data().Address)
+					$("#applicantDescription").val(doc.data().Description)
+				} 
+				else {
+					alert("User not found!")
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error)
+			})
+		}
+
+		function isActive(lastScanned) {
+			return true
+			if(lastScanned) {
+				var israeliDate = getDate(lastScanned.toDate())
+				var millisecondsDifference = firebase.firestore.Timestamp.fromDate(new Date()).toDate() - lastScanned.toDate()
+				var daysDifference = millisecondsToDays(millisecondsDifference)
+				if(daysDifference >= 0 && daysDifference <= 3) { //Up to 2 days time difference until warning
+					return true
+				}
+				else {
+					return false
+				}
+			}
+			return true
+		}
+		function millisecondsToDays(t) {
+			var cd = 24 * 60 * 60 * 1000
+			var	ch = 60 * 60 * 1000
+			var	d = Math.floor(t / cd)
+			var	h = Math.floor( (t - d * cd) / ch)
+			var	m = Math.round( (t - d * cd - h * ch) / 60000)
+			var	pad = function(n) { return n < 10 ? '0' + n : n }
+			if( m === 60 ) {
+				h++
+				m = 0
+			}
+			if( h === 24 ) {
+				d++
+				h = 0
+			}
+			//return [d, pad(h), pad(m)].join(':') //return d:h:m
+			return d //days
+		}
+		function add0(param) {
+			return (param.toString().length == 1) ? '0' + param.toString() : param.toString()
+		}
+		function getDayMonthYear(date) {
+			return add0(date.getDate()) + '.' + add0(date.getMonth() + 1) + '.' + add0(date.getFullYear())
+		}
+		function getDate(date) {
+			return getDayMonthYear(date) + ' ' + add0(date.getHours()) + ':' + add0(date.getMinutes()) + ':' + add0(date.getSeconds())
+		}
+
+		function search() {
+			// Show all rows
+			$('tr.tablerow').show()
+
+			// Free search and Category filter and Area filter
+			if(document.getElementById('search').style.display != 'none') {
+				var input, filter, table, tr, td, i
+				var overall = 0, errors = 0, warnings = 0, completed = 0
+				var category = document.getElementById('categorySearch').value.toUpperCase()
+				var area = document.getElementById('areaSearch').value.toUpperCase()
+				input = document.getElementById("freeSearch")
+				filter = input.value.toUpperCase()
+				table = document.getElementById("tbodyJobs")
+				tr = table.getElementsByTagName("tr")
+				// Loop through all table rows, and hide those who don't match the search query
+				for (i = 0; i < tr.length; i++) {
+					var filterSearch = false
+					var filterCategory = false
+					var filterArea = false
+					//Filter search
+					cells = tr[i].getElementsByClassName("search")
+					for (j = 0; j < cells.length; j++) {
+						if (cells[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+							filterSearch = true
+							break
+						}
+					}
+					//Category search
+					cells = tr[i].getElementsByClassName("searchCategory")
+					for (j = 0; j < cells.length; j++) {
+						if (cells[j].innerHTML.toUpperCase().indexOf(category) > -1) {
+							filterCategory = true
+							break
+						}
+					}
+					//Area search
+					cells = tr[i].getElementsByClassName("searchArea")
+					for (j = 0; j < cells.length; j++) {
+						if (cells[j].innerHTML.toUpperCase().indexOf(area) > -1) {
+							filterArea = true
+							break
+						}
+					}
+					if (filterSearch == false || filterCategory == false || filterArea == false) {
+						tr[i].style.display = "none"
+					} 
+				}
+			}
+
+			// Zebra rows
+			var table = document.getElementById("tbodyJobs")
+			var tr = table.getElementsByTagName("tr")
+			var counter = 0
+			for (i = 0; i < tr.length; i++) {
+				if(tr[i].style.display != "none") {
+					counter++
+					tr[i].style.backgroundColor = (counter%2 == 1) ? '#f9f9f9' : '#fff'
+				}
+			}
+
+			document.getElementById('titleActiveJobs').innerText = counter + ' משרות'
+		}
+
+		// Update Jobs Table
+		db.collection("Jobs").orderBy('Locations', 'asc').onSnapshot({ includeMetadataChanges: true }, function (querySnapshot) {
+			//Check if change has happened on the backend
+			if (querySnapshot.metadata.fromCache == false && querySnapshot.metadata.hasPendingWrites == false) {
+				var content = ''
+				querySnapshot.forEach(function (doc) {
+					if(isActive(doc.data().LastScanned)) {
+						// doc.data() is never undefined for query doc snapshots
+						content += '<tr class="tablerow" id="' + doc.id + '">'
+						content += '<td class="resolutionDisplay" onclick="showJob(' + "'" + doc.id + "'" + ')" style="display: none;white-space: nowrap" id="jobPeriod' + doc.id + '">' + doc.data().Period + '</td>'
+						content += '<td onclick="showJob(' + "'" + doc.id + "'" + ')" style="display: none;white-space: nowrap" id="jobCommission' + doc.id + '">' + doc.data().Commission + '</td>'
+						content += '<td class="search" onclick="showJob(' + "'" + doc.id + "'" + ')" id="jobLocations' + doc.id + '">' + doc.data().Locations.toString().replace(/,/g, ', ') + '</td>'
+						content += '<td class="search" onclick="showJob(' + "'" + doc.id + "'" + ')" style="font-weight: bold;" id="jobTitle' + doc.id + '">' + doc.data().Title + '</td>'
+						content += '<td class="search" onclick="showJob(' + "'" + doc.id + "'" + ')" style="display: none;text-align: left;width:1%;white-space:nowrap;" id="jobID' + doc.id + '">' + doc.data().ID + '</td>'
+						content += '<td class="favoriteJob resolutionDisplay" onclick=' + "'updateFavoriteJobs(" + '"' + doc.id.toString() + '"' + "," + JSON.stringify((doc.data().UID ? doc.data().UID : [])) + ")'" + ' id="favoriteJob' + doc.id + '" style="display: none;padding: 0;padding-bottom: 0;"><span style="font-size: 26px;color: #00aaff;">&bigstar;</span></td>'
+						content += '<td class="search" onclick="showJob(' + "'" + doc.id + "'" + ')" style="display: none" id="jobType' + doc.id + '">' + doc.data().JobType + '</td>'
+						content += '<td class="search searchCategory" onclick="showJob(' + "'" + doc.id + "'" + ')" style="display: none" id="jobCategories' + doc.id + '">' + doc.data().Categories + '</td>'
+						content += '<td class="search searchArea" onclick="showJob(' + "'" + doc.id + "'" + ')" style="display: none" id="jobAreas' + doc.id + '">' + doc.data().Areas + '</td>'
+						content += '<td class="search" onclick="showJob(' + "'" + doc.id + "'" + ')" style="display: none" id="jobDescription' + doc.id + '">' + doc.data().Description + '</td>'
+						content += '<td class="search" onclick="showJob(' + "'" + doc.id + "'" + ')" style="display: none" id="jobAgentDescription' + doc.id + '">' + doc.data().AgentDescription + '</td>'
+						content += '<td class="search" onclick="showJob(' + "'" + doc.id + "'" + ')" style="display: none" id="jobCompanyDescription' + doc.id + '">' + doc.data().CompanyDescription + '</td>'
+						for(var i = 0; i < doc.data().Questions.length; i++) {
+							content += '<td class="search" onclick="showJob(' + "'" + doc.id + "'" + ')" style="display: none" id="jobQuestions' + i + doc.id + '">' + doc.data().Questions[i] + '</td>'
+						}
+						content += '</tr>'
+					}
+				})
+				$('#tbodyJobs').html(content)
+				if(loading == true) {
+					loading = false
+					$.LoadingOverlay("hide")
+				}
+				search()
+			}
+		})
+
+		function showJob(id) {
+			$("#jobID").val($("[id='jobID" + id + "']").text())
+			$("#jobTitle").val($("[id='jobTitle" + id + "']").text())
+			$("#jobLocations").val($("[id='jobLocations" + id + "']").text())
+			$("#jobCommission").val($("[id='jobCommission" + id + "']").text())
+			$("#jobPeriod").val($("[id='jobPeriod" + id + "']").text())
+			$("#jobType").val($("[id='jobType" + id + "']").text())
+			$("#jobCategories").val($("[id='jobCategories" + id + "']").text())
+			$("#jobDescription").val($("[id='jobDescription" + id + "']").text())
+			$("#jobAgentDescription").val($("[id='jobAgentDescription" + id + "']").text())
+			$("#jobCompanyDescription").val($("[id='jobCompanyDescription" + id + "']").text())
+
+			var content = ''
+			for(var i = 0; $("#jobQuestions" + i + id).length > 0; i++) {
+				if(i == 0) {
+					content += '<label for="recipient-name" class="col-form-label">שאלות סינון(חובה):</label>'
+				}
+				name = $("#jobQuestions" + i + id).text().replace(/"/g, "''")
+				content += '<div class="form-group marginform"><label for="recipient-name" class="col-form-label">' + $("#jobQuestions" + i + id).text() + '</label><input class="form-control" class="applicantQuestion" id="applicantQuestion' + i + '" name="jobQuestions' + i + id + '" type="text" /></div>'
+			}
+			$("#applicantQuestions").html(content)
+			document.getElementById('applicantResume').value = ""
+			$("#applicantResumeLabel").text('העלה קורות חיים(חובה) +')
+
+			$('#modalStar').text($("[id='favoriteJob" + id + "']").text())
+			if($("tr[id='" + id + "']").hasClass('isHot')) {
+				$("#fullFlameModal").show()
+				$("#emptyFlameModal").hide()
+			}
+			else {
+				$("#fullFlameModal").hide()
+				$("#emptyFlameModal").show()
+			}
+			
+			$('#myModal').modal('show')
+			$('textarea').trigger('input')
+		}
+
+		// Make the modal work with the back button
+		$('.modal').on('show.bs.modal', function (e) {
+			try {
+				window.history.pushState('forward', null, './#')
+			}
+			catch(err) {}
+		})
+		$(".modal").on("hidden.bs.modal", function () {
+			try {
+				history.replaceState({}, document.title, ".")
+			}
+			catch(err) {}
+		})
+		if (window.history && window.history.pushState) {
+			$(window).on('popstate', function () {
+				$('.modal').modal('hide')
+				try {
+					history.replaceState({}, document.title, ".")
+				}
+				catch(err) {}
+			})
+		}
+
+		//Auto size textarea
+		$('textarea').each(function () {
+			this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;')
+		}).on('input', function () {
+			this.style.height = 'auto'
+			this.style.height = (this.scrollHeight) + 'px'
+		})
+
+		//Change file button name
+		$("#applicantResume").change(function() {
+			$("#applicantResumeLabel").text(this.files[0].name)
+		})
+
+		$("#freeSearch").on("change paste keyup", function() {
+			search()
+		})
+
+		$('#categorySearch').on('change', function() {
+			search()
+		})
+
+		$('#areaSearch').on('change', function() {
+			search()
+		})
+
+		function showBackground(str = "מעלה נתונים לשרת...") {
+			$.LoadingOverlay("show", {
+				image       : "",
+				text        : str,
+				textColor   : "#EEEEEE",
+				background  : "rgba(0, 0, 0, 0.8)",
+				textResizeFactor    : "0.2"
+			})
+		}
+
+		function makeid(length) {
+			var result           = '';
+			var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+			var charactersLength = characters.length;
+			for ( var i = 0; i < length; i++ ) {
+				result += characters.charAt(Math.floor(Math.random() * charactersLength));
+			}
+			return result;
+		}
+
+		//Submit applicant
+		$("#submitApplicant").submit(function(e) {
+			e.preventDefault()
+			var jobID = $('#jobID').val()
+			var resume = document.getElementById('applicantResume').files[0]
+			var applicantForm = jQuery('#submitApplicant').serializeArray()
+			// Firestore Object
+			var applicantFirestore = {'ID': jobID, 'Questions': [], 'Status': 'חדש לא סוכן', 'ManagerComment': '', 'Date': firebase.firestore.FieldValue.serverTimestamp()}
+			for (let i = 0; i < applicantForm.length; i++) {
+				if(applicantForm[i]['name'].includes('jobQuestions') == false) {
+					applicantFirestore[applicantForm[i]['name']] = applicantForm[i]['value']
+				}
+				else {
+					var question = $('#' + applicantForm[i]['name']).text()
+					var answer = applicantForm[i]['value']
+					if(answer.trim() == '') {
+						alert('צריך לענות על כל שאלות הסינון')
+						return
+					}
+					applicantFirestore['Questions'].push({'Question': question, 'Answer': answer})
+				}
+			}
+			console.log(applicantFirestore)
+			showBackground()
+			db.collection("Applicants").add(
+				applicantFirestore
+			)
+			.then(function () {
+				$.LoadingOverlay("hide")
+			})
+			.catch(function (error) {
+				alert('Error sending data. Please contact your manager to resolve this issue\n\nError: ' + error)
+			})
+			$('.modal').modal('hide')
+		})
+	</script>
+</body>
+
+</html>
