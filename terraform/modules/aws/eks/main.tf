@@ -45,6 +45,14 @@ resource "aws_eks_access_policy_association" "postrix_user_admin" {
   depends_on = [aws_eks_access_entry.postrix_user]
 }
 
+// TODO: Get this approved
+# // Increase quota for ec2 instances
+# resource "aws_servicequotas_service_quota" "ec2_fleet" {
+#   quota_code   = "L-1216C47A" // Running On-Demand Standard (A, C, D, H, I, M, R, T, Z) instances
+#   service_code = "ec2"
+#   value        = 3
+# }
+
 // Managed node group for the EKS cluster, specifying instance type and scaling
 resource "aws_eks_node_group" "postrix_nodes" {
   cluster_name    = aws_eks_cluster.postrix.name
@@ -53,12 +61,17 @@ resource "aws_eks_node_group" "postrix_nodes" {
   subnet_ids      = var.subnet_ids
 
   scaling_config {
-    desired_size = 1
+    desired_size = 2
     min_size     = 1
-    max_size     = 2
+    max_size     = 5
   }
 
   instance_types = ["t3.medium"]
+
+  tags = {
+    "k8s.io/cluster-autoscaler/enabled" = "true"
+    "k8s.io/cluster-autoscaler/${var.cluster_name}" = "owned"
+  }
 }
 
 // IAM role for EKS nodes, allowing EC2 instances to assume this role
@@ -205,4 +218,51 @@ resource "aws_eks_addon" "ebs_csi" {
   addon_name   = "aws-ebs-csi-driver"
 
   service_account_role_arn = aws_iam_role.ebs_csi_driver.arn
+}
+
+resource "aws_iam_role" "cluster_autoscaler" {
+  name = "postrix-cluster-autoscaler-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Federated = aws_iam_openid_connect_provider.eks.arn
+        }
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Condition = {
+          StringEquals = {
+            "${replace(aws_eks_cluster.postrix.identity[0].oidc[0].issuer, "https://", "")}:sub": "system:serviceaccount:kube-system:cluster-autoscaler-aws-cluster-autoscaler"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "cluster_autoscaler" {
+  name = "postrix-cluster-autoscaler-policy"
+  role = aws_iam_role.cluster_autoscaler.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "autoscaling:DescribeAutoScalingGroups",
+          "autoscaling:DescribeAutoScalingInstances",
+          "autoscaling:DescribeLaunchConfigurations",
+          "autoscaling:DescribeTags",
+          "autoscaling:SetDesiredCapacity",
+          "autoscaling:TerminateInstanceInAutoScalingGroup",
+          "ec2:DescribeLaunchTemplateVersions",
+          "ec2:DescribeInstanceTypes"
+        ]
+        Resource = ["*"]
+      }
+    ]
+  })
 }

@@ -1,6 +1,7 @@
 {
   "launches": {
-    "Joby": "Joby"
+    "Joby": "Joby",
+    "Capish": "Capish"
   },
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
@@ -22,6 +23,7 @@
   },
   "cSpell.words": [
     "bitnami",
+    "Capish",
     "helmfile",
     "joby",
     "postrix",

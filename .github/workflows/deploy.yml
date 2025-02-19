@@ -62,3 +62,4 @@ jobs:
           title: "Service URLs"
           message: |
             [Joby](https://${{ steps.repo_warm_up.outputs.adhoc_namespace }}-joby.postrix.io)
+            [Capish](https://${{ steps.repo_warm_up.outputs.adhoc_namespace }}-capish.postrix.io)

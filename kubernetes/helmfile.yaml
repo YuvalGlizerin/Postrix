@@ -5,6 +5,8 @@ repositories:
     url: https://charts.bitnami.com/bitnami
   - name: ingress-nginx
     url: https://kubernetes.github.io/ingress-nginx
+  - name: autoscaler
+    url: https://kubernetes.github.io/autoscaler
 
 environments:
   local: {}
@@ -12,6 +14,15 @@ environments:
   prod: {}
 
 releases:
+  - name: cluster-autoscaler
+    namespace: kube-system
+    chart: autoscaler/cluster-autoscaler
+    version: "9.46.0"
+    labels:
+      app: cluster-autoscaler
+    values:
+      - ./cluster-autoscaler/values/{{ .Environment.Name }}.yaml
+
   - name: external-dns
     namespace: kube-system
     chart: ./external-dns
@@ -62,3 +73,12 @@ releases:
       group: app
     values:
       - ./joby/values/{{ .Environment.Name }}.yaml
+
+  - name: capish
+    namespace: "{{ default .Namespace .Environment.Name }}"
+    chart: ./common
+    labels:
+      app: capish
+      group: app
+    values:
+      - ./capish/values/{{ .Environment.Name }}.yaml
