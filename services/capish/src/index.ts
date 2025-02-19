@@ -11,7 +11,7 @@ const PORT = process.env.PORT;
 app.use(express.static('src/PlacementBusiness/Website'));
 
 app.get('/', (req: Request, res: Response) => {
-  res.sendFile('PlacementBusiness/Website/index.html', { root: './src' });
+  res.sendFile('PlacementBusiness/Website/index.html', { root: 'src/PlacementBusiness/Website' });
 });
 
 app.get('/webhook', (req: Request, res: Response) => {
