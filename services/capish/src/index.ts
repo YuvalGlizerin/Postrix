@@ -21,12 +21,18 @@ app.get('/health', (req, res) => {
   res.status(200).send('OK');
 });
 
+// Calculate the correct path for the Website directory
+const websitePath = path.join(__dirname, '..', 'PlacementBusiness', 'Website');
+console.log('Website path:', websitePath);
+
 // Serve static files
-app.use(express.static(path.join(__dirname, 'PlacementBusiness', 'Website')));
+app.use(express.static(websitePath));
 
 // Default route
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'PlacementBusiness', 'Website', 'index.html'));
+  const indexPath = path.join(websitePath, 'index.html');
+  console.log('Trying to serve:', indexPath);
+  res.sendFile(indexPath);
 });
 
 app.get('/webhook', (req: Request, res: Response) => {
@@ -123,7 +129,6 @@ app.get('/privacy-policy', (req: Request, res: Response) => {
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-  console.log(`Static files path: ${path.join(__dirname, 'PlacementBusiness', 'Website')}`);
 });
 
 export { app as default };
