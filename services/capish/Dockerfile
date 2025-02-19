@@ -26,10 +26,6 @@ RUN npm ci
 RUN npm run build
 # RUN cd services/capish && npm prune --production
 
-# Copy website files to dist
-RUN mkdir -p dist/PlacementBusiness && \
-    cp -r services/capish/src/PlacementBusiness/Website dist/PlacementBusiness/
-
 # Production image
 FROM node:22.13.1-slim
 
