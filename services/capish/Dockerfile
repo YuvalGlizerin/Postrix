@@ -26,6 +26,9 @@ RUN npm ci
 RUN npm run build
 # RUN cd services/capish && npm prune --production
 
+# Copy website files to dist
+RUN cp -r src/PlacementBusiness/Website dist/
+
 # Production image
 FROM node:22.13.1-slim
 
@@ -44,6 +47,7 @@ COPY --from=builder /usr/workspace/packages ../../packages
 
 # Copy environment files
 COPY services/capish/envs ./envs
+
 
 # Expose the port
 EXPOSE 8080
