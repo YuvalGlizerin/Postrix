@@ -7,6 +7,11 @@ process.title = 'Capish';
 const app = express();
 const PORT = process.env.PORT;
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
 // Add this line to serve static files from the Website directory
 app.use(express.static('src/PlacementBusiness/Website'));
 
