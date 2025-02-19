@@ -1,8 +1,17 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import whatsapp from 'whatsapp';
 
 dotenv.config({ path: `envs/${process.env.ENV}.env` });
+
+// ES modules fix for __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 process.title = 'Capish';
 const app = express();
 const PORT = process.env.PORT;
@@ -12,11 +21,12 @@ app.get('/health', (req, res) => {
   res.status(200).send('OK');
 });
 
-// Add this line to serve static files from the Website directory
-app.use(express.static('src/PlacementBusiness/Website'));
+// Serve static files
+app.use(express.static(path.join(__dirname, 'PlacementBusiness', 'Website')));
 
-app.get('/', (req: Request, res: Response) => {
-  res.sendFile('PlacementBusiness/Website/index.html', { root: 'src/PlacementBusiness/Website' });
+// Default route
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'PlacementBusiness', 'Website', 'index.html'));
 });
 
 app.get('/webhook', (req: Request, res: Response) => {
@@ -111,8 +121,9 @@ app.get('/privacy-policy', (req: Request, res: Response) => {
   res.send(html);
 });
 
-const server = app.listen(PORT, () => {
-  console.log(`Capish service is running on ${process.env.ENV}: http://localhost:${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+  console.log(`Static files path: ${path.join(__dirname, 'PlacementBusiness', 'Website')}`);
 });
 
-export { server as default };
+export { app as default };
