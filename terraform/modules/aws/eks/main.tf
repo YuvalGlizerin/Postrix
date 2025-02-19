@@ -46,12 +46,12 @@ resource "aws_eks_access_policy_association" "postrix_user_admin" {
 }
 
 // TODO: Get this approved
-// Increase quota for ec2 instances
-resource "aws_servicequotas_service_quota" "ec2_fleet" {
-  quota_code   = "L-1216C47A" // Running On-Demand Standard (A, C, D, H, I, M, R, T, Z) instances
-  service_code = "ec2"
-  value        = 3
-}
+# // Increase quota for ec2 instances
+# resource "aws_servicequotas_service_quota" "ec2_fleet" {
+#   quota_code   = "L-1216C47A" // Running On-Demand Standard (A, C, D, H, I, M, R, T, Z) instances
+#   service_code = "ec2"
+#   value        = 3
+# }
 
 // Managed node group for the EKS cluster, specifying instance type and scaling
 resource "aws_eks_node_group" "postrix_nodes" {
@@ -61,7 +61,7 @@ resource "aws_eks_node_group" "postrix_nodes" {
   subnet_ids      = var.subnet_ids
 
   scaling_config {
-    desired_size = 1
+    desired_size = 2
     min_size     = 1
     max_size     = 5
   }

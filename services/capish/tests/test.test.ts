@@ -12,10 +12,22 @@ jest.mock('whatsapp', () => ({
 
 // Test the / endpoint
 describe('GET /', () => {
-  it('responds with "Full CI/CD running on"', async () => {
+  it('responds with HTML containing welcome message', async () => {
     const response = await request.get('/');
     expect(response.status).toBe(200);
-    expect(response.text).toContain('Full CI/CD running on');
+    expect(response.text).toContain('Welcome to Capish');
+    expect(response.text).toContain('Generate captions for your WhatsApp videos');
+    expect(response.headers['content-type']).toContain('text/html');
+  });
+});
+
+describe('GET /privacy-policy', () => {
+  it('responds with privacy policy HTML', async () => {
+    const response = await request.get('/privacy-policy');
+    expect(response.status).toBe(200);
+    expect(response.text).toContain('Privacy Policy');
+    expect(response.text).toContain('Last updated');
+    expect(response.headers['content-type']).toContain('text/html');
   });
 });
 
