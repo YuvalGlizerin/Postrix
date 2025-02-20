@@ -7,6 +7,11 @@ process.title = 'joby';
 const app = express();
 const PORT = process.env.PORT;
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
 app.get('/', (req: Request, res: Response) => {
   res.send(`Full CI/CD running on ${process.env.ENV}.\nFixed service!`);
 });

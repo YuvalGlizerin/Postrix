@@ -45,6 +45,7 @@ COPY --from=builder /usr/workspace/packages ../../packages
 # Copy environment files
 COPY services/capish/envs ./envs
 
+
 # Expose the port
 EXPOSE 8080
 
