@@ -146,7 +146,7 @@ app.get('/', (req: Request, res: Response) => {
               </div>
               <div class="col-lg-8 mx-auto">
                 <p class="text-faded mb-5">הצטרפו לפלטפורמה המובילה בישראל להוספת כתוביות לסרטונים! מערכת חכמה, מקצועית ומדויקת שתעזור לכם להגיע לקהל רחב יותר</p>
-                <a class="btn btn-primary btn-xl js-scroll-trigger" href="admin">התחילו עכשיו</a>
+                <a class="btn btn-primary btn-xl js-scroll-trigger" href="#contact">התחילו עכשיו</a>
               </div>
             </div>
           </div>
@@ -159,7 +159,7 @@ app.get('/', (req: Request, res: Response) => {
                 <h2 class="section-heading text-white">Capish קצת על</h2>
                 <hr class="light my-4">
                 <p style="direction: rtl" class="text-faded mb-4">Capish היא הפלטפורמה המתקדמת ביותר להוספת כתוביות לסרטונים בישראל. המערכת שלנו משלבת טכנולוגיית AI מתקדמת עם עריכה אנושית מקצועית, כדי להבטיח דיוק מרבי ואיכות ללא פשרות. בין אם מדובר בסרטוני תדמית, הדרכה, או תוכן שיווקי - אנחנו נדאג שהמסר שלכם יגיע לכולם.</p>
-                <a class="btn btn-light btn-xl js-scroll-trigger" href="admin">התחל עכשיו</a>
+                <a class="btn btn-light btn-xl js-scroll-trigger" href="#contact">התחל עכשיו</a>
               </div>
             </div>
           </div>
