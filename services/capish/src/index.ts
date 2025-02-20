@@ -12,6 +12,24 @@ app.get('/health', (req, res) => {
   res.status(200).send('OK');
 });
 
+// Add proxy endpoints for font files
+app.get('/proxy/vendor/*', async (req: Request, res: Response) => {
+  try {
+    const url = `https://manpower.netlify.app${req.path.replace('/proxy', '')}`;
+    const response = await fetch(url);
+    const buffer = await response.arrayBuffer();
+
+    // Set appropriate headers
+    res.set('Content-Type', response.headers.get('content-type') || 'application/octet-stream');
+    res.set('Access-Control-Allow-Origin', '*');
+
+    res.send(Buffer.from(buffer));
+  } catch (error) {
+    console.error('Proxy error:', error);
+    res.status(500).send('Error fetching resource');
+  }
+});
+
 app.get('/', (req: Request, res: Response) => {
   const html = `
     <!DOCTYPE html>
@@ -34,7 +52,7 @@ app.get('/', (req: Request, res: Response) => {
         <link rel="shortcut icon" href="https://manpower.netlify.app/img/favicon.ico" type="image/x-icon"/>
 
         <!-- Custom fonts for this template -->
-        <link href="https://manpower.netlify.app/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+        <link href="/proxy/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
         <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
         <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
 
