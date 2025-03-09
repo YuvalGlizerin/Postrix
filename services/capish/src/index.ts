@@ -245,6 +245,7 @@ app.get('/', (req: Request, res: Response) => {
   res.send(html);
 });
 
+// Add work in progress auto response
 app.get('/webhook', (req: Request, res: Response) => {
   whatsapp.verifyToken(req, res, 'VERIFY_TOKEN');
 });
