@@ -27,7 +27,7 @@ app.post('/webhook', async (req: Request, res: Response) => {
 
     const client = new SecretsManagerClient({
       region: 'us-east-1',
-      credentials: fromIni()
+      ...(process.env.ENV === 'local' ? { credentials: fromIni() } : {})
     });
 
     const response = await client.send(new GetSecretValueCommand({ SecretId: secretName }));
