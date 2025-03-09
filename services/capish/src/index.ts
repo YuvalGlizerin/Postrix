@@ -1,15 +1,73 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import whatsapp from 'whatsapp';
+import { fromIni } from '@aws-sdk/credential-providers';
+import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
 
 dotenv.config({ path: `envs/${process.env.ENV}.env` });
 process.title = 'Capish';
 const app = express();
 const PORT = process.env.PORT;
 
+app.use(express.json()); // Add this line to parse JSON request bodies
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).send('OK');
+});
+
+app.get('/webhook', async (req: Request, res: Response) => {
+  whatsapp.verifyToken(req, res, 'VERIFY_TOKEN');
+});
+
+// Add work in progress auto response
+app.post('/webhook', async (req: Request, res: Response) => {
+  try {
+    const secretName = 'capish-whatsapp-api';
+
+    const client = new SecretsManagerClient({
+      region: 'us-east-1',
+      credentials: fromIni()
+    });
+
+    const response = await client.send(new GetSecretValueCommand({ SecretId: secretName }));
+    if (!response.SecretString) {
+      throw new Error('Secret not found');
+    }
+
+    // Log the incoming request body to understand its structure
+    console.log('Incoming webhook payload:', JSON.stringify(req.body, null, 2));
+
+    const { access_token: accessToken, phone_id: phoneId } = JSON.parse(response.SecretString);
+    const url = `https://graph.facebook.com/v22.0/${phoneId}/messages`;
+    const payload = {
+      messaging_product: 'whatsapp',
+      recipient_type: 'individual',
+      to: req.body.value.messages[0].from,
+      type: 'text',
+      text: {
+        body: 'Work in progress. Please try again later.'
+      }
+    };
+
+    const result = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!result.ok) {
+      throw new Error('Failed to send message');
+    }
+
+    res.status(200).send('Message sent successfully');
+  } catch (error) {
+    console.error('Error fetching secret:', error);
+    res.status(500).send('Error fetching secret');
+  }
 });
 
 // Add proxy endpoints for font files
@@ -243,10 +301,6 @@ app.get('/', (req: Request, res: Response) => {
 
     </html>`;
   res.send(html);
-});
-
-app.get('/webhook', (req: Request, res: Response) => {
-  whatsapp.verifyToken(req, res, 'VERIFY_TOKEN');
 });
 
 app.get('/privacy-policy', (req: Request, res: Response) => {

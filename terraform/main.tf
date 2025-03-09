@@ -98,6 +98,14 @@ module "aws_s3" {
   }
 }
 
+module "aws_secrets_manager" {
+  source = "./modules/aws/secrets-manager" 
+
+  providers = {
+    aws = aws
+  }
+}
+
 module "github" {
   source = "./modules/github"
   domain = var.domain
