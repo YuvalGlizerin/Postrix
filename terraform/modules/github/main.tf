@@ -33,10 +33,9 @@ resource "github_branch_protection" "main" {
     dismiss_stale_reviews = false
     require_code_owner_reviews = false
     required_approving_review_count = 0
-    pull_request_bypassers = ["/YuvalGlizerin"]
   }
 
-  enforce_admins = true
+  enforce_admins = false
 }
 
 resource "github_repository_collaborator" "yuval-eb" {
