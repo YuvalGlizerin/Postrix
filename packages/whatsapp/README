@@ -21,8 +21,12 @@ curl -X POST \
     "messaging_product": "whatsapp",
     "pin": "$PIN_CODE_FROM_TWO_STEP_VERIFICATION"
   }'
-12) Send a whatsapp message to your new whatsapp phone number
-13) Send a response to see if it works:
+12) Subscribe your app to the phone number like this(https://stackoverflow.com/a/79235226):
+curl -X POST \
+'https://graph.facebook.com/v22.0/$WHATSAPP_ACCOUNT_ID$/subscribed_apps' \
+-H 'Authorization: Bearer $ACCESS_TOKEN'
+13) Send a whatsapp message to your new whatsapp phone number
+14) Send a response to see if it works:
 curl -X POST \
   "https://graph.facebook.com/v22.0/$PHONE_ID/messages" \
   -H "Authorization: Bearer $ACCESS_TOKEN" \

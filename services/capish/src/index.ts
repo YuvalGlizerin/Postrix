@@ -47,7 +47,9 @@ app.post('/webhook', async (req: Request, res: Response) => {
       to: req.body.entry[0].changes[0].value.messages[0].from,
       type: 'text',
       text: {
-        body: 'Work in progress. Please try again later.'
+        body: `Work in progress. Please try again later. Your message is: ${
+          req.body.entry[0].changes[0].value.messages[0].text.body
+        }`
       }
     };
 
