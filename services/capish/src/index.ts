@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import whatsapp from 'whatsapp';
-import { fromIni, fromEnv } from '@aws-sdk/credential-providers';
+import { fromIni } from '@aws-sdk/credential-providers';
 import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
 
 dotenv.config({ path: `envs/${process.env.ENV}.env` });
@@ -27,7 +27,7 @@ app.post('/webhook', async (req: Request, res: Response) => {
 
     const client = new SecretsManagerClient({
       region: 'us-east-1',
-      ...(process.env.ENV === 'local' ? { credentials: fromIni() } : { credentials: fromEnv() })
+      ...(process.env.ENV === 'local' ? { credentials: fromIni() } : {})
     });
 
     const response = await client.send(new GetSecretValueCommand({ SecretId: secretName }));
