@@ -38,6 +38,8 @@ app.post('/webhook', async (req: Request, res: Response) => {
     // Log the incoming request body to understand its structure
     console.log('Incoming webhook payload:', JSON.stringify(req.body, null, 2));
 
+    res.status(200).send('Message sent successfully');
+
     const { access_token: accessToken, phone_id: phoneId } = JSON.parse(response.SecretString);
     const url = `https://graph.facebook.com/v22.0/${phoneId}/messages`;
     const payload = {
@@ -63,10 +65,10 @@ app.post('/webhook', async (req: Request, res: Response) => {
       throw new Error('Failed to send message');
     }
 
-    res.status(200).send('Message sent successfully');
+    // res.status(200).send('Message sent successfully');
   } catch (error) {
     console.error('Error fetching secret:', error);
-    res.status(500).send('Error fetching secret');
+    // res.status(500).send('Error fetching secret');
   }
 });
 
