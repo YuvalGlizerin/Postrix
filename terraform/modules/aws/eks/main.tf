@@ -266,3 +266,30 @@ resource "aws_iam_role_policy" "cluster_autoscaler" {
     ]
   })
 }
+
+# // IAM policy for EKS nodes to access AWS Secrets Manager
+# resource "aws_iam_policy" "eks_node_secrets_access" {
+#   name        = "${var.cluster_name}-node-secrets-manager-access"
+#   description = "Allow EKS nodes to access AWS Secrets Manager"
+  
+#   policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Effect = "Allow"
+#         Action = [
+#           "secretsmanager:GetSecretValue",
+#           "secretsmanager:DescribeSecret",
+#           "secretsmanager:ListSecrets"
+#         ]
+#         Resource = "*"  // Access to all secrets
+#       }
+#     ]
+#   })
+# }
+
+# // Attach the Secrets Manager policy to the EKS node role
+# resource "aws_iam_role_policy_attachment" "eks_node_secrets_attachment" {
+#   role       = aws_iam_role.eks_node.name
+#   policy_arn = aws_iam_policy.eks_node_secrets_access.arn
+# }
