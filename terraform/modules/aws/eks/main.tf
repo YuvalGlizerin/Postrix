@@ -267,29 +267,48 @@ resource "aws_iam_role_policy" "cluster_autoscaler" {
   })
 }
 
-# // IAM policy for EKS nodes to access AWS Secrets Manager
-# resource "aws_iam_policy" "eks_node_secrets_access" {
-#   name        = "${var.cluster_name}-node-secrets-manager-access"
-#   description = "Allow EKS nodes to access AWS Secrets Manager"
+# IAM Role for Postrix pods to access Secrets Manager
+resource "aws_iam_role" "secrets_role" {
+  name = "${var.cluster_name}-secrets-role"
   
-#   policy = jsonencode({
-#     Version = "2012-10-17"
-#     Statement = [
-#       {
-#         Effect = "Allow"
-#         Action = [
-#           "secretsmanager:GetSecretValue",
-#           "secretsmanager:DescribeSecret",
-#           "secretsmanager:ListSecrets"
-#         ]
-#         Resource = "*"  // Access to all secrets
-#       }
-#     ]
-#   })
-# }
+  # Trust relationship policy that allows EKS to assume this role
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Federated = aws_iam_openid_connect_provider.eks.arn
+        }
+        Action = "sts:AssumeRoleWithWebIdentity"
+      }
+    ]
+  })
+}
 
-# // Attach the Secrets Manager policy to the EKS node role
-# resource "aws_iam_role_policy_attachment" "eks_node_secrets_attachment" {
-#   role       = aws_iam_role.eks_node.name
-#   policy_arn = aws_iam_policy.eks_node_secrets_access.arn
-# }
+# IAM Policy for accessing the specific secret
+resource "aws_iam_policy" "secrets_policy" {
+  name        = "${var.cluster_name}-secrets-policy"
+  description = "Policy that allows access to the Secrets Manager"
+  
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret"
+        ]
+        Resource = "arn:aws:secretsmanager:us-east-1:384389382109:secret:*"
+      }
+    ]
+  })
+}
+
+# Attach the policy to the role
+resource "aws_iam_role_policy_attachment" "secrets_attachment" {
+  role       = aws_iam_role.secrets_role.name
+  policy_arn = aws_iam_policy.secrets_policy.arn
+}
+
