@@ -44,7 +44,7 @@ app.post('/webhook', async (req: Request, res: Response) => {
     const payload = {
       messaging_product: 'whatsapp',
       recipient_type: 'individual',
-      to: req.body.value.messages[0].from,
+      to: req.body.entry[0].changes[0].value.messages[0].from,
       type: 'text',
       text: {
         body: 'Work in progress. Please try again later.'
