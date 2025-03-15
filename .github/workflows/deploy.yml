@@ -63,3 +63,4 @@ jobs:
           message: |
             [Joby](https://${{ steps.repo_warm_up.outputs.adhoc_namespace }}-joby.postrix.io)
             [Capish](https://${{ steps.repo_warm_up.outputs.adhoc_namespace }}-capish.postrix.io)
+            [Cannon](https://${{ steps.repo_warm_up.outputs.adhoc_namespace }}-cannon.postrix.io)
