@@ -13,3 +13,10 @@ resource "docker_hub_repository" "capish" {
   description = "Capish docker repository"
   private     = false
 }
+
+resource "docker_hub_repository" "cannon" {
+  namespace   = var.namespace
+  name        = "cannon"
+  description = "Cannon docker repository"
+  private     = false
+}
