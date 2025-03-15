@@ -43,10 +43,10 @@ app.get('/leaderboard', async (req: Request, res: Response) => {
 app.post('/leaderboard', async (req: Request, res: Response) => {
   try {
     const { username, score } = req.body;
-    const result = await pool.query('INSERT INTO leaderboard (username, score) VALUES ($1, $2) RETURNING *', [
-      username,
-      score
-    ]);
+    const result = await pool.query(
+      'INSERT INTO leaderboard (username, score) VALUES ($1, $2) ON CONFLICT (username) DO UPDATE SET score = EXCLUDED.score RETURNING *',
+      [username, score]
+    );
     res.status(201).json(result.rows[0]);
   } catch (error) {
     console.error('Error adding to leaderboard:', error);
