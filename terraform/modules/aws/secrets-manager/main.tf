@@ -16,3 +16,19 @@ resource "aws_secretsmanager_secret_version" "capish_whatsapp_api_version" {
     ignore_changes = [secret_string]
   }
 }
+
+resource "aws_secretsmanager_secret" "postgres" {
+  name = "postgres"
+}
+
+resource "aws_secretsmanager_secret_version" "postgres_version" {
+  secret_id     = aws_secretsmanager_secret.postgres.id
+  secret_string = jsonencode({
+    username     = "",
+    password     = ""
+  })
+
+  lifecycle {
+    ignore_changes = [secret_string]
+  }
+}

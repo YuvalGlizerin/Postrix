@@ -7,6 +7,18 @@
     {
       "type": "node-terminal",
       "request": "launch",
+      "name": "Cannon",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "command": "npm run start:local --prefix services/cannon",
+      "presentation": {
+        "group": "Local Services"
+      }
+    },
+    {
+      "type": "node-terminal",
+      "request": "launch",
       "name": "Joby",
       "skipFiles": [
         "<node_internals>/**"
