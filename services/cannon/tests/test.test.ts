@@ -1,9 +1,9 @@
 import supertest from 'supertest';
 
-import joby from '../src/index.js';
+import cannon from '../src/index.js';
 
 // Since myFunction is an Express app, we can use it directly with supertest
-const request = supertest(joby);
+const request = supertest(cannon);
 
 // Test the / endpoint
 describe('GET /', () => {
@@ -23,6 +23,6 @@ describe('GET /health', () => {
 
 // Close the server after all tests
 afterAll(done => {
-  joby.close();
+  cannon.close();
   done();
 });
