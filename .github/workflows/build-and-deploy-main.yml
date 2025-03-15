@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        service: [joby, capish]
+        service: [joby, capish, cannon]
     
     uses: ./.github/workflows/build-and-push.yml
     with:
