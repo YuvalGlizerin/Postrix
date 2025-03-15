@@ -82,3 +82,12 @@ releases:
       group: app
     values:
       - ./capish/values/{{ .Environment.Name }}.yaml
+
+  - name: cannon
+    namespace: "{{ default .Namespace .Environment.Name }}"
+    chart: ./common
+    labels:
+      app: cannon
+      group: app
+    values:
+      - ./capish/values/{{ .Environment.Name }}.yaml
