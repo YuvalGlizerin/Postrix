@@ -32,3 +32,18 @@ resource "aws_secretsmanager_secret_version" "postgres_version" {
     ignore_changes = [secret_string]
   }
 }
+
+resource "aws_secretsmanager_secret" "api_video" {
+  name = "api_video"
+}
+
+resource "aws_secretsmanager_secret_version" "api_video_version" {
+  secret_id     = aws_secretsmanager_secret.api_video.id
+  secret_string = jsonencode({
+    api_key     = ""
+  })
+
+  lifecycle {
+    ignore_changes = [secret_string]
+  }
+}

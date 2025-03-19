@@ -24,52 +24,87 @@ app.get('/webhook', async (req: Request, res: Response) => {
 // Add work in progress auto response
 app.post('/webhook', async (req: Request, res: Response) => {
   try {
-    const secretName = 'capish-whatsapp-api';
+    res.status(200).send('Message sent successfully'); // no retries
 
     const client = new SecretsManagerClient({
       region: 'us-east-1',
       ...(process.env.ENV === 'local' ? { credentials: fromIni() } : {})
     });
 
-    const response = await client.send(new GetSecretValueCommand({ SecretId: secretName }));
-    if (!response.SecretString) {
-      throw new Error('Secret not found');
+    const [whatsappSecret, apiVideoSecret] = await Promise.all([
+      client.send(new GetSecretValueCommand({ SecretId: 'capish-whatsapp-api' })),
+      client.send(new GetSecretValueCommand({ SecretId: 'api_video' }))
+    ]);
+
+    if (!whatsappSecret.SecretString || !apiVideoSecret.SecretString) {
+      throw new Error('Secrets not found');
     }
+
+    // Parse both secrets
+    const { access_token: accessToken, phone_id: phoneId } = JSON.parse(whatsappSecret.SecretString);
+    const { api_key: apiVideoKey } = JSON.parse(apiVideoSecret.SecretString);
 
     // Log the incoming request body to understand its structure
     console.log('Incoming webhook payload:', JSON.stringify(req.body, null, 2));
 
-    const { access_token: accessToken, phone_id: phoneId } = JSON.parse(response.SecretString);
-    const url = `https://graph.facebook.com/v22.0/${phoneId}/messages`;
-    const payload = {
-      messaging_product: 'whatsapp',
-      recipient_type: 'individual',
-      to: req.body.entry[0].changes[0].value.messages[0].from,
-      type: 'text',
-      text: {
-        body: `Work in progress. Please try again later. Your message is: ${
-          req.body.entry[0].changes[0].value.messages[0].text.body
-        }`
+    if (req.body?.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.type === 'text') {
+      const url = `https://graph.facebook.com/v22.0/${phoneId}/messages`;
+      const payload = {
+        messaging_product: 'whatsapp',
+        recipient_type: 'individual',
+        to: req.body.entry[0].changes[0].value.messages[0].from,
+        type: 'text',
+        text: {
+          body: `We only support videos. Please send a video to get it back with captions.`
+        }
+      };
+
+      const result = await fetch(url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!result.ok) {
+        throw new Error('Failed to send message');
       }
-    };
-
-    const result = await fetch(url, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
-
-    if (!result.ok) {
-      throw new Error('Failed to send message');
     }
 
-    res.status(200).send('Message sent successfully');
+    const mediaUrl = await whatsapp.getMediaUrl(req.body, accessToken);
+    if (mediaUrl) {
+      const videoPath = await whatsapp.downloadMedia(mediaUrl, accessToken);
+      const captionsUrl = await whatsapp.getVideoCaptionsUrl(videoPath, apiVideoKey);
+      console.log(captionsUrl);
+
+      const url = `https://graph.facebook.com/v22.0/${phoneId}/messages`;
+      const payload = {
+        messaging_product: 'whatsapp',
+        recipient_type: 'individual',
+        to: req.body.entry[0].changes[0].value.messages[0].from,
+        type: 'text',
+        text: {
+          body: captionsUrl
+        }
+      };
+
+      const result = await fetch(url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!result.ok) {
+        throw new Error('Failed to send message');
+      }
+    }
   } catch (error) {
-    console.error('Error fetching secret:', error);
-    res.status(500).send('Error fetching secret');
+    console.error('Error with webhook:', error);
   }
 });
 
