@@ -1,8 +1,11 @@
+import fs from 'fs';
+
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import whatsapp from 'whatsapp';
 import { fromIni } from '@aws-sdk/credential-providers';
 import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
 dotenv.config({ path: `envs/${process.env.ENV}.env` });
 process.title = 'Capish';
@@ -33,7 +36,7 @@ app.post('/webhook', async (req: Request, res: Response) => {
 
     const [whatsappSecret, apiVideoSecret] = await Promise.all([
       client.send(new GetSecretValueCommand({ SecretId: 'capish-whatsapp-api' })),
-      client.send(new GetSecretValueCommand({ SecretId: 'api_video' }))
+      client.send(new GetSecretValueCommand({ SecretId: 'creatomate' }))
     ]);
 
     if (!whatsappSecret.SecretString || !apiVideoSecret.SecretString) {
@@ -76,7 +79,28 @@ app.post('/webhook', async (req: Request, res: Response) => {
     const mediaUrl = await whatsapp.getMediaUrl(req.body, accessToken);
     if (mediaUrl) {
       const videoPath = await whatsapp.downloadMedia(mediaUrl, accessToken);
-      const captionsUrl = await whatsapp.getVideoCaptionsUrl(videoPath, apiVideoKey);
+
+      // Upload the video file to S3
+      const s3Client = new S3Client({
+        region: 'us-east-1',
+        ...(process.env.ENV === 'local' ? { credentials: fromIni() } : {})
+      });
+
+      const fileContent = fs.readFileSync(videoPath);
+      const fileName = `video_${Date.now()}_${Math.floor(Math.random() * 1000)}.mp4`;
+
+      const uploadParams = {
+        Bucket: process.env.S3_BUCKET_NAME || 'capish-videos',
+        Key: fileName,
+        Body: fileContent,
+        ContentType: 'video/mp4'
+      };
+
+      await s3Client.send(new PutObjectCommand(uploadParams));
+      const s3VideoUrl = `https://${uploadParams.Bucket}.s3.amazonaws.com/${uploadParams.Key}`;
+      console.log('S3 Video URL:', s3VideoUrl);
+
+      const captionsUrl = await whatsapp.getCaptionsVideoUrlCreatomate(s3VideoUrl, apiVideoKey);
       console.log(captionsUrl);
 
       const url = `https://graph.facebook.com/v22.0/${phoneId}/messages`;

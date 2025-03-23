@@ -148,72 +148,63 @@ async function downloadMedia(mediaUrl: string, accessToken: string, savePath?: s
   }
 }
 
-async function getVideoCaptionsUrl(videoPath: string, apiVideoKey: string): Promise<string> {
-  const baseUrl = 'https://ws.api.video';
-
+async function getCaptionsVideoUrlCreatomate(videoUrl: string, apiCreatomateKey: string): Promise<string> {
   try {
-    // 1. Create video container with automatic transcription
-    const createResponse = await fetch(`${baseUrl}/videos`, {
+    const response = await fetch('https://api.creatomate.com/v1/renders', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${apiVideoKey}`,
+        Authorization: `Bearer ${apiCreatomateKey}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        title: `Caption Video ${Date.now()}`,
-        transcript: true // This enables automatic caption generation
+        output_format: 'mp4',
+        source: {
+          elements: [
+            {
+              type: 'video',
+              id: '17ca2169-786f-477f-aaea-4a2598bf24eb',
+              source: videoUrl
+            },
+            {
+              type: 'text',
+              transcript_source: '17ca2169-786f-477f-aaea-4a2598bf24eb',
+              transcript_maximum_length: 14,
+              y: '82%',
+              width: '81%',
+              height: '35%',
+              x_alignment: '50%',
+              y_alignment: '50%',
+              fill_color: '#ffffff',
+              stroke_color: '#000000',
+              stroke_width: '1.6 vmin',
+              font_family: 'Montserrat',
+              font_weight: '700',
+              font_size: '9.29 vmin',
+              background_color: 'rgba(216,216,216,0)',
+              background_x_padding: '31%',
+              background_y_padding: '17%',
+              background_border_radius: '31%'
+            }
+          ]
+        }
       })
     });
 
-    if (!createResponse.ok) {
-      throw new Error(`Failed to create video: ${await createResponse.text()}`);
+    if (!response.ok) {
+      throw new Error(`Failed to create captioned video: ${await response.text()}`);
     }
 
-    const { videoId } = await createResponse.json();
+    const data = await response.json();
 
-    // 2. Upload the video file using FormData
-    const fileBuffer = fs.readFileSync(videoPath);
-    const formData = new FormData();
-    formData.append('file', new Blob([fileBuffer], { type: 'video/mp4' }), path.basename(videoPath));
-
-    const uploadResponse = await fetch(`${baseUrl}/videos/${videoId}/source`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiVideoKey}`
-      },
-      body: formData
-    });
-
-    if (!uploadResponse.ok) {
-      const errorText = await uploadResponse.text();
-      throw new Error(`Failed to upload video: ${errorText}`);
+    // The Creatomate API returns an array of renders
+    // We're interested in the URL of the first render
+    if (Array.isArray(data) && data.length > 0 && data[0].url) {
+      return data[0].url;
+    } else {
+      throw new Error('Invalid response from Creatomate API');
     }
-
-    // 3. Wait for video processing (captions will be generated automatically)
-    let attempts = 0;
-    const maxAttempts = 30; // 5 minutes with 10-second intervals
-
-    while (attempts < maxAttempts) {
-      const statusResponse = await fetch(`${baseUrl}/videos/${videoId}/status`, {
-        headers: {
-          Authorization: `Bearer ${apiVideoKey}`
-        }
-      });
-
-      if (statusResponse.ok) {
-        const status = await statusResponse.json();
-        if (status.encoding.playable) {
-          return `https://embed.api.video/vod/${videoId}`;
-        }
-      }
-
-      await new Promise(resolve => setTimeout(resolve, 10000)); // Wait 10 seconds
-      attempts++;
-    }
-
-    throw new Error('Timed out waiting for video processing');
   } catch (error) {
-    console.error('Error in getVideoCaptionsUrl:', error);
+    console.error('Error in getCaptionsVideoUrlCreatomate:', error);
     throw error;
   }
 }
@@ -222,5 +213,5 @@ export default {
   verifyToken,
   getMediaUrl,
   downloadMedia,
-  getVideoCaptionsUrl
+  getCaptionsVideoUrlCreatomate
 };

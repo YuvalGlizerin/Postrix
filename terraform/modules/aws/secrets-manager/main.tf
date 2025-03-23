@@ -33,12 +33,12 @@ resource "aws_secretsmanager_secret_version" "postgres_version" {
   }
 }
 
-resource "aws_secretsmanager_secret" "api_video" {
-  name = "api_video"
+resource "aws_secretsmanager_secret" "creatomate" {
+  name = "creatomate"
 }
 
-resource "aws_secretsmanager_secret_version" "api_video_version" {
-  secret_id     = aws_secretsmanager_secret.api_video.id
+resource "aws_secretsmanager_secret_version" "creatomate_version" {
+  secret_id     = aws_secretsmanager_secret.creatomate.id
   secret_string = jsonencode({
     api_key     = ""
   })
@@ -47,3 +47,4 @@ resource "aws_secretsmanager_secret_version" "api_video_version" {
     ignore_changes = [secret_string]
   }
 }
+

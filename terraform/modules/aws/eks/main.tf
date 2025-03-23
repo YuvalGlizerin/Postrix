@@ -267,9 +267,9 @@ resource "aws_iam_role_policy" "cluster_autoscaler" {
   })
 }
 
-# IAM Role for Postrix pods to access Secrets Manager
-resource "aws_iam_role" "secrets_role" {
-  name = "${var.cluster_name}-secrets-role"
+# IAM Role for Postrix pods to access resources on AWS
+resource "aws_iam_role" "resources_role" {
+  name = "${var.cluster_name}-resources-role"
   
   # Trust relationship policy that allows EKS to assume this role
   assume_role_policy = jsonencode({
@@ -286,10 +286,10 @@ resource "aws_iam_role" "secrets_role" {
   })
 }
 
-# IAM Policy for accessing the specific secret
-resource "aws_iam_policy" "secrets_policy" {
-  name        = "${var.cluster_name}-secrets-policy"
-  description = "Policy that allows access to the Secrets Manager"
+# IAM Policy for accessing resources on AWS
+resource "aws_iam_policy" "resources_policy" {
+  name        = "${var.cluster_name}-resources-policy"
+  description = "Policy that allows access to the resources on AWS"
   
   policy = jsonencode({
     Version = "2012-10-17"
@@ -301,14 +301,27 @@ resource "aws_iam_policy" "secrets_policy" {
           "secretsmanager:DescribeSecret"
         ]
         Resource = "arn:aws:secretsmanager:us-east-1:384389382109:secret:*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:DeleteObject",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          "arn:aws:s3:::*",  # All buckets
+          "arn:aws:s3:::*/*" # All objects in all buckets
+        ]
       }
     ]
   })
 }
 
 # Attach the policy to the role
-resource "aws_iam_role_policy_attachment" "secrets_attachment" {
-  role       = aws_iam_role.secrets_role.name
-  policy_arn = aws_iam_policy.secrets_policy.arn
+resource "aws_iam_role_policy_attachment" "resources_attachment" {
+  role       = aws_iam_role.resources_role.name
+  policy_arn = aws_iam_policy.resources_policy.arn
 }
 
