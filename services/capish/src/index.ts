@@ -50,7 +50,7 @@ app.post('/webhook', async (req: Request, res: Response) => {
     // Log the incoming request body to understand its structure
     console.log('Incoming webhook payload:', JSON.stringify(req.body, null, 2));
 
-    if (req.body?.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.type === 'text') {
+    if (req.body?.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.type !== 'video') {
       const url = `https://graph.facebook.com/v22.0/${phoneId}/messages`;
       const payload = {
         messaging_product: 'whatsapp',
@@ -75,6 +75,23 @@ app.post('/webhook', async (req: Request, res: Response) => {
         throw new Error('Failed to send message');
       }
     }
+
+    await fetch(`https://graph.facebook.com/v22.0/${phoneId}/messages`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        messaging_product: 'whatsapp',
+        recipient_type: 'individual',
+        to: req.body.entry[0].changes[0].value.messages[0].from,
+        type: 'text',
+        text: {
+          body: `We are processing your video. It will be ready shortly with subtitles.`
+        }
+      })
+    });
 
     const mediaUrl = await whatsapp.getMediaUrl(req.body, accessToken);
     if (mediaUrl) {
@@ -108,9 +125,10 @@ app.post('/webhook', async (req: Request, res: Response) => {
         messaging_product: 'whatsapp',
         recipient_type: 'individual',
         to: req.body.entry[0].changes[0].value.messages[0].from,
-        type: 'text',
-        text: {
-          body: captionsUrl
+        type: 'video',
+        video: {
+          link: captionsUrl,
+          caption: 'Here is your video with captions!'
         }
       };
 

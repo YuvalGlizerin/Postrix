@@ -199,7 +199,24 @@ async function getCaptionsVideoUrlCreatomate(videoUrl: string, apiCreatomateKey:
     // The Creatomate API returns an array of renders
     // We're interested in the URL of the first render
     if (Array.isArray(data) && data.length > 0 && data[0].url) {
-      return data[0].url;
+      const captionsUrl = data[0].url;
+
+      // Poll until video is ready (max 2 minutes)
+      let isReady = false;
+      const maxAttempts = 24; // 24 attempts * 5 seconds = 2 minutes
+      let attempts = 0;
+
+      while (!isReady && attempts < maxAttempts) {
+        const response = await fetch(captionsUrl, { method: 'HEAD' });
+        isReady = <boolean>(response.ok && response.headers.get('content-type')?.startsWith('video/'));
+        if (!isReady) {
+          console.log(`Video not ready, attempt ${attempts + 1}/${maxAttempts}`);
+          await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds
+          attempts++;
+        }
+      }
+
+      return captionsUrl;
     } else {
       throw new Error('Invalid response from Creatomate API');
     }
