@@ -28,11 +28,10 @@ jobs:
         with:
           node-version: '22.x'
 
-      - run: npm ci && npm ci --prefix services/cannon
+      - run: npm i && npm i --prefix services/cannon
+      
       - name: Run Jest Test Suite
         run: npm test
-        env:
-          CI: true
 
       - name: Upload Test Report to S3
         run: |
