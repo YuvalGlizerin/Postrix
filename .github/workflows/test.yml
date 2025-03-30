@@ -28,7 +28,7 @@ jobs:
         with:
           node-version: '22.x'
 
-      - run: npm ci && npm ci --prefix services/joby && npm ci --prefix services/capish && npm ci --prefix services/cannon
+      - run: npm ci && npm ci --prefix services/cannon
       - name: Run Jest Test Suite
         run: npm test
         env:
