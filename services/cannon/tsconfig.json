@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
     "target": "ESNext",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
     "module": "NodeNext",                                /* Specify what module code is generated. */
     "esModuleInterop": true,                             /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
@@ -7,13 +8,15 @@
     "strict": true,                                      /* Enable all strict type-checking options. */
     "strictNullChecks": true,                            /* When type checking, take into account 'null' and 'undefined'. */
     "skipLibCheck": true,                                /* Skip type checking all .d.ts files. */
-    "outDir": "./dist",
-    "rootDir": "./src",
+    "noEmit": true,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
+    "rootDir": ".",
     "baseUrl": ".",
     "paths": {
       "*": ["../../packages/*/src"]
     }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "tests/**/*"],
   "exclude": ["node_modules", "dist"]
 }

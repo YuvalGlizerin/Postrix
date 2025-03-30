@@ -4,7 +4,7 @@
   "description": "Open source generic project",
   "type": "module",
   "engines": {
-    "node": "22.13.1"
+    "node": "23.10.0"
   },
   "workspaces": [
     "packages/*",
@@ -37,7 +37,7 @@
     "supertest": "^6.3.4",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3",
+    "typescript": "^5.7.3",
     "yaml-eslint-parser": "^1.2.3"
   }
 }

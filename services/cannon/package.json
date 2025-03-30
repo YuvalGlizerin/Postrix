@@ -3,18 +3,19 @@
   "version": "1.0.0",
   "type": "module",
   "description": "A simple Hello World Cloud Function",
-  "main": "dist/index.js",
+  "main": "src/index.ts",
   "engines": {
-    "node": "22.13.1"
+    "node": "23.10.0"
   },
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf dist",
-    "start:local": "NODE_ENV=development ENV=local nodemon",
-    "start:server": "node --conditions production dist/index.js",
-    "test": "jest --config jest.config.ts"
+    "start:local": "ENV=local node --experimental-strip-types --watch src/index.ts",
+    "start:server": "node --experimental-strip-types src/index.ts",
+    "test": "bash -c 'mkdir -p coverage && node --test --experimental-strip-types --experimental-test-coverage --test-reporter=spec --test-reporter=lcov --test-reporter-destination=stdout --test-reporter-destination=./coverage/lcov.info; genhtml -o coverage ./coverage/lcov.info'"
   },
   "dependencies": {
+    "@types/node": "^22.13.14",
     "dotenv": "^16.4.5",
     "express": "^4.18.2",
     "pg": "^8.14.0"

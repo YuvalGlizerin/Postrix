@@ -5,7 +5,7 @@
 
 # Use the official lightweight Node.js image.
 # https://hub.docker.com/_/node
-FROM node:22.13.1-slim AS builder
+FROM node:23.10.0-slim AS builder
 
 # Set up the workspace structure
 WORKDIR /usr/workspace
@@ -27,7 +27,7 @@ RUN npm run build
 # RUN cd services/cannon && npm prune --production
 
 # Production image
-FROM node:22.13.1-slim
+FROM node:23.10.0-slim
 
 # Create and set working directory
 WORKDIR /usr/workspace/services/cannon
