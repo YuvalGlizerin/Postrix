@@ -11,6 +11,16 @@ resource "aws_s3_bucket_public_access_block" "test_reports" {
   restrict_public_buckets = false
 }
 
+resource "aws_s3_bucket_website_configuration" "test_reports" {
+  bucket = aws_s3_bucket.test_reports.id
+
+  index_document {
+    suffix = "test-report.html"
+  }
+
+  depends_on = [aws_s3_bucket_public_access_block.test_reports]
+}
+
 resource "aws_s3_bucket_policy" "test_reports" {
   bucket = aws_s3_bucket.test_reports.id
 

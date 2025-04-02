@@ -35,7 +35,7 @@ jobs:
 
       - name: Upload Test Report to S3
         run: |
-          aws s3 sync coverage/lcov-report/ s3://postrix-test-reports/${{ github.sha }}/
+          aws s3 sync coverage/ s3://postrix-test-reports/${{ github.sha }}/
         env:
           AWS_DEFAULT_REGION: us-east-1
 
@@ -67,3 +67,4 @@ jobs:
             ${{ steps.coverage.outputs.summary }}
 
             **Test Report:** [View detailed coverage report](http://postrix-test-reports.s3-website-us-east-1.amazonaws.com/${{ github.sha }})
+            **Coverage Report:** [View detailed coverage report](http://postrix-test-reports.s3-website-us-east-1.amazonaws.com/${{ github.sha }}/lcov-report/index.html)
