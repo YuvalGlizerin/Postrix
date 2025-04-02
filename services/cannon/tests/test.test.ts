@@ -1,8 +1,8 @@
 import supertest from 'supertest';
 
-import cannon from '../src/index.js';
+import cannon from '../src/index.ts';
 
-// Since myFunction is an Express app, we can use it directly with supertest
+// // Since myFunction is an Express app, we can use it directly with supertest
 const request = supertest(cannon);
 
 // Test the / endpoint

@@ -12,7 +12,7 @@ jest.mock('whatsapp', () => ({
 
 // Test the / endpoint
 describe('GET /', () => {
-  it('responds with "Full CI/CD running on"', async () => {
+  it('Responds with "Full CI/CD running on"', async () => {
     const response = await request.get('/');
     expect(response.status).toBe(200);
     expect(response.text).toContain('Full CI/CD running on');
@@ -20,7 +20,7 @@ describe('GET /', () => {
 });
 
 describe('GET /webhook', () => {
-  it('responds with success status', async () => {
+  it('Responds with success status', async () => {
     // Mock the verifyToken implementation to resolve immediately
     (whatsapp.verifyToken as jest.Mock).mockImplementation((req, res) => {
       res.sendStatus(200);

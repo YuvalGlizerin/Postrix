@@ -2,17 +2,13 @@
   "name": "cannon",
   "version": "1.0.0",
   "type": "module",
-  "description": "A simple Hello World Cloud Function",
-  "main": "dist/index.js",
-  "engines": {
-    "node": "22.13.1"
-  },
+  "description": "Cannon core service",
+  "main": "src/index.ts",
   "scripts": {
-    "build": "tsc",
-    "clean": "rm -rf dist",
-    "start:local": "NODE_ENV=development ENV=local nodemon",
-    "start:server": "node --conditions production dist/index.js",
-    "test": "jest --config jest.config.ts"
+    "type-check": "tsc --noEmit",
+    "start:local": "ENV=local node --experimental-strip-types --watch src/index.ts",
+    "start:server": "node --experimental-strip-types src/index.ts",
+    "test": "jest --config ../../jest.config.mjs --rootDir ./"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

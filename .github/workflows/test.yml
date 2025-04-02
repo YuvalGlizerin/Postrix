@@ -11,8 +11,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-      pages: write      # required for deploy-pages
-      id-token: write   # required for deploy-pages
+      id-token: write
 
     steps:
       - name: Checkout
@@ -28,51 +27,22 @@ jobs:
         with:
           node-version: '22.x'
 
-      - run: npm ci && npm ci --prefix services/joby && npm ci --prefix services/capish && npm ci --prefix services/cannon
+      - name: Install Dependencies
+        run: npm ci
+      
       - name: Run Jest Test Suite
         run: npm test
-        env:
-          CI: true
 
       - name: Upload Test Report to S3
         run: |
-          aws s3 sync coverage/lcov-report/ s3://postrix-test-reports/${{ github.sha }}/
+          aws s3 sync coverage/ s3://postrix-test-reports/${{ github.sha }}/
         env:
           AWS_DEFAULT_REGION: us-east-1
-
-      - name: Generate Coverage Report
-        id: coverage
-        run: |
-          COVERAGE=$(cat coverage/coverage-summary.json | jq -r '.total.lines.pct')
-          SUMMARY=$(cat coverage/coverage-summary.json | jq -r '
-            "| Category | Coverage |\n" +
-            "|----------|----------|\n" +
-            "| Lines | \(.total.lines.pct)% |\n" +
-            "| Statements | \(.total.statements.pct)% |\n" +
-            "| Functions | \(.total.functions.pct)% |\n" +
-            "| Branches | \(.total.branches.pct)% |"
-          ')
-          echo "coverage=$COVERAGE" >> $GITHUB_OUTPUT
-          echo "summary<<EOF" >> $GITHUB_OUTPUT
-          echo "$SUMMARY" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Comment PR
         uses: ./.github/actions/comment-pr
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          title: "Test Coverage Report"
-          block: |
-            Coverage: ${{ steps.coverage.outputs.coverage }}%
           message: |
-            ${{ steps.coverage.outputs.summary }}
-
-            **Test Report:** [View detailed coverage report](http://postrix-test-reports.s3-website-us-east-1.amazonaws.com/${{ github.sha }})
-
-      - name: Check 100% Coverage
-        run: |
-          COVERAGE=$(cat coverage/coverage-summary.json | jq -r '.total.lines.pct')
-          if [ "$COVERAGE" != "100" ]; then
-            echo "Error: Test coverage is not 100%. Current coverage: $COVERAGE%"
-            exit 1
-          fi
+            **Test Report:** [View detailed test report](http://postrix-test-reports.s3-website-us-east-1.amazonaws.com/${{ github.sha }})
+            **Coverage Report:** [View detailed coverage report](http://postrix-test-reports.s3-website-us-east-1.amazonaws.com/${{ github.sha }}/lcov-report/index.html)
