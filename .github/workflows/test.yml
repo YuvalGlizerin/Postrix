@@ -28,8 +28,8 @@ jobs:
         with:
           node-version: '22.x'
 
-      - name: Install Dependencies
-        run: npm install
+      # - name: Install Dependencies
+      #   run: npm install
       
       - name: Run Jest Test Suite
         run: npm test
