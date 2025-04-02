@@ -2,7 +2,7 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
-import { Request, Response } from 'express';
+import { type Request, type Response } from 'express';
 
 interface WhatsAppMessagePayload {
   object: string;
@@ -79,7 +79,7 @@ function verifyToken(req: Request, res: Response, verificationToken: string) {
     console.log('Webhook verified');
     res.status(200).send(challenge);
   } else {
-    console.error('Failed webhook verification');
+    console.error('Failed to verify token');
     res.sendStatus(403);
   }
 }
@@ -208,7 +208,7 @@ async function getCaptionsVideoUrlCreatomate(videoUrl: string, apiCreatomateKey:
 
       while (!isReady && attempts < maxAttempts) {
         const response = await fetch(captionsUrl, { method: 'HEAD' });
-        isReady = <boolean>(response.ok && response.headers.get('content-type')?.startsWith('video/'));
+        isReady = (response.ok && response.headers.get('content-type')?.startsWith('video/')) as boolean;
         if (!isReady) {
           console.log(`Video not ready, attempt ${attempts + 1}/${maxAttempts}`);
           await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds
