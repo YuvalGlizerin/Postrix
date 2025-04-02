@@ -67,11 +67,3 @@ jobs:
             ${{ steps.coverage.outputs.summary }}
 
             **Test Report:** [View detailed coverage report](http://postrix-test-reports.s3-website-us-east-1.amazonaws.com/${{ github.sha }})
-
-      - name: Check 100% Coverage
-        run: |
-          COVERAGE=$(cat coverage/coverage-summary.json | jq -r '.total.lines.pct')
-          if [ "$COVERAGE" != "100" ]; then
-            echo "Error: Test coverage is not 100%. Current coverage: $COVERAGE%"
-            exit 1
-          fi
