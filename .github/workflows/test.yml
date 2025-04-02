@@ -42,8 +42,8 @@ jobs:
       - name: Generate Coverage Report
         id: coverage
         run: |
-          COVERAGE=$(cat coverage/coverage-summary.json | jq -r '.total.lines.pct')
-          SUMMARY=$(cat coverage/coverage-summary.json | jq -r '
+          COVERAGE=$(cat coverage/coverage-final.json | jq -r '.total.lines.pct')
+          SUMMARY=$(cat coverage/coverage-final.json | jq -r '
             "| Category | Coverage |\n" +
             "|----------|----------|\n" +
             "| Lines | \(.total.lines.pct)% |\n" +
@@ -66,5 +66,5 @@ jobs:
           message: |
             ${{ steps.coverage.outputs.summary }}
 
-            **Test Report:** [View detailed coverage report](http://postrix-test-reports.s3-website-us-east-1.amazonaws.com/${{ github.sha }})
+            **Test Report:** [View detailed test report](http://postrix-test-reports.s3-website-us-east-1.amazonaws.com/${{ github.sha }})
             **Coverage Report:** [View detailed coverage report](http://postrix-test-reports.s3-website-us-east-1.amazonaws.com/${{ github.sha }}/lcov-report/index.html)
