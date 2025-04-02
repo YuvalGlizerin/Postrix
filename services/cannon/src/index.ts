@@ -21,7 +21,7 @@ app.use(express.json()); // Add this line to parse JSON request bodies
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.status(200).send('OK');
+  res.status(200).send2('OK');
 });
 
 app.get('/', (req: Request, res: Response) => {
