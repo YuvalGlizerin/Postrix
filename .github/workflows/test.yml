@@ -28,7 +28,8 @@ jobs:
         with:
           node-version: '22.x'
 
-      - run: npm i && npm i --prefix services/cannon
+      - name: Install Dependencies
+        run: npm install
       
       - name: Run Jest Test Suite
         run: npm test
@@ -39,32 +40,11 @@ jobs:
         env:
           AWS_DEFAULT_REGION: us-east-1
 
-      - name: Generate Coverage Report
-        id: coverage
-        run: |
-          COVERAGE=$(cat coverage/coverage-final.json | jq -r '.total.lines.pct')
-          SUMMARY=$(cat coverage/coverage-final.json | jq -r '
-            "| Category | Coverage |\n" +
-            "|----------|----------|\n" +
-            "| Lines | \(.total.lines.pct)% |\n" +
-            "| Statements | \(.total.statements.pct)% |\n" +
-            "| Functions | \(.total.functions.pct)% |\n" +
-            "| Branches | \(.total.branches.pct)% |"
-          ')
-          echo "coverage=$COVERAGE" >> $GITHUB_OUTPUT
-          echo "summary<<EOF" >> $GITHUB_OUTPUT
-          echo "$SUMMARY" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-
       - name: Comment PR
         uses: ./.github/actions/comment-pr
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          title: "Test Coverage Report"
-          block: |
-            Coverage: ${{ steps.coverage.outputs.coverage }}%
+          title: "Test/Coverage Report"
           message: |
-            ${{ steps.coverage.outputs.summary }}
-
             **Test Report:** [View detailed test report](http://postrix-test-reports.s3-website-us-east-1.amazonaws.com/${{ github.sha }})
             **Coverage Report:** [View detailed coverage report](http://postrix-test-reports.s3-website-us-east-1.amazonaws.com/${{ github.sha }}/lcov-report/index.html)
