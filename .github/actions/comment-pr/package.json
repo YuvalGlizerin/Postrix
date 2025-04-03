@@ -1,11 +1,12 @@
 {
   "name": "comment-pr",
   "version": "1.0.0",
+  "type": "module",
   "description": "Adds a comment to the github PR",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc src/index.ts --outDir dist",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --config ../../../jest.config.mjs --rootDir ./"
   },
   "author": "",
   "license": "ISC",

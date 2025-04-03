@@ -1,6 +1,5 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import { Context } from '@actions/github/lib/context';
 
 async function run() {
   try {
@@ -10,7 +9,7 @@ async function run() {
     const message = core.getInput('message');
     const octokit = github.getOctokit(token);
 
-    const context: Context = github.context;
+    const context = github.context;
     const { data: comments } = await octokit.rest.issues.listComments({
       owner: context.repo.owner,
       repo: context.repo.repo,
@@ -35,8 +34,10 @@ async function run() {
       body: output
     });
   } catch (error) {
-    core.setFailed(<Error>error);
+    core.setFailed(error as string | Error);
   }
 }
 
 run();
+
+export default run;

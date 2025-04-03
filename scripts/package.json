@@ -2,7 +2,7 @@
   "name": "scripts",
   "version": "1.0.0",
   "scripts": {
-    "script": "ts-node"
+    "script": "node --experimental-strip-types"
   },
   "dependencies": {
     "tweetnacl-sealedbox-js": "^1.2.0"
