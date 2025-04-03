@@ -1,7 +1,7 @@
 {
   "name": "comment-pr",
   "version": "1.0.0",
-  "type": "module",
+  "type": "commonjs",
   "description": "Adds a comment to the github PR",
   "main": "dist/index.js",
   "scripts": {

@@ -1,11 +1,11 @@
 /**
  * We do not build any ts files(Except for the github actions), since we run node --experimental-strip-types 
- * This tsconfig is only used for type checking, and for the github actions compilation
+ * This tsconfig is only used for type checking
  */
 {
   "compilerOptions": {
     "target": "ESNext",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
-    "module": "ESNext",                                /* Specify what module code is generated. */
+    "module": "NodeNext",                                /* Specify what module code is generated. */
     "esModuleInterop": true,                             /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
     "strict": true,                                      /* Enable all strict type-checking options. */
     "strictNullChecks": true,                            /* When type checking, take into account 'null' and 'undefined'. */
