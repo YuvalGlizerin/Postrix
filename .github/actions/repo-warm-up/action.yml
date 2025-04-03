@@ -27,7 +27,6 @@ runs:
 
     - name: Install and Build TypeScript Actions
       run: |
-        npm ci --no-workspaces
-        npm ci --workspace=.github/actions
+        npm ci
         npm run build --workspace=.github/actions
       shell: bash
