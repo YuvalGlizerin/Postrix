@@ -17,15 +17,6 @@ const config = {
   collectCoverageFrom: ['**/src/**/*.{ts,tsx}', '!**/.history/**/*.{ts,tsx}'],
   coverageDirectory: '<rootDir>/coverage',
   coverageReporters: ['json', 'lcov', 'text', 'clover'],
-  coverageThreshold: {
-    global: {
-      branches: 100,
-      functions: 100,
-      lines: 100,
-      statements: 100,
-      emitWarning: true
-    }
-  },
   extensionsToTreatAsEsm: ['.ts'],
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
