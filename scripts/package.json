@@ -1,6 +1,8 @@
 {
   "name": "scripts",
   "version": "1.0.0",
+  "type": "module",
+  "description": "Useful scripts for the project",
   "scripts": {
     "script": "node --experimental-strip-types"
   },

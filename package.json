@@ -9,6 +9,7 @@
   "workspaces": [
     "packages/*",
     "services/*",
+    "scripts/",
     ".github/actions/*"
   ],
   "scripts": {
