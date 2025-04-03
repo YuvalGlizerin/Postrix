@@ -1,5 +1,5 @@
 /**
- * We do not build any ts files, since we run node --experimental-strip-types 
+ * We do not build any ts files(Except for the github actions), since we run node --experimental-strip-types 
  * This tsconfig is only used for type checking
  */
 {

@@ -8,7 +8,9 @@
   },
   "workspaces": [
     "packages/*",
-    "services/*"
+    "services/*",
+    "scripts/",
+    ".github/actions/*"
   ],
   "scripts": {
     "type-check": "npm run type-check --workspaces --if-present",

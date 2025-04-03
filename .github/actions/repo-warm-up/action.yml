@@ -25,11 +25,18 @@ runs:
         echo "NAMESPACE=$NAMESPACE" >> $GITHUB_OUTPUT
       shell: bash
 
-    - name: Install and Build TypeScript Actions
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: 'npm'
+    
+    - name: Install dependencies
       run: |
-        for dir in .github/actions/*/; do
-          if [ -f "$dir/package.json" ]; then
-            npm --prefix "$dir" install && npm --prefix "$dir" run build
-          fi
-        done
+        npm ci
+      shell: bash
+
+    - name: Build TypeScript Actions
+      run: |
+        npm run build --workspace=.github/actions
       shell: bash
