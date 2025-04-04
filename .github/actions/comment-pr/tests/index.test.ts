@@ -157,4 +157,70 @@ describe('comment-pr action', () => {
     // Verify error is handled
     expect(core.setFailed).toHaveBeenCalledWith(error);
   });
+
+  test('should handle comments without a block parameter', async () => {
+    // Override the mock for block input to return an empty string
+    (core.getInput as jest.Mock).mockImplementation((name: string) => {
+      switch (name) {
+        case 'github_token':
+          return 'mock-token';
+        case 'title':
+          return 'Test Title';
+        case 'block':
+          return ''; // Empty block
+        case 'message':
+          return 'This is a test message';
+        default:
+          return '';
+      }
+    });
+
+    // Mock the response from listComments - no existing comments
+    mockOctokit.rest.issues.listComments.mockResolvedValue({
+      data: []
+    });
+
+    await run();
+
+    // Verify createComment was called with the right parameters (no code block)
+    expect(mockOctokit.rest.issues.createComment).toHaveBeenCalledWith({
+      owner: 'test-owner',
+      repo: 'test-repo',
+      issue_number: 123,
+      body: '#### Test Title\n\n\nThis is a test message' // Note: no code block here
+    });
+  });
+
+  test('should format comment differently when block is null or undefined', async () => {
+    // Override the mock for block input to return undefined
+    (core.getInput as jest.Mock).mockImplementation((name: string) => {
+      switch (name) {
+        case 'github_token':
+          return 'mock-token';
+        case 'title':
+          return 'Test Title';
+        case 'block':
+          return undefined; // Undefined block
+        case 'message':
+          return 'This is a test message';
+        default:
+          return '';
+      }
+    });
+
+    // Mock the response from listComments
+    mockOctokit.rest.issues.listComments.mockResolvedValue({
+      data: []
+    });
+
+    await run();
+
+    // Verify createComment was called with the right parameters (no code block)
+    expect(mockOctokit.rest.issues.createComment).toHaveBeenCalledWith({
+      owner: 'test-owner',
+      repo: 'test-repo',
+      issue_number: 123,
+      body: '#### Test Title\n\n\nThis is a test message'
+    });
+  });
 });
