@@ -15,24 +15,32 @@ async function run() {
       repo: context.repo.repo,
       issue_number: context.issue.number
     });
-    comments.forEach(comment => {
-      if (comment?.user?.type === 'Bot' && comment?.body?.includes(title)) {
-        octokit.rest.issues.deleteComment({
-          owner: context.repo.owner,
-          repo: context.repo.repo,
-          comment_id: comment.id
-        });
-      }
-    });
 
     const blockMessage = block ? `\`\`\`\n${block}\n\`\`\`` : '';
     const output = `#### ${title}\n\n${blockMessage}\n${message}`;
-    octokit.rest.issues.createComment({
-      issue_number: context.issue.number,
-      owner: context.repo.owner,
-      repo: context.repo.repo,
-      body: output
-    });
+
+    // Find existing bot comment with the same title
+    const existingComment = comments.find(comment => comment?.user?.type === 'Bot' && comment?.body?.includes(title));
+
+    if (existingComment) {
+      // Update existing comment
+      await octokit.rest.issues.updateComment({
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        comment_id: existingComment.id,
+        body: output
+      });
+      core.info(`Updated existing comment with ID ${existingComment.id}`);
+    } else {
+      // Create new comment if none exists
+      await octokit.rest.issues.createComment({
+        issue_number: context.issue.number,
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        body: output
+      });
+      core.info('Created new comment');
+    }
   } catch (error) {
     core.setFailed(error as string | Error);
   }
