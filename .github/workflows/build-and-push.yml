@@ -26,8 +26,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Repo Warm Up
-        uses: ./.github/actions/repo-warm-up
         id: repo_warm_up
+        uses: ./.github/actions/repo-warm-up
 
       - name: Configure AWS credentials
         uses: ./.github/actions/aws-warm-up
