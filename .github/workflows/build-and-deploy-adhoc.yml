@@ -31,5 +31,5 @@ jobs:
     with:
       environment: dev
       environment_label: adhoc
-      comment_pr: true
+      comment_pr: ${{ github.event_name != 'workflow_dispatch' }}
     secrets: inherit
