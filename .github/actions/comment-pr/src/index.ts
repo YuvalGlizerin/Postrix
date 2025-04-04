@@ -16,30 +16,30 @@ async function run() {
       issue_number: context.issue.number
     });
 
+    const blockTitle = `#### ${title}`;
     const blockMessage = block ? `\`\`\`\n${block}\n\`\`\`` : '';
-    const output = `#### ${title}\n\n${blockMessage}\n${message}`;
+    const output = `${blockTitle}\n\n${blockMessage}\n${message}`;
 
-    // Find existing bot comment with the same title
-    const existingComment = comments.find(comment => comment?.user?.type === 'Bot' && comment?.body?.includes(title));
+    const existingComment = comments.find(
+      comment => comment.user?.type === 'Bot' && comment.body?.startsWith(blockTitle)
+    );
 
     if (existingComment) {
-      // Update existing comment
+      core.info(`Updating existing comment ${title}`);
       await octokit.rest.issues.updateComment({
         owner: context.repo.owner,
         repo: context.repo.repo,
         comment_id: existingComment.id,
         body: output
       });
-      core.info(`Updated existing comment with ID ${existingComment.id}`);
     } else {
-      // Create new comment if none exists
+      core.info(`Creating new comment ${title}`);
       await octokit.rest.issues.createComment({
         issue_number: context.issue.number,
         owner: context.repo.owner,
         repo: context.repo.repo,
         body: output
       });
-      core.info('Created new comment');
     }
   } catch (error) {
     core.setFailed(error as string | Error);
