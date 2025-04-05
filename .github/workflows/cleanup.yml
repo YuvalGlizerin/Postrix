@@ -12,6 +12,9 @@ on:
     types: [closed]
     branches: [main]
 
+env:
+  NAMESPACE_AGE_DAYS_EXPIRATION: 1
+
 jobs:
   cleanup:
     runs-on: ubuntu-latest
@@ -31,17 +34,18 @@ jobs:
       - name: Delete adhoc namespace from PR
         if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
         run: |
-          echo "Deleting namespace: ${{ steps.repo_warm_up.outputs.adhoc_namespace }}"
+          echo "Deleting namespace(If exists): ${{ steps.repo_warm_up.outputs.adhoc_namespace }}"
           kubectl delete namespace ${{ steps.repo_warm_up.outputs.adhoc_namespace }} --ignore-not-found
 
       - name: Delete all adhoc environments
         run: |
-          echo "Get all namespaces with label environment=adhoc older than 30 days"
+          echo "Get all namespaces with label environment=adhoc older than ${{ env.NAMESPACE_AGE_DAYS_EXPIRATION }} days"
           # Use kubectl's built-in filtering by age
-          ADHOC_NAMESPACES=$(kubectl get namespaces -l environment=adhoc -o jsonpath='{range .items[*]}{.metadata.name} {.metadata.creationTimestamp}{"\n"}{end}' | awk -v date="$(date -u +%Y-%m-%dT%H:%M:%SZ -d '2 days ago')" '$2 <= date {print $1}')
+          ADHOC_NAMESPACES=$(kubectl get namespaces -l environment=adhoc -o jsonpath='{range .items[*]}{.metadata.name} {.metadata.creationTimestamp}{"\n"}{end}' | \
+            awk -v date="$(date -u +%Y-%m-%dT%H:%M:%SZ -d '${{ env.NAMESPACE_AGE_DAYS_EXPIRATION }} days ago')" '$2 <= date {print $1}')
           
           for namespace in $ADHOC_NAMESPACES; do
-            echo "Deleting namespace: $namespace (older than 30 days)"
+            echo "Deleting namespace: $namespace"
             kubectl delete namespace $namespace
           done
 
