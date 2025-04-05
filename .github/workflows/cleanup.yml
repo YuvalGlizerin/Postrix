@@ -14,7 +14,7 @@ on:
 
 env:
   NAMESPACE_AGE_DAYS_EXPIRATION: 30
-  IMAGE_AGE_DAYS_EXPIRATION: 90
+  IMAGE_AGE_DAYS_EXPIRATION: 180
 
 jobs:
   cleanup:
@@ -61,15 +61,15 @@ jobs:
           REPOSITORIES=$(docker search ${DOCKER_USER}/ --format "{{.Name}}" | grep "^${DOCKER_USER}/" | cut -d'/' -f2)
           
           # Calculate date 90 days ago in ISO format
-          CUTOFF_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ -d '${{ env.IMAGE_AGE_DAYS_EXPIRATION }} days ago')
+          CUTOFF_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ -d '${{ env.IMAGE_AGE_DAYS_EXPIRATION }} minutes ago')
           
           for repo in $REPOSITORIES; do
-            REPOSITORY="${DOCKER_USER}/$repo"
+            REPOSITORY="${DOCKER_USER}/joby"
             echo "Cleaning up repository: $REPOSITORY"
             
-            # Get all tags except latest that haven't been pulled in 90 days
+            # Get all tags expired tags
             RESPONSE=$(curl -s "https://hub.docker.com/v2/repositories/${REPOSITORY}/tags?page_size=1000&page=1")
-            TAGS=$(echo "$RESPONSE" | jq -r '.results[] | select(.name != "latest") | 
+            TAGS=$(echo "$RESPONSE" | jq -r '.results[]) | 
               if (.tag_last_pulled == null or .tag_last_pulled <= "'$CUTOFF_DATE'") then 
                 .name 
               else 
