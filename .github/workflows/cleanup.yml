@@ -61,10 +61,10 @@ jobs:
           REPOSITORIES=$(docker search ${DOCKER_USER}/ --format "{{.Name}}" | grep "^${DOCKER_USER}/" | cut -d'/' -f2)
           
           # Calculate date 90 days ago in ISO format
-          CUTOFF_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ -d '${{ env.IMAGE_AGE_DAYS_EXPIRATION }} minutes ago')
+          CUTOFF_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ -d '${{ env.IMAGE_AGE_DAYS_EXPIRATION }} days ago')
           
           for repo in $REPOSITORIES; do
-            REPOSITORY="${DOCKER_USER}/joby"
+            REPOSITORY="${DOCKER_USER}/$repo"
             echo "Cleaning up repository: $REPOSITORY"
             
             # Get all tags expired tags
