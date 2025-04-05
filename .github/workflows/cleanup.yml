@@ -69,7 +69,7 @@ jobs:
             
             # Get all tags expired tags
             RESPONSE=$(curl -s "https://hub.docker.com/v2/repositories/${REPOSITORY}/tags?page_size=1000&page=1")
-            TAGS=$(echo "$RESPONSE" | jq -r '.results[]) | 
+            TAGS=$(echo "$RESPONSE" | jq -r '.results[] | 
               if (.tag_last_pulled == null or .tag_last_pulled <= "'$CUTOFF_DATE'") then 
                 .name 
               else 
