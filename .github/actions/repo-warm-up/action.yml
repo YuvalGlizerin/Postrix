@@ -4,31 +4,31 @@ description: 'Warm up resources for GitHub Actions'
 outputs:
   git_hash:
     description: 'The git hash of the current commit'
-    value: ${{ steps.get_git_hash.outputs.GIT_HASH }}
+    value: ${{ steps.git_hash.outputs.git_hash }}
   adhoc_namespace:
     description: 'The k8s namespace to deploy your adhoc service to'
-    value: ${{ steps.adhoc_namespace.outputs.NAMESPACE }}
+    value: ${{ steps.adhoc_namespace.outputs.namespace }}
 
 runs:
   using: 'composite'
   steps:
     - name: Get Git Hash
-      id: get_git_hash
+      id: git_hash
       run: |
-        echo "GIT_HASH=$(git rev-parse --short=8 HEAD)" >> $GITHUB_OUTPUT
+        echo "git_hash=$(git rev-parse --short=8 HEAD)" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Get namespace
       id: adhoc_namespace
       run: |
-        NAMESPACE=$(echo "${{ github.head_ref || github.ref_name }}" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-zA-Z0-9]/-/g' | cut -c -30 | sed 's/-*$//')
-        echo "NAMESPACE=$NAMESPACE" >> $GITHUB_OUTPUT
+        namespace=$(echo "${{ github.head_ref || github.ref_name }}" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-zA-Z0-9]/-/g' | cut -c -30 | sed 's/-*$//')
+        echo "namespace=$namespace" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Use Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '22'
+        node-version: '23.10.0'
         cache: 'npm'
     
     - name: Install dependencies

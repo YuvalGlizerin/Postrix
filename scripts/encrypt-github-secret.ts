@@ -5,7 +5,7 @@ Step 1, Get the public key from the github repo settings:
   gh api -H "Accept: application/vnd.github+json" /repos/YuvalGlizerin/Postrix/actions/secrets/public-key
 
 Step 2, Encrypt the secret value:
-  ts-node encrypt-github-secret.ts <public_key> <secret_value>
+  node --experimental-strip-types encrypt-github-secret.ts <public_key> <secret_value>
 
 Step 3, Update the terraform file with the encrypted value for example:
   github_actions_secret "docker_password" {
@@ -15,7 +15,9 @@ Step 3, Update the terraform file with the encrypted value for example:
   }
 */
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
 const sodium = require('tweetnacl-sealedbox-js');
 
 function encrypt(publicKey: string, secretValue: string): string {

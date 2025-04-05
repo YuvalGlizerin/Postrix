@@ -40,6 +40,8 @@ jobs:
 
       - name: Configure AWS credentials
         uses: ./.github/actions/aws-warm-up
+        with:
+          aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
 
       - name: Deploy to Kubernetes
         run: |

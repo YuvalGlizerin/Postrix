@@ -15,24 +15,32 @@ async function run() {
       repo: context.repo.repo,
       issue_number: context.issue.number
     });
-    comments.forEach(comment => {
-      if (comment?.user?.type === 'Bot' && comment?.body?.includes(title)) {
-        octokit.rest.issues.deleteComment({
-          owner: context.repo.owner,
-          repo: context.repo.repo,
-          comment_id: comment.id
-        });
-      }
-    });
 
+    const blockTitle = `#### ${title}`;
     const blockMessage = block ? `\`\`\`\n${block}\n\`\`\`` : '';
-    const output = `#### ${title}\n\n${blockMessage}\n${message}`;
-    octokit.rest.issues.createComment({
-      issue_number: context.issue.number,
-      owner: context.repo.owner,
-      repo: context.repo.repo,
-      body: output
-    });
+    const output = `${blockTitle}\n\n${blockMessage}\n${message}`;
+
+    const existingComment = comments.find(
+      comment => comment.user?.type === 'Bot' && comment.body?.startsWith(blockTitle)
+    );
+
+    if (existingComment) {
+      core.info(`Updating existing comment ${title}`);
+      await octokit.rest.issues.updateComment({
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        comment_id: existingComment.id,
+        body: output
+      });
+    } else {
+      core.info(`Creating new comment ${title}`);
+      await octokit.rest.issues.createComment({
+        issue_number: context.issue.number,
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        body: output
+      });
+    }
   } catch (error) {
     core.setFailed(error as string | Error);
   }
