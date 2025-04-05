@@ -8,6 +8,9 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 6 * * 0'  # Every Sunday at 06:00 UTC
+  pull_request:
+    types: [closed]
+    branches: [main]
 
 jobs:
   cleanup:
@@ -25,13 +28,20 @@ jobs:
         with:
           aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
 
-      - name: Delete dev environments
+      - name: Delete adhoc namespace from PR
+        if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
         run: |
-          echo "Get all namespaces with label environment=adhoc"
-          ADHOC_NAMESPACES=$(kubectl get namespaces -l environment=adhoc -o jsonpath='{.items[*].metadata.name}')
+          echo "Deleting namespace: ${{ steps.repo_warm_up.outputs.adhoc_namespace }}"
+          kubectl delete namespace ${{ steps.repo_warm_up.outputs.adhoc_namespace }} --ignore-not-found
+
+      - name: Delete all adhoc environments
+        run: |
+          echo "Get all namespaces with label environment=adhoc older than 30 days"
+          # Use kubectl's built-in filtering by age
+          ADHOC_NAMESPACES=$(kubectl get namespaces -l environment=adhoc -o jsonpath='{range .items[*]}{.metadata.name} {.metadata.creationTimestamp}{"\n"}{end}' | awk -v date="$(date -u +%Y-%m-%dT%H:%M:%SZ -d '2 days ago')" '$2 <= date {print $1}')
           
           for namespace in $ADHOC_NAMESPACES; do
-            echo "Deleting namespace: $namespace"
+            echo "Deleting namespace: $namespace (older than 30 days)"
             kubectl delete namespace $namespace
           done
 
