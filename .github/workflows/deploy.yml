@@ -16,14 +16,14 @@ on:
         required: false
         description: 'The namespace to deploy to, defaults to adhoc namespace'
         type: string
-      environment_label:
+      namespace_label:
         required: false
-        description: 'The label to deploy to'
-        default: ''
+        description: 'The label to attach to the namespace, defaults to no label'
         type: string
+        default: ''
       comment_pr:
         required: false
-        description: 'Whether to comment on the PR with the service adhoc URLs'
+        description: 'Whether to comment on the PR with the service adhoc URLs, defaults to false'
         type: boolean
         default: false
 
@@ -35,8 +35,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - uses: ./.github/actions/repo-warm-up
+      - name: Repo Warm Up
         id: repo_warm_up
+        uses: ./.github/actions/repo-warm-up
 
       - name: Configure AWS credentials
         uses: ./.github/actions/aws-warm-up
@@ -46,15 +47,16 @@ jobs:
       - name: Deploy to Kubernetes
         run: |
           helmfile sync -f kubernetes/helmfile.yaml \
+          -l group=app \
+          --wait --timeout 60 \
           --environment=${{ inputs.environment }} \
           --namespace=${{ inputs.namespace || steps.repo_warm_up.outputs.adhoc_namespace }} \
-          -l group=app \
           --set postrixImage.tag=${{ steps.repo_warm_up.outputs.git_hash }}
 
       - name: Label namespace
-        if: ${{ inputs.environment_label }}
+        if: ${{ inputs.namespace_label }}
         run: |
-          kubectl label namespace ${{ inputs.namespace || steps.repo_warm_up.outputs.adhoc_namespace }} environment=${{ inputs.environment_label }}
+          kubectl label namespace ${{ inputs.namespace || steps.repo_warm_up.outputs.adhoc_namespace }} environment=${{ inputs.namespace_label }}
 
       - name: Comment PR
         if: ${{ inputs.comment_pr }}
