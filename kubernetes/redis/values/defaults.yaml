@@ -2,7 +2,9 @@ architecture: standalone
 
 master:
   persistence:
-    enabled: false  # Disable persistence - data will be stored in memory only
+    enabled: true 
+    size: 1Gi
+    storageClass: gp2
   resources:
     requests:
       cpu: "100m"

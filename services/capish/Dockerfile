@@ -1,7 +1,7 @@
 # Local Build: docker build --platform linux/arm64 -t yuvadius/capish:latest -f services/capish/Dockerfile .
 # Server Build: docker build --platform linux/amd64 -t yuvadius/capish:latest -f services/capish/Dockerfile .
 # docker push yuvadius/capish:latest
-# docker run -p 8080:8080 -e ENV=local yuvadius/capish:latest
+# docker run -p 8081:8081 -e ENV=local yuvadius/capish:latest
 
 # Use the official lightweight Node.js image.
 # https://hub.docker.com/_/node

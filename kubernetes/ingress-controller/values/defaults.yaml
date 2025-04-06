@@ -14,4 +14,4 @@ controller:
   config:
     use-forwarded-headers: "true"
     proxy-real-ip-cidr: "0.0.0.0/0"
-    enable-real-ip: "true" 
+    enable-real-ip: "true"
