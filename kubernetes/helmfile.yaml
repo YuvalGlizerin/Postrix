@@ -21,7 +21,7 @@ releases:
     labels:
       app: cluster-autoscaler
     values:
-      - ./cluster-autoscaler/values/{{ .Environment.Name }}.yaml
+      - ./cluster-autoscaler/values/defaults.yaml
 
   - name: external-dns
     namespace: kube-system
@@ -29,7 +29,7 @@ releases:
     labels:
       app: external-dns
     values:
-      - ./external-dns/values/{{ .Environment.Name }}.yaml
+      - ./external-dns/values/defaults.yaml
 
   - name: ingress-controller
     namespace: ingress-nginx
@@ -38,7 +38,7 @@ releases:
     labels:
       app: ingress-controller
     values:
-      - ./ingress-controller/values/{{ .Environment.Name }}.yaml
+      - ./ingress-controller/values/defaults.yaml
 
   - name: postgresql
     namespace: postgresql
@@ -46,24 +46,15 @@ releases:
     labels:
       app: postgresql
     values:
-      - ./postgresql/values/{{ .Environment.Name }}.yaml
+      - ./postgresql/values/defaults.yaml
 
   - name: redis
-    namespace: "{{ default .Namespace .Environment.Name }}"
+    namespace: redis
     chart: bitnami/redis
     labels:
       app: redis
-      group: app
     values:
-      - ./redis/values/{{ .Environment.Name }}.yaml
-  
-  # - name: rabbitmq
-  #   namespace: "{{ default .Namespace .Environment.Name }}"
-  #   chart: bitnami/rabbitmq
-  #   labels:
-  #     app: rabbitmq
-  #   values:
-  #     - ./rabbitmq/values/{{ .Environment.Name }}.yaml
+      - ./redis/values/defaults.yaml
 
   - name: joby
     namespace: "{{ default .Namespace .Environment.Name }}"
@@ -72,6 +63,7 @@ releases:
       app: joby
       group: app
     values:
+      - ./joby/values/defaults.yaml
       - ./joby/values/{{ .Environment.Name }}.yaml
 
   - name: capish
@@ -81,6 +73,7 @@ releases:
       app: capish
       group: app
     values:
+      - ./capish/values/defaults.yaml
       - ./capish/values/{{ .Environment.Name }}.yaml
 
   - name: cannon
@@ -90,4 +83,5 @@ releases:
       app: cannon
       group: app
     values:
+      - ./cannon/values/defaults.yaml
       - ./cannon/values/{{ .Environment.Name }}.yaml

@@ -1,0 +1,15 @@
+replicas: 1
+postrixImage:
+  repository: yuvadius/joby
+  tag: latest
+containerPort: 8080
+ingressPort: 8080
+servicePort: 8080
+serviceTargetPort: 8080
+resources:
+  limits:
+    cpu: 200m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi

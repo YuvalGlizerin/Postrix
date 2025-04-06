@@ -1,0 +1,15 @@
+replicas: 1
+postrixImage:
+  repository: yuvadius/cannon
+  tag: latest
+containerPort: 8082
+ingressPort: 8082
+servicePort: 8082
+serviceTargetPort: 8082
+resources:
+  limits:
+    cpu: 200m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi

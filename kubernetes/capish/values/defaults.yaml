@@ -1,0 +1,15 @@
+replicas: 1
+postrixImage:
+  repository: yuvadius/capish
+  tag: latest
+containerPort: 8081
+ingressPort: 8081
+servicePort: 8081
+serviceTargetPort: 8081
+resources:
+  limits:
+    cpu: 200m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi

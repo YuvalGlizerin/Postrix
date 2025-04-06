@@ -1,9 +1,0 @@
-provider: aws
-aws:
-  zoneType: public
-txtOwnerId: local
-serviceAccount:
-  create: true
-  name: external-dns
-domainFilter: localhost
-region: us-east-1

@@ -1,17 +1,2 @@
-replicas: 1
-postrixImage:
-  repository: yuvadius/capish
-  tag: latest
 env: local
-containerPort: 8080
-ingressPort: 8080
-servicePort: 8080
-serviceTargetPort: 8080
 serviceType: LoadBalancer
-resources:
-  limits:
-    cpu: 200m
-    memory: 512Mi
-  requests:
-    cpu: 100m
-    memory: 256Mi
