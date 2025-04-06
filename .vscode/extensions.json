@@ -1,6 +1,14 @@
 {
   "recommendations": [
-    "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode"
+    "ms-azuretools.vscode-docker",
+    "mikestead.dotenv",
+    "github.vscode-github-actions",
+    "GitHub.vscode-pull-request-github",
+    "hashicorp.terraform",
+    "ms-kubernetes-tools.vscode-kubernetes-tools",
+    "Postman.postman-for-vscode",
+    "esbenp.prettier-vscode",
+    "redhat.vscode-yaml",
+    "dbaeumer.vscode-eslint"
   ]
 }

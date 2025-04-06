@@ -1,7 +1,4 @@
 {
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
     {
@@ -11,10 +8,7 @@
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "command": "npm run start:local --prefix services/cannon",
-      "presentation": {
-        "group": "Local Services"
-      }
+      "command": "npm run start:local --prefix services/cannon"
     },
     {
       "type": "node-terminal",
@@ -23,10 +17,7 @@
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "command": "npm run start:local --prefix services/joby",
-      "presentation": {
-        "group": "Local Services"
-      }
+      "command": "npm run start:local --prefix services/joby"
     },
     {
       "type": "node-terminal",
@@ -35,10 +26,7 @@
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "command": "npm run start:local --prefix services/capish",
-      "presentation": {
-        "group": "Local Services"
-      }
+      "command": "npm run start:local --prefix services/capish"
     },
     {
       "name": "GHA: Typescript",
@@ -47,20 +35,6 @@
       "command": "ts-node ${file}",
       "env": {
         "INPUT_TITLE": "title" // Value of core.getInput('title')
-      },
-      "presentation": {
-        "group": "Github Actions"
-      }
-    }
-  ],
-  "compounds": [
-    {
-      "name": "Local Services",
-      "configurations": ["Joby"],
-      "stopAll": true,
-      "presentation": {
-        "group": "Local Services",
-        "order": 1
       }
     }
   ]

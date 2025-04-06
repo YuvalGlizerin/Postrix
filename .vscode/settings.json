@@ -1,7 +1,8 @@
 {
   "launches": {
     "Joby": "Joby",
-    "Capish": "Capish"
+    "Capish": "Capish",
+    "Cannon": "Cannon"
   },
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
