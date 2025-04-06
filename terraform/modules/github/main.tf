@@ -67,9 +67,3 @@ resource "github_actions_secret" "docker_password" {
   secret_name     = "DOCKER_PASSWORD"
   encrypted_value = "G4zAqUUMSPw8le1RNmJBNR1uh0UeEkrBTBpaeVNKo3VkaBoTKD6iTQ+W4M/3OtFmAd4SpnS0UqeyzhkVZyw1vUT8s+Z5J0pLoWtzH0MEIMS4TwFN"
 }
-
-resource "github_actions_secret" "aws_account_id" {
-  repository      = github_repository.repo.name
-  secret_name     = "AWS_ACCOUNT_ID"
-  encrypted_value = "LScYRQ7bYGASdVv9zh6c+CadnTdTZCnfWnHf2xMM0wse+xVVlzrK63tdYX6Vo7JJw4izPcWKQR86si7B"
-}
