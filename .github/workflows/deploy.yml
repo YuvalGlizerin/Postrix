@@ -27,6 +27,9 @@ on:
         type: boolean
         default: false
 
+env:
+  WAIT_FOR_PODS_READY_TIMEOUT: 60s 
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -48,7 +51,7 @@ jobs:
         run: |
           helmfile sync -f kubernetes/helmfile.yaml \
           -l group=app \
-          --wait --args "--timeout 10s" \
+          --wait --args "--timeout ${{ env.WAIT_FOR_PODS_READY_TIMEOUT }}" \
           --environment=${{ inputs.environment }} \
           --namespace=${{ inputs.namespace || steps.repo_warm_up.outputs.adhoc_namespace }} \
           --set postrixImage.tag=${{ steps.repo_warm_up.outputs.git_hash }}
@@ -56,7 +59,8 @@ jobs:
       - name: Label namespace
         if: ${{ inputs.namespace_label }}
         run: |
-          kubectl label namespace ${{ inputs.namespace || steps.repo_warm_up.outputs.adhoc_namespace }} environment=${{ inputs.namespace_label }}
+          kubectl label namespace ${{ inputs.namespace || steps.repo_warm_up.outputs.adhoc_namespace }} \
+          environment=${{ inputs.namespace_label }}
 
       - name: Comment PR
         if: ${{ inputs.comment_pr }}
