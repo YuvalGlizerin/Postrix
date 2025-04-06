@@ -75,7 +75,7 @@ describe('comment-pr action', () => {
 
     // Verify createComment was called with the right parameters
     expect(mockOctokit.rest.issues.createComment).toHaveBeenCalledWith({
-      owner: 'test-owner2',
+      owner: 'test-owner',
       repo: 'test-repo',
       issue_number: 123,
       body: '#### Test Title\n\n```\nconsole.log("test")\n```\nThis is a test message'
