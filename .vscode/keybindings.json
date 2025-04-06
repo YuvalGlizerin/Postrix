@@ -7,5 +7,9 @@
   {
     "key": "ctrl+cmd+c",
     "command": "launches.Capish"
+  }, 
+  {
+    "key": "ctrl+cmd+K",
+    "command": "launches.Cannon"
   }
 ]
