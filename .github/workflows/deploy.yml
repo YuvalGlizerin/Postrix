@@ -48,7 +48,7 @@ jobs:
         run: |
           helmfile sync -f kubernetes/helmfile.yaml \
           -l group=app \
-          --wait --args "--timeout 60s" \
+          --wait --args "--timeout 10s" \
           --environment=${{ inputs.environment }} \
           --namespace=${{ inputs.namespace || steps.repo_warm_up.outputs.adhoc_namespace }} \
           --set postrixImage.tag=${{ steps.repo_warm_up.outputs.git_hash }}
