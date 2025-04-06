@@ -28,6 +28,7 @@ jobs:
         run: npm test
 
       - name: Upload Test Report to S3
+        if: success() || failure()
         run: |
           aws s3 sync coverage/ s3://postrix-test-reports/${{ github.sha }}/
         env:
@@ -35,6 +36,7 @@ jobs:
 
       - name: Comment PR
         uses: ./.github/actions/comment-pr
+        if: success() || failure()
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           title: Jest Reports
