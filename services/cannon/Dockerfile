@@ -1,7 +1,7 @@
 # Local Build: docker build --platform linux/arm64 -t yuvadius/cannon:latest -f services/cannon/Dockerfile .
 # Server Build: docker build --platform linux/amd64 -t yuvadius/cannon:latest -f services/cannon/Dockerfile .
 # docker push yuvadius/cannon:latest
-# docker run -p 8080:8080 -e ENV=local yuvadius/cannon:latest
+# docker run -p 8082:8082 -e ENV=local yuvadius/cannon:latest
 
 # Use the official lightweight Node.js image.
 # https://hub.docker.com/_/node
