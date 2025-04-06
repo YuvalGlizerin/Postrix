@@ -6,8 +6,14 @@ permissions:
 
 on:
   workflow_dispatch:
+  pull_request:
+    types: closed
   schedule:
-    - cron: '0 6 * * 0'  # Every Sunday at 06:00 UTC
+    - cron: '0 6 * * *'  # Every day at 06:00 UTC
+
+env:
+  NAMESPACE_AGE_DAYS_EXPIRATION: 30
+  IMAGE_AGE_DAYS_EXPIRATION: 90
 
 jobs:
   cleanup:
@@ -17,19 +23,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - uses: ./.github/actions/repo-warm-up
+      - name: Repo Warm Up
         id: repo_warm_up
+        uses: ./.github/actions/repo-warm-up
 
       - name: Configure AWS credentials
         uses: ./.github/actions/aws-warm-up
+        with:
+          aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
 
-      - name: Delete dev environments
+      - name: Delete adhoc namespace from PR
+        if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
         run: |
-          echo "Get all namespaces with label environment=adhoc"
-          ADHOC_NAMESPACES=$(kubectl get namespaces -l environment=adhoc -o jsonpath='{.items[*].metadata.name}')
+          kubectl delete namespace ${{ steps.repo_warm_up.outputs.adhoc_namespace }} --ignore-not-found
+
+      - name: Delete all expired adhoc environments
+        run: |
+          ADHOC_NAMESPACES=$(kubectl get namespaces -l environment=adhoc -o jsonpath='{range .items[*]}{.metadata.name} {.metadata.creationTimestamp}{"\n"}{end}' | \
+            awk -v date="$(date -u +%Y-%m-%dT%H:%M:%SZ -d '${{ env.NAMESPACE_AGE_DAYS_EXPIRATION }} days ago')" '$2 <= date {print $1}')
           
           for namespace in $ADHOC_NAMESPACES; do
-            echo "Deleting namespace: $namespace"
             kubectl delete namespace $namespace
           done
 
@@ -39,7 +52,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           
-      - name: Remove all tags besides "latest" and in-use tags
+      - name: Remove all expired images
         run: |
           # Set Docker Hub username
           DOCKER_USER="yuvadius"
@@ -47,50 +60,27 @@ jobs:
           # Get all repositories for user
           REPOSITORIES=$(docker search ${DOCKER_USER}/ --format "{{.Name}}" | grep "^${DOCKER_USER}/" | cut -d'/' -f2)
           
+          # Calculate date 90 days ago in ISO format
+          CUTOFF_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ -d '${{ env.IMAGE_AGE_DAYS_EXPIRATION }} days ago')
+          
           for repo in $REPOSITORIES; do
             REPOSITORY="${DOCKER_USER}/$repo"
             echo "Cleaning up repository: $REPOSITORY"
             
-            # Get tags that are currently in use by Kubernetes
-            USED_TAGS=$(kubectl get deployments -A -o jsonpath="{.items[*].spec.template.spec.containers[*].image}" | \
-              tr ' ' '\n' | \
-              grep "^${REPOSITORY}:" | \
-              cut -d':' -f2 | \
-              sort -u)
+            # Get all tags expired tags
+            RESPONSE=$(curl -s "https://hub.docker.com/v2/repositories/${REPOSITORY}/tags?page_size=1000&page=1")
+            TAGS=$(echo "$RESPONSE" | jq -r '.results[] | 
+              if (.tag_last_pulled == null or .tag_last_pulled <= "'$CUTOFF_DATE'") then 
+                .name 
+              else 
+                empty 
+              end')
             
-            echo "Tags in use: $USED_TAGS"
-            
-            # Get all tags except latest and in-use tags
-            PAGE=1
-            while true; do
-              RESPONSE=$(curl -s "https://hub.docker.com/v2/repositories/${REPOSITORY}/tags?page_size=100&page=${PAGE}")
-              TAGS=$(echo "$RESPONSE" | jq -r '.results[].name' | \
-                grep -v '^latest$' | \
-                while read -r tag; do
-                  if ! echo "$USED_TAGS" | grep -q "^${tag}$"; then
-                    echo "$tag"
-                  fi
-                done)
-              
-              # Break if no more tags
-              if [ -z "$TAGS" ]; then
-                break
-              fi
-              
-              for tag in $TAGS; do
-                echo "Deleting tag: $tag"
-                curl -s -X DELETE \
-                  -H "Authorization: JWT ${{ secrets.DOCKER_PASSWORD }}" \
-                  "https://hub.docker.com/v2/repositories/${REPOSITORY}/tags/${tag}/"
-              done
-              
-              # Check if there are more pages
-              HAS_NEXT=$(echo "$RESPONSE" | jq -r '.next')
-              if [ "$HAS_NEXT" = "null" ]; then
-                break
-              fi
-              
-              PAGE=$((PAGE + 1))
+            for tag in $TAGS; do
+              echo "Deleting tag: $tag (not pulled since ${{ env.IMAGE_AGE_DAYS_EXPIRATION }} days)"
+              curl -s -X DELETE \
+                -H "Authorization: JWT ${{ secrets.DOCKER_PASSWORD }}" \
+                "https://hub.docker.com/v2/repositories/${REPOSITORY}/tags/${tag}/"
             done
             
             echo "Done cleaning up repository: $REPOSITORY"

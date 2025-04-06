@@ -1,13 +1,12 @@
-# Run all tests for all services/packages
-name: Tests
+name: Test
 
 on:
   pull_request:
-    branches: [ main ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
       pull-requests: write
@@ -22,11 +21,14 @@ jobs:
 
       - name: Configure AWS credentials
         uses: ./.github/actions/aws-warm-up
+        with:
+          aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
       
       - name: Run Jest Test Suite
         run: npm test
 
       - name: Upload Test Report to S3
+        if: success() || failure()
         run: |
           aws s3 sync coverage/ s3://postrix-test-reports/${{ github.sha }}/
         env:
@@ -34,8 +36,10 @@ jobs:
 
       - name: Comment PR
         uses: ./.github/actions/comment-pr
+        if: success() || failure()
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          title: Jest Reports
           message: |
             **Test Report:** [View detailed test report](http://postrix-test-reports.s3-website-us-east-1.amazonaws.com/${{ github.sha }})
             **Coverage Report:** [View detailed coverage report](http://postrix-test-reports.s3-website-us-east-1.amazonaws.com/${{ github.sha }}/lcov-report/index.html)

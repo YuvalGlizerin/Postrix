@@ -12,7 +12,7 @@ describe('comment-pr action', () => {
     rest: {
       issues: {
         listComments: jest.Mock;
-        deleteComment: jest.Mock;
+        updateComment: jest.Mock;
         createComment: jest.Mock;
       };
     };
@@ -56,7 +56,7 @@ describe('comment-pr action', () => {
       rest: {
         issues: {
           listComments: jest.fn(),
-          deleteComment: jest.fn(),
+          updateComment: jest.fn(),
           createComment: jest.fn()
         }
       }
@@ -65,8 +65,8 @@ describe('comment-pr action', () => {
     (github.getOctokit as jest.Mock).mockReturnValue(mockOctokit);
   });
 
-  test('should create a comment with the correct format', async () => {
-    // Mock the response from listComments
+  test('should create a comment when no matching comment exists', async () => {
+    // Mock the response from listComments - no existing comments
     mockOctokit.rest.issues.listComments.mockResolvedValue({
       data: []
     });
@@ -80,9 +80,12 @@ describe('comment-pr action', () => {
       issue_number: 123,
       body: '#### Test Title\n\n```\nconsole.log("test")\n```\nThis is a test message'
     });
+
+    // Verify updateComment was not called
+    expect(mockOctokit.rest.issues.updateComment).not.toHaveBeenCalled();
   });
 
-  test('should delete existing bot comments with the same title before creating a new one', async () => {
+  test('should update an existing bot comment with the same title', async () => {
     // Mock existing comments
     mockOctokit.rest.issues.listComments.mockResolvedValue({
       data: [
@@ -101,15 +104,47 @@ describe('comment-pr action', () => {
 
     await run();
 
-    // Verify deleteComment was called for the bot comment with matching title
-    expect(mockOctokit.rest.issues.deleteComment).toHaveBeenCalledWith({
+    // Verify updateComment was called for the matching comment
+    expect(mockOctokit.rest.issues.updateComment).toHaveBeenCalledWith({
       owner: 'test-owner',
       repo: 'test-repo',
-      comment_id: 456
+      comment_id: 456,
+      body: '#### Test Title\n\n```\nconsole.log("test")\n```\nThis is a test message'
     });
 
-    // Verify createComment was called after deleting
-    expect(mockOctokit.rest.issues.createComment).toHaveBeenCalled();
+    // Verify createComment was not called
+    expect(mockOctokit.rest.issues.createComment).not.toHaveBeenCalled();
+  });
+
+  test('should create a new comment if no bot comment with matching title exists', async () => {
+    // Mock existing comments with no matching title
+    mockOctokit.rest.issues.listComments.mockResolvedValue({
+      data: [
+        {
+          id: 456,
+          user: { type: 'Bot' },
+          body: '#### Different Title\n\nSome content'
+        },
+        {
+          id: 789,
+          user: { type: 'User' },
+          body: 'Some other comment'
+        }
+      ]
+    });
+
+    await run();
+
+    // Verify createComment was called
+    expect(mockOctokit.rest.issues.createComment).toHaveBeenCalledWith({
+      owner: 'test-owner',
+      repo: 'test-repo',
+      issue_number: 123,
+      body: '#### Test Title\n\n```\nconsole.log("test")\n```\nThis is a test message'
+    });
+
+    // Verify updateComment was not called
+    expect(mockOctokit.rest.issues.updateComment).not.toHaveBeenCalled();
   });
 
   test('should handle errors appropriately', async () => {
@@ -121,5 +156,71 @@ describe('comment-pr action', () => {
 
     // Verify error is handled
     expect(core.setFailed).toHaveBeenCalledWith(error);
+  });
+
+  test('should handle comments without a block parameter', async () => {
+    // Override the mock for block input to return an empty string
+    (core.getInput as jest.Mock).mockImplementation((name: string) => {
+      switch (name) {
+        case 'github_token':
+          return 'mock-token';
+        case 'title':
+          return 'Test Title';
+        case 'block':
+          return ''; // Empty block
+        case 'message':
+          return 'This is a test message';
+        default:
+          return '';
+      }
+    });
+
+    // Mock the response from listComments - no existing comments
+    mockOctokit.rest.issues.listComments.mockResolvedValue({
+      data: []
+    });
+
+    await run();
+
+    // Verify createComment was called with the right parameters (no code block)
+    expect(mockOctokit.rest.issues.createComment).toHaveBeenCalledWith({
+      owner: 'test-owner',
+      repo: 'test-repo',
+      issue_number: 123,
+      body: '#### Test Title\n\n\nThis is a test message' // Note: no code block here
+    });
+  });
+
+  test('should format comment differently when block is null or undefined', async () => {
+    // Override the mock for block input to return undefined
+    (core.getInput as jest.Mock).mockImplementation((name: string) => {
+      switch (name) {
+        case 'github_token':
+          return 'mock-token';
+        case 'title':
+          return 'Test Title';
+        case 'block':
+          return undefined; // Undefined block
+        case 'message':
+          return 'This is a test message';
+        default:
+          return '';
+      }
+    });
+
+    // Mock the response from listComments
+    mockOctokit.rest.issues.listComments.mockResolvedValue({
+      data: []
+    });
+
+    await run();
+
+    // Verify createComment was called with the right parameters (no code block)
+    expect(mockOctokit.rest.issues.createComment).toHaveBeenCalledWith({
+      owner: 'test-owner',
+      repo: 'test-repo',
+      issue_number: 123,
+      body: '#### Test Title\n\n\nThis is a test message'
+    });
   });
 });

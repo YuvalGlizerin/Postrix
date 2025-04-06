@@ -30,6 +30,6 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     with:
       environment: dev
-      environment_label: adhoc
-      comment_pr: true
+      namespace_label: adhoc
+      comment_pr: ${{ github.event_name != 'workflow_dispatch' }}
     secrets: inherit

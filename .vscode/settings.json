@@ -26,6 +26,7 @@
     "Capish",
     "helmfile",
     "joby",
+    "kubeconfig",
     "postrix",
     "rabbitmq",
     "sealedbox",
