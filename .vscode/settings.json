@@ -23,6 +23,7 @@
     "**/.github/**/*.yaml": "github-actions-workflow"
   },
   "cSpell.words": [
+    "autoincrement",
     "bitnami",
     "Capish",
     "Creatomate",

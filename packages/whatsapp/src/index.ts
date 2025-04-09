@@ -60,8 +60,9 @@ async function getMedia(
  *
  * @param {WhatsAppMediaJson} media - The media object of the video to download.
  * @param {string} accessToken The Facebook access token
- * @param {string} savePath - The path to save the downloaded video.
+ * @param {string} savePath - The path to save the downloaded video, defaults to tmp directory.
  * @returns {Promise<string>} The path where the media was saved
+ * @throws {Error} If the media type is not supported or if the download fails.
  */
 async function downloadMedia(media: WhatsAppMediaJson, accessToken: string, savePath?: string): Promise<string> {
   console.log(`Attempting to download media from: ${media.url}`);

@@ -3,7 +3,9 @@ import dotenv from 'dotenv';
 import pkg from 'pg';
 const { Pool } = pkg;
 
+dotenv.config({ path: 'envs/default.env' });
 dotenv.config({ path: `envs/${process.env.ENV}.env` });
+
 process.title = 'cannon';
 const app = express();
 const PORT = process.env.PORT;
