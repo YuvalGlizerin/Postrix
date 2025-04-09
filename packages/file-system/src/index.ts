@@ -6,7 +6,7 @@ import path from 'path';
  * Downloads a video from the given URL and saves it to the specified path.
  *
  * @param {string} mediaUrl - The URL of the video to download.
- * @param {extension} extension The file extension to use for the saved video (e.g., 'mp4', 'mov').
+ * @param {'mp4' | 'mov'} extension The file extension to use for the saved video (e.g., 'mp4', 'mov').
  * @param {string} authorization The authorization header (optional).
  * @param {string} userAgent The user agent header (optional).
  * @param {string} savePath - The path to save the downloaded video, defaults to tmp directory.
