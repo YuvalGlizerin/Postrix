@@ -3,6 +3,7 @@ import fs from 'fs';
 import express, { type Request, type Response } from 'express';
 import dotenv from 'dotenv';
 import whatsapp from 'whatsapp';
+import creatomate from 'creatomate';
 import { fromIni } from '@aws-sdk/credential-providers';
 import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
@@ -93,9 +94,9 @@ app.post('/webhook', async (req: Request, res: Response) => {
       })
     });
 
-    const mediaUrl = await whatsapp.getMediaUrl(req.body, accessToken);
-    if (mediaUrl) {
-      const videoPath = await whatsapp.downloadMedia(mediaUrl, accessToken);
+    const media = await whatsapp.getMedia(req.body, accessToken);
+    if (media) {
+      const videoPath = await whatsapp.downloadMedia(media, accessToken);
 
       // Upload the video file to S3
       const s3Client = new S3Client({
@@ -117,7 +118,7 @@ app.post('/webhook', async (req: Request, res: Response) => {
       const s3VideoUrl = `https://${uploadParams.Bucket}.s3.amazonaws.com/${uploadParams.Key}`;
       console.log('S3 Video URL:', s3VideoUrl);
 
-      const captionsUrl = await whatsapp.getCaptionsVideoUrlCreatomate(s3VideoUrl, apiVideoKey);
+      const captionsUrl = await creatomate.getCaptionsVideoUrlCreatomate(s3VideoUrl, apiVideoKey);
       console.log(captionsUrl);
 
       const url = `https://graph.facebook.com/v22.0/${phoneId}/messages`;

@@ -1,0 +1,11 @@
+{
+  "name": "file-system",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A package that will contain file system helper functions",
+  "main": "src/index.ts",
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "test": "jest --config ../../jest.config.mjs --rootDir ./"
+  }
+}

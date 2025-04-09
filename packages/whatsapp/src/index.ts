@@ -1,63 +1,7 @@
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
-
+import fileSystem from 'file-system';
 import { type Request, type Response } from 'express';
 
-interface WhatsAppMessagePayload {
-  object: string;
-  entry: Entry[];
-}
-
-interface Entry {
-  id: string;
-  changes: Change[];
-}
-
-interface Change {
-  value: Value;
-  field: string;
-}
-
-interface Value {
-  messaging_product: string;
-  metadata: Metadata;
-  contacts: Contact[];
-  messages: Message[];
-}
-
-interface Metadata {
-  display_phone_number: string;
-  phone_number_id: string;
-}
-
-interface Contact {
-  profile: Profile;
-  wa_id: string;
-}
-
-interface Profile {
-  name: string;
-}
-
-interface Message {
-  from: string;
-  id: string;
-  timestamp: string;
-  type: string;
-  text?: Text;
-  video?: Video;
-}
-
-interface Text {
-  body: string;
-}
-
-interface Video {
-  mime_type: string;
-  sha256: string;
-  id: string;
-}
+import type { WhatsAppMessagePayload, WhatsAppMediaJson } from './types.ts';
 
 /**
  * Verifies the whatsapp webhook verification token.
@@ -88,9 +32,12 @@ function verifyToken(req: Request, res: Response, verificationToken: string) {
  * Get the media URL from the WhatsApp payload.
  * @param {WhatsAppMessagePayload} whatsappPayload The WhatsApp payload.
  * @param {string} accessToken The Facebook access token.
- * @returns The media URL.
+ * @returns {Promise<WhatsAppMediaJson | null>} The media object, or null if failed to download media.
  */
-async function getMediaUrl(whatsappPayload: WhatsAppMessagePayload, accessToken: string): Promise<string | null> {
+async function getMedia(
+  whatsappPayload: WhatsAppMessagePayload,
+  accessToken: string
+): Promise<WhatsAppMediaJson | null> {
   const message = whatsappPayload.entry[0].changes[0].value.messages[0];
   if (message.type !== 'video') {
     return null;
@@ -104,131 +51,37 @@ async function getMediaUrl(whatsappPayload: WhatsAppMessagePayload, accessToken:
     }
   });
 
-  const json = await response.json();
-  return json.url;
+  const json: WhatsAppMediaJson = await response.json();
+  return json;
 }
 
 /**
- * Downloads a video from the given URL and saves it to the specified path.
+ * Downloads a whatsapp video from the given URL and saves it to the specified path.
  *
- * @param {string} mediaUrl - The URL of the video to download.
+ * @param {WhatsAppMediaJson} media - The media object of the video to download.
  * @param {string} accessToken The Facebook access token
  * @param {string} savePath - The path to save the downloaded video.
  * @returns {Promise<string>} The path where the media was saved
  */
-async function downloadMedia(mediaUrl: string, accessToken: string, savePath?: string): Promise<string> {
-  console.log(`Attempting to download media from: ${mediaUrl}`);
+async function downloadMedia(media: WhatsAppMediaJson, accessToken: string, savePath?: string): Promise<string> {
+  console.log(`Attempting to download media from: ${media.url}`);
+  const extension = media.mime_type.split('/').pop() || '';
 
-  try {
-    const response = await fetch(mediaUrl, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to download media: ${response.status}`);
-    }
-
-    // Ensure we're getting the raw binary data
-    const arrayBuffer = await response.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    // Create a save path if not provided
-    const finalSavePath = savePath || path.join(os.tmpdir(), `whatsapp_media_${Date.now()}.mp4`);
-
-    // Write the binary data directly to file
-    fs.writeFileSync(finalSavePath, buffer);
-
-    return finalSavePath;
-  } catch (error) {
-    console.error('Error in downloadMedia:', error);
-    throw error;
+  if (extension !== 'mp4' && extension !== 'mov') {
+    throw new Error(`Unsupported media type: ${extension}. Only mp4 and mov are supported.`);
   }
-}
 
-async function getCaptionsVideoUrlCreatomate(videoUrl: string, apiCreatomateKey: string): Promise<string> {
-  try {
-    const response = await fetch('https://api.creatomate.com/v1/renders', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiCreatomateKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        output_format: 'mp4',
-        source: {
-          elements: [
-            {
-              type: 'video',
-              id: '17ca2169-786f-477f-aaea-4a2598bf24eb',
-              source: videoUrl
-            },
-            {
-              type: 'text',
-              transcript_source: '17ca2169-786f-477f-aaea-4a2598bf24eb',
-              transcript_maximum_length: 14,
-              y: '82%',
-              width: '81%',
-              height: '35%',
-              x_alignment: '50%',
-              y_alignment: '50%',
-              fill_color: '#ffffff',
-              stroke_color: '#000000',
-              stroke_width: '1.6 vmin',
-              font_family: 'Montserrat',
-              font_weight: '700',
-              font_size: '9.29 vmin',
-              background_color: 'rgba(216,216,216,0)',
-              background_x_padding: '31%',
-              background_y_padding: '17%',
-              background_border_radius: '31%'
-            }
-          ]
-        }
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to create captioned video: ${await response.text()}`);
-    }
-
-    const data = await response.json();
-
-    // The Creatomate API returns an array of renders
-    // We're interested in the URL of the first render
-    if (Array.isArray(data) && data.length > 0 && data[0].url) {
-      const captionsUrl = data[0].url;
-
-      // Poll until video is ready (max 2 minutes)
-      let isReady = false;
-      const maxAttempts = 24; // 24 attempts * 5 seconds = 2 minutes
-      let attempts = 0;
-
-      while (!isReady && attempts < maxAttempts) {
-        const response = await fetch(captionsUrl, { method: 'HEAD' });
-        isReady = (response.ok && response.headers.get('content-type')?.startsWith('video/')) as boolean;
-        if (!isReady) {
-          console.log(`Video not ready, attempt ${attempts + 1}/${maxAttempts}`);
-          await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds
-          attempts++;
-        }
-      }
-
-      return captionsUrl;
-    } else {
-      throw new Error('Invalid response from Creatomate API');
-    }
-  } catch (error) {
-    console.error('Error in getCaptionsVideoUrlCreatomate:', error);
-    throw error;
-  }
+  return fileSystem.downloadMedia(
+    media.url,
+    extension,
+    `Bearer ${accessToken}`,
+    'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+    savePath
+  );
 }
 
 export default {
   verifyToken,
-  getMediaUrl,
-  downloadMedia,
-  getCaptionsVideoUrlCreatomate
+  getMedia,
+  downloadMedia
 };

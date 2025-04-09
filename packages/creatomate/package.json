@@ -1,17 +1,14 @@
 {
-  "name": "whatsapp",
+  "name": "creatomate",
   "version": "1.0.0",
   "type": "module",
-  "description": "A package that will contain whatsapp api helper functions",
+  "description": "A package that will contain creatomate api helper functions",
   "main": "src/index.ts",
   "scripts": {
     "type-check": "tsc --noEmit",
     "test": "jest --config ../../jest.config.mjs --rootDir ./"
   },
-  "dependencies": {
-    "file-system": "file:../file-system"
-  },
   "devDependencies": {
-    "@types/express": "^5.0.1"
+    "node-fetch": "^3.3.2"
   }
 }
