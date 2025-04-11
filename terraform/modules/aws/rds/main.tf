@@ -3,13 +3,13 @@ variable "subnet_ids" {
   type        = list(string)
 }
 
-# Create a DB subnet group
+# Create DB subnet group
 resource "aws_db_subnet_group" "postgres" {
   name       = "postrix-postgres-subnet-group"
   subnet_ids = var.subnet_ids
 }
 
-# Create a security group for RDS
+# Create security group for RDS
 resource "aws_security_group" "postgres" {
   name        = "postrix-postgres-sg"
   description = "Security group for Postrix PostgreSQL RDS"

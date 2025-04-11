@@ -8,6 +8,7 @@ on:
       - completed
     branches:
       - main
+  # Only trigger if there were no changes in terraform
   push:
     branches:
       - main
