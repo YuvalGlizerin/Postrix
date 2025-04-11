@@ -29,12 +29,9 @@ const pool = new Pool({
   database: process.env.DATABASE,
   password,
   port,
-  ssl:
-    process.env.ENV === 'local'
-      ? {
-          rejectUnauthorized: false // Use only for development!
-        }
-      : undefined
+  ssl: {
+    rejectUnauthorized: process.env.ENV !== 'local' // Validate certificates in prod/dev but not local
+  }
 });
 
 app.use(express.json()); // Add this line to parse JSON request bodies
