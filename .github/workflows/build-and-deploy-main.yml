@@ -11,8 +11,8 @@ on:
   push:
     branches:
       - main
-    paths:
-      - '!terraform/**'
+    paths-ignore:
+      - 'terraform/**'
 
 concurrency:
   group: build-and-deploy
