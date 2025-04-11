@@ -2,18 +2,9 @@ name: Build and deploy main to prod/sandbox
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: ["Terraform Apply"]
-    types:
-      - completed
-    branches:
-      - main
-  # Only trigger if there were no changes in terraform
   push:
     branches:
       - main
-    paths-ignore:
-      - 'terraform/**'
 
 concurrency:
   group: build-and-deploy
@@ -21,7 +12,6 @@ concurrency:
 
 jobs:
   build_and_push:
-    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion != 'failure' }}
     permissions:
       contents: read
       id-token: write
