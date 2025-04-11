@@ -26,7 +26,7 @@ const { username, password, host, port } = JSON.parse(postgres.SecretString);
 const pool = new Pool({
   user: username,
   host,
-  database: 'cannon',
+  database: process.env.DATABASE,
   password,
   port,
   ssl:
