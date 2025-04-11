@@ -1,6 +1,8 @@
 import express, { type Request, type Response } from 'express';
 import dotenv from 'dotenv';
 import pkg from 'pg';
+import { fromIni } from '@aws-sdk/credential-providers';
+import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
 const { Pool } = pkg;
 
 dotenv.config({ path: 'envs/default.env' });
@@ -10,13 +12,29 @@ process.title = 'cannon';
 const app = express();
 const PORT = process.env.PORT;
 
-// Create a PostgreSQL connection pool
+const secretsClient = new SecretsManagerClient({
+  region: 'us-east-1',
+  ...(process.env.ENV === 'local' ? { credentials: fromIni() } : {})
+});
+
+const postgres = await secretsClient.send(new GetSecretValueCommand({ SecretId: 'postgres' }));
+if (!postgres.SecretString) {
+  throw new Error('Secrets not found, cannot connect to postgres');
+}
+const { username, password, host, port } = JSON.parse(postgres.SecretString);
+
 const pool = new Pool({
-  user: process.env.ENV === 'local' ? 'cannon' : 'postgres',
-  host: process.env.ENV === 'local' ? 'localhost' : 'postgresql.postgresql.svc.cluster.local',
-  database: process.env.ENV === 'local' ? 'cannon' : 'postgres',
-  password: process.env.ENV === 'local' ? 'cannon' : 'postgres',
-  port: process.env.ENV === 'local' ? 5432 : 5432
+  user: username,
+  host,
+  database: 'cannon',
+  password,
+  port,
+  ssl:
+    process.env.ENV === 'local'
+      ? {
+          rejectUnauthorized: false // Use only for development!
+        }
+      : undefined
 });
 
 app.use(express.json()); // Add this line to parse JSON request bodies

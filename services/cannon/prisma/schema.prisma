@@ -15,9 +15,9 @@ datasource db {
 }
 
 model Leaderboard {
-  id       Int    @id @default(autoincrement())
-  username String @unique
-  score    Int
+  id        Int    @id @default(autoincrement())
+  username  String @unique
+  score     Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

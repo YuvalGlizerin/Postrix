@@ -25,7 +25,9 @@ resource "aws_secretsmanager_secret_version" "postgres_version" {
   secret_id     = aws_secretsmanager_secret.postgres.id
   secret_string = jsonencode({
     username     = "",
-    password     = ""
+    password     = "",
+    host         = "",
+    port         = ""
   })
 
   lifecycle {
@@ -47,4 +49,3 @@ resource "aws_secretsmanager_secret_version" "creatomate_version" {
     ignore_changes = [secret_string]
   }
 }
-
