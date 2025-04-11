@@ -9,6 +9,7 @@
     "Postman.postman-for-vscode",
     "esbenp.prettier-vscode",
     "redhat.vscode-yaml",
-    "dbaeumer.vscode-eslint"
+    "dbaeumer.vscode-eslint",
+    "dbcode.dbcode"
   ]
 }

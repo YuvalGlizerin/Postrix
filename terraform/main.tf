@@ -53,10 +53,7 @@ module "aws_eks" {
   source       = "./modules/aws/eks"
   cluster_name = "postrix"
   region       = var.aws_region
-  subnet_ids = [
-    "subnet-02a3fb65864cb921f", # us-east-1a
-    "subnet-0f5f53463472c2445"  # us-east-1b
-  ]
+  subnet_ids   = var.subnet_ids
 
   providers = {
     aws = aws
@@ -100,6 +97,15 @@ module "aws_s3" {
 
 module "aws_secrets_manager" {
   source = "./modules/aws/secrets-manager" 
+
+  providers = {
+    aws = aws
+  }
+}
+
+module "aws_rds" {
+  source = "./modules/aws/rds"
+  subnet_ids = var.subnet_ids
 
   providers = {
     aws = aws
