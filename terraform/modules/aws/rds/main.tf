@@ -54,7 +54,7 @@ resource "aws_db_instance" "postgres" {
   multi_az                 = false
   storage_type             = "gp2"
   skip_final_snapshot      = false
-  final_snapshot_identifier = "postrix-postgres-final-${formatdate("YYYY-MM-DD", timestamp())}"
+  final_snapshot_identifier = "postrix-postgres-final-snapshot"
   performance_insights_enabled = false
   monitoring_interval     = 0
   auto_minor_version_upgrade = false
