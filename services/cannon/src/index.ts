@@ -30,7 +30,7 @@ const pool = new Pool({
   password,
   port,
   ssl: {
-    rejectUnauthorized: process.env.ENV !== 'local' // Validate certificates in prod/dev but not local
+    rejectUnauthorized: false
   }
 });
 
