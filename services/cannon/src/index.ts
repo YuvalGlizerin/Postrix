@@ -43,7 +43,6 @@ const pool = new Pool({
 });
 
 app.use(express.json()); // Add this line to parse JSON request bodies
-app.use(express.static(path.join(__dirname, 'public'))); // Only serve the public directory for static assets
 
 // Health check endpoint
 app.get('/health', (req, res) => {
