@@ -19,4 +19,16 @@ spec:
             name: {{ .Release.Name }}
             port:
               number: {{ .Values.ingressPort }}
+  {{- if .Values.ingress.additionalHost }}
+  - host: {{ .Values.ingress.additionalHost }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Release.Name }}
+            port:
+              number: {{ .Values.ingressPort }}
+  {{- end }}
 {{- end }}

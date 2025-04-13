@@ -1,3 +1,4 @@
 env: prod
 serviceType: ClusterIP
-ingress: true
+ingress:
+  additionalHost: toybuttons.com
