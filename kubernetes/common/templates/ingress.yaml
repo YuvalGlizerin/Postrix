@@ -6,11 +6,6 @@ metadata:
   namespace: {{ .Release.Namespace }}
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-    # Add this for automatic redirection of www prefix
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      if ($host ~ ^www\.(.+)$) {
-        return 301 $scheme://$1$request_uri;
-      }
 spec:
   ingressClassName: nginx
   rules:
