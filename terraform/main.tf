@@ -75,12 +75,12 @@ module "aws_certificate_manager" {
     {
       domain     = "postrix.io"
       zone_id    = module.aws_route53.zone_id
-      subdomains = ["*", "*.dev"]  # Will generate *.postrix.io and *.dev.postrix.io
+      subdomains = ["*"]
     },
     {
       domain     = "toybuttons.com"
       zone_id    = module.aws_route53.toybuttons_zone_id
-      subdomains = []  # No subdomains for toybuttons.com
+      subdomains = ["www"]
     }
   ]
 
