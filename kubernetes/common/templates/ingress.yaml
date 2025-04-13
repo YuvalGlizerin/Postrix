@@ -19,7 +19,7 @@ spec:
             name: {{ .Release.Name }}
             port:
               number: {{ .Values.ingressPort }}
-  - host: {{ if eq .Release.Namespace "prod" }}{{ printf "%www.%s.postrix.io" .Release.Name }}{{ else }}{{ printf "www.%s-%s.postrix.io" .Release.Namespace .Release.Name }}{{ end }}
+  - host: {{ if eq .Release.Namespace "prod" }}{{ printf "www.%s.postrix.io" .Release.Name }}{{ else }}{{ printf "www.%s-%s.postrix.io" .Release.Namespace .Release.Name }}{{ end }}
     http:
       paths:
       - path: /
@@ -40,7 +40,7 @@ spec:
             name: {{ .Release.Name }}
             port:
               number: {{ .Values.ingressPort }}
-  - host: {{ printf "%www.%s" .Values.ingress.additionalHost}}
+  - host: {{ printf "www.%s" .Values.ingress.additionalHost}}
     http:
       paths:
       - path: /
