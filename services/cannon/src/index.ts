@@ -1,3 +1,11 @@
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+// Get current directory in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 import express, { type Request, type Response } from 'express';
 import dotenv from 'dotenv';
 import pkg from 'pg';
@@ -41,8 +49,16 @@ app.get('/health', (req, res) => {
   res.status(200).send('OK');
 });
 
+// Root route to serve the HTML website
 app.get('/', (req: Request, res: Response) => {
-  res.send(`Cannon service running on ${process.env.ENV}.\n`);
+  try {
+    const htmlPath = path.join(__dirname, 'index.html');
+    const htmlContent = fs.readFileSync(htmlPath, 'utf8');
+    res.send(htmlContent);
+  } catch (error) {
+    console.error('Error serving HTML file:', error);
+    res.send(`Cannon service running on ${process.env.ENV}.\n`);
+  }
 });
 
 // Updated leaderboard endpoint to query the database

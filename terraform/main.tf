@@ -70,9 +70,19 @@ module "aws_route53" {
 }
 
 module "aws_certificate_manager" {
-  source  = "./modules/aws/certificate-manager"
-  domain  = var.domain
-  zone_id = module.aws_route53.zone_id
+  source = "./modules/aws/certificate-manager"
+  certificates = [
+    {
+      domain     = "postrix.io"
+      zone_id    = module.aws_route53.zone_id
+      subdomains = ["*"]
+    },
+    {
+      domain     = "toybuttons.com"
+      zone_id    = module.aws_route53.toybuttons_zone_id
+      subdomains = ["www"]
+    }
+  ]
 
   providers = {
     aws = aws

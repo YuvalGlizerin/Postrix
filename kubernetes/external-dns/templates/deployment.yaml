@@ -23,6 +23,7 @@ spec:
             - --source=service
             - --source=ingress
             - --domain-filter=postrix.io
+            - --domain-filter=toybuttons.com
             - --provider=aws
             - --aws-zone-type=public
             - --registry=txt

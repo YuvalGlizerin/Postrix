@@ -26,6 +26,23 @@ resource "aws_route53_zone" "zone" {
   name = var.domain
 }
 
-output "zone_id" {
-  value = aws_route53_zone.zone.zone_id
+resource "aws_route53_zone" "toybuttons_zone" {
+  name = "toybuttons.com"
+}
+
+resource "aws_route53domains_registered_domain" "toybuttons_domain" {
+  domain_name = "toybuttons.com"
+
+  name_server {
+    name = "ns-1046.awsdns-02.org"
+  }
+  name_server {
+    name = "ns-297.awsdns-37.com"
+  }
+  name_server {
+    name = "ns-1874.awsdns-42.co.uk"
+  }
+  name_server {
+    name = "ns-576.awsdns-08.net"
+  }
 }
