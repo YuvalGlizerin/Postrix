@@ -15,11 +15,3 @@ controller:
     use-forwarded-headers: "true"
     proxy-real-ip-cidr: "0.0.0.0/0"
     enable-real-ip: "true"
-    server-snippet: |
-      # Redirect any www.*.postrix.io to *.postrix.io
-      server {
-        listen 80;
-        listen 443 ssl;
-        server_name ~^www\.(.+)\.postrix\.io$;
-        return 301 $scheme://$1.postrix.io$request_uri;
-      }
