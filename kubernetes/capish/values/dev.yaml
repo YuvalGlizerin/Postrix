@@ -1,3 +1,4 @@
 env: dev
 serviceType: ClusterIP
-ingress: true
+ingress:
+  additionalHost: false
