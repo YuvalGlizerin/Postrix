@@ -16,14 +16,14 @@ environments:
   prod: {}
 
 releases:
-  - name: ingress-controller-nlb
-    namespace: ingress-nginx-nlb
+  - name: ingress-controller
+    namespace: ingress-nginx
     chart: ingress-nginx/ingress-nginx
     version: 4.12.1
     labels:
-      app: ingress-controller-nlb
+      app: ingress-controller
     values:
-      - ./ingress-controller-nlb/values/defaults.yaml
+      - ./ingress-controller/values/defaults.yaml
 
   - name: cluster-autoscaler
     namespace: kube-system
@@ -41,15 +41,6 @@ releases:
       app: external-dns
     values:
       - ./external-dns/values/defaults.yaml
-
-  - name: ingress-controller
-    namespace: ingress-nginx
-    chart: ingress-nginx/ingress-nginx
-    version: "4.11.3"
-    labels:
-      app: ingress-controller
-    values:
-      - ./ingress-controller/values/defaults.yaml
 
   - name: postgresql
     namespace: postgresql
