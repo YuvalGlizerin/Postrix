@@ -40,14 +40,6 @@ releases:
     values:
       - ./external-dns/values/defaults.yaml
 
-  - name: postgresql
-    namespace: postgresql
-    chart: bitnami/postgresql
-    labels:
-      app: postgresql
-    values:
-      - ./postgresql/values/defaults.yaml
-
   - name: redis
     namespace: redis
     chart: bitnami/redis
