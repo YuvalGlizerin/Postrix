@@ -14,10 +14,19 @@ environments:
   prod: {}
 
 releases:
+  - name: ingress-controller
+    namespace: ingress-nginx
+    chart: ingress-nginx/ingress-nginx
+    version: 4.12.1
+    labels:
+      app: ingress-controller
+    values:
+      - ./ingress-controller/values/defaults.yaml
+
   - name: cluster-autoscaler
     namespace: kube-system
     chart: autoscaler/cluster-autoscaler
-    version: "9.46.0"
+    version: 9.46.0
     labels:
       app: cluster-autoscaler
     values:
@@ -30,23 +39,6 @@ releases:
       app: external-dns
     values:
       - ./external-dns/values/defaults.yaml
-
-  - name: ingress-controller
-    namespace: ingress-nginx
-    chart: ingress-nginx/ingress-nginx
-    version: "4.11.3"
-    labels:
-      app: ingress-controller
-    values:
-      - ./ingress-controller/values/defaults.yaml
-
-  - name: postgresql
-    namespace: postgresql
-    chart: bitnami/postgresql
-    labels:
-      app: postgresql
-    values:
-      - ./postgresql/values/defaults.yaml
 
   - name: redis
     namespace: redis
