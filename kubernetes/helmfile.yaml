@@ -7,8 +7,6 @@ repositories:
     url: https://kubernetes.github.io/ingress-nginx
   - name: autoscaler
     url: https://kubernetes.github.io/autoscaler
-  - name: eks
-    url: https://aws.github.io/eks-charts
 
 environments:
   local: {}
