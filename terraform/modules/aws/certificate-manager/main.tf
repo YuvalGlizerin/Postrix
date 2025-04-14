@@ -69,9 +69,3 @@ resource "aws_acm_certificate_validation" "cert" {
     for record in aws_route53_record.cert_validation : record.fqdn
   ]
 }
-
-# Output the certificate ARN
-output "certificate_arn" {
-  description = "The ARN of the combined certificate"
-  value       = aws_acm_certificate.combined_cert.arn
-}
