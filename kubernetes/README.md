@@ -26,3 +26,21 @@ You might want to view you service locally on the browser
 
 View all services local(Defined ports): `minikube tunnel`
 View joby service local(Random port): `minikube service joby --namespace=local`
+
+# How to encrypt secrets
+We manage secrets using sealed-secrets, that allow you to store encrypted secrets in your git repo
+Example on how to create a secret:
+
+```bash
+kubectl create secret generic elasticsearch-auth \
+  --namespace elastic \
+  --dry-run=client \
+  --from-literal=elasticsearch-password="my-password" \
+  -o yaml | \
+kubeseal --format yaml \
+  --controller-name=sealed-secrets-controller \
+  --controller-namespace=sealed-secrets > elasticsearch/templates/secret.yaml
+```
+
+Note: This does not create a secret in your cluster, it only creates the file
+Note: You need to restart the pods after changing the secret only because it does not count as a change

@@ -35,6 +35,36 @@ resource "aws_secretsmanager_secret_version" "postgres_version" {
   }
 }
 
+resource "aws_secretsmanager_secret" "redis" {
+  name = "redis"
+}
+
+resource "aws_secretsmanager_secret_version" "redis_version" {
+  secret_id     = aws_secretsmanager_secret.redis.id
+  secret_string = jsonencode({
+    password     = ""
+  })
+
+  lifecycle {
+    ignore_changes = [secret_string]
+  }
+}
+
+resource "aws_secretsmanager_secret" "elasticsearch" {
+  name = "elasticsearch"
+}
+
+resource "aws_secretsmanager_secret_version" "elasticsearch_version" {
+  secret_id     = aws_secretsmanager_secret.elasticsearch.id
+  secret_string = jsonencode({
+    password     = ""
+  })
+
+  lifecycle {
+    ignore_changes = [secret_string]
+  }
+}
+
 resource "aws_secretsmanager_secret" "creatomate" {
   name = "creatomate"
 }

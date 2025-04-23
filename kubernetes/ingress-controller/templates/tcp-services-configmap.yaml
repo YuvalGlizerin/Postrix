@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tcp-services
+  namespace: {{ .Release.Namespace }}
+data:
+  "6379": "redis/redis-master:6379"

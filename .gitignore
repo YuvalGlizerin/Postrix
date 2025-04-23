@@ -154,3 +154,8 @@ gha-creds-*.json
 
 # MacOS auto generated files
 .DS_Store
+
+# Helm
+kubernetes/**/charts/
+kubernetes/**/*.tgz
+kubernetes/**/Chart.lock
