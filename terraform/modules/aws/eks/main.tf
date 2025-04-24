@@ -72,6 +72,10 @@ resource "aws_eks_node_group" "postrix_nodes" {
     "k8s.io/cluster-autoscaler/enabled" = "true"
     "k8s.io/cluster-autoscaler/${var.cluster_name}" = "owned"
   }
+
+  lifecycle {
+    ignore_changes = [scaling_config[0].desired_size]
+  }
 }
 
 // IAM role for EKS nodes, allowing EC2 instances to assume this role
@@ -324,4 +328,3 @@ resource "aws_iam_role_policy_attachment" "resources_attachment" {
   role       = aws_iam_role.resources_role.name
   policy_arn = aws_iam_policy.resources_policy.arn
 }
-

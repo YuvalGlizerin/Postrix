@@ -1,20 +1,26 @@
-architecture: standalone
+redis:
+  architecture: standalone
 
-master:
-  persistence:
-    enabled: true 
-    size: 1Gi
-    storageClass: gp2
-  resources:
-    requests:
-      cpu: "100m"
-      memory: "128Mi"
-    limits:
-      cpu: "150m"
-      memory: "192Mi"
+  master:
+    persistence:
+      enabled: true 
+      size: 1Gi
+      storageClass: gp2
+    service:
+      type: ClusterIP
+      port: 6379
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "128Mi"
+      limits:
+        cpu: "150m"
+        memory: "192Mi"
 
-auth:
-  enabled: false
+  auth:
+    enabled: true
+    existingSecret: "redis-auth"
+    existingSecretPasswordKey: "redis-password"
 
-replica:
-  replicaCount: 0
+  replica:
+    replicaCount: 0

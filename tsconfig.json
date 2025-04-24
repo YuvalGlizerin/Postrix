@@ -14,5 +14,11 @@
     "noEmit": true,                                      /* Do not emit outputs. */
     "verbatimModuleSyntax": true                         /* Use the original module syntax for imports and exports. */
     // "erasableSyntaxOnly": true                        /* Only allow the use of the erasable syntax. Not totally supported yet */
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "**/node_modules/*",
+    "dist",
+    "coverage"
+  ]
 }

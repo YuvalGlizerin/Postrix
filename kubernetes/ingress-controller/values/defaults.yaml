@@ -1,24 +1,37 @@
-controller:
-  ingressClassResource:
-    name: nginx
-    controllerValue: "k8s.io/ingress-nginx"
-    enabled: true
-  
-  service:
-    type: LoadBalancer
-    targetPorts:
-      http: http
-      https: http
-    annotations:
-      service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
-      service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
-      service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:384389382109:certificate/638c9faa-d42c-47af-b25f-5cf363c17945"
-      service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
-      service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
-      service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
-  
-  config:
-    use-proxy-protocol: "false"
-    use-forwarded-headers: "true"
-    proxy-real-ip-cidr: "0.0.0.0/0"
-    enable-real-ip: "true"
+ingress-nginx:
+  tcp:
+    6379: "redis/redis-master:6379"
+
+  controller:
+    extraArgs:
+      tcp-services-configmap: ingress-nginx/tcp-services
+
+    ingressClassResource:
+      name: nginx
+      controllerValue: "k8s.io/ingress-nginx"
+      enabled: true
+    
+    service:
+      type: LoadBalancer
+      ports:
+        http: 80
+        https: 443
+        redis: 6379
+      targetPorts:
+        http: http
+        https: http
+        redis: redis
+      annotations:
+        service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+        service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+        service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:384389382109:certificate/638c9faa-d42c-47af-b25f-5cf363c17945"
+        service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+        service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+        service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+        external-dns.alpha.kubernetes.io/hostname: redis.postrix.io
+    
+    config:
+      use-proxy-protocol: "false"
+      use-forwarded-headers: "true"
+      proxy-real-ip-cidr: "0.0.0.0/0"
+      enable-real-ip: "true"

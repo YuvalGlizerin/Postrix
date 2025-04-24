@@ -14,10 +14,18 @@ environments:
   prod: {}
 
 releases:
+  - name: sealed-secrets
+    namespace: sealed-secrets
+    chart: bitnami/sealed-secrets
+    version: 2.5.9
+    labels:
+      app: sealed-secrets
+    values:
+      - ./sealed-secrets/values/defaults.yaml
+
   - name: ingress-controller
     namespace: ingress-nginx
-    chart: ingress-nginx/ingress-nginx
-    version: 4.12.1
+    chart: ./ingress-controller
     labels:
       app: ingress-controller
     values:
@@ -32,6 +40,14 @@ releases:
     values:
       - ./cluster-autoscaler/values/defaults.yaml
 
+  - name: elasticsearch
+    namespace: elastic
+    chart: ./elasticsearch
+    labels:
+      app: elasticsearch
+    values:
+      - ./elasticsearch/values/defaults.yaml
+
   - name: external-dns
     namespace: kube-system
     chart: ./external-dns
@@ -42,7 +58,7 @@ releases:
 
   - name: redis
     namespace: redis
-    chart: bitnami/redis
+    chart: ./redis
     labels:
       app: redis
     values:

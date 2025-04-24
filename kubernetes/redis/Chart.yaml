@@ -1,0 +1,9 @@
+apiVersion: v2
+name: redis
+description: Custom redis deployment
+version: 0.1.0
+appVersion: "1.0"
+dependencies:
+  - name: redis
+    version: "20.12.1"
+    repository: "https://charts.bitnami.com/bitnami"
