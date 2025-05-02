@@ -1,0 +1,14 @@
+{
+  "name": "redis",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A redis package",
+  "main": "src/index.ts",
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "test": "jest --config ../../jest.config.mjs --rootDir ./"
+  },
+  "dependencies": {
+    "redis": "^5.0.0"
+  }
+}
