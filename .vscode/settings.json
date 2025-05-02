@@ -23,6 +23,7 @@
     "**/.github/**/*.yaml": "github-actions-workflow"
   },
   "cSpell.words": [
+    "ASPMX",
     "autoincrement",
     "awsdns",
     "bitnami",

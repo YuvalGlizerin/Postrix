@@ -1,4 +1,5 @@
-# All DNS records are managed by External DNS via kubernetes, so don't manage them here
+# All app DNS records are managed by External DNS via kubernetes, so don't manage them here
+# We only manage infrastructure DNS records here
 
 variable "domain" {
   description = "The domain name"
@@ -24,6 +25,21 @@ resource "aws_route53domains_registered_domain" "domain" {
 
 resource "aws_route53_zone" "zone" {
   name = var.domain
+}
+
+# Needed to receive emails on Google Workspace
+resource "aws_route53_record" "mx_records" {
+  zone_id = aws_route53_zone.zone.zone_id
+  name    = var.domain
+  type    = "MX"
+  ttl     = 3600
+  records = [
+    "1 ASPMX.L.GOOGLE.COM.",
+    "5 ALT1.ASPMX.L.GOOGLE.COM.",
+    "5 ALT2.ASPMX.L.GOOGLE.COM.",
+    "10 ALT3.ASPMX.L.GOOGLE.COM.",
+    "10 ALT4.ASPMX.L.GOOGLE.COM."
+  ]
 }
 
 resource "aws_route53_zone" "toybuttons_zone" {
