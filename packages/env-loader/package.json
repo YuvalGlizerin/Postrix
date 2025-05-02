@@ -1,0 +1,14 @@
+{
+  "name": "env-loader",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Load all envs specified in the .env file into process.env",
+  "main": "src/index.ts",
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "test": "jest --config ../../jest.config.mjs --rootDir ./"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0"
+  }
+}
