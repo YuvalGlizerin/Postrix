@@ -31,7 +31,7 @@ app.post('/webhook', async (req: Request, res: Response) => {
 
     const accessToken = secrets.WHATSAPP_ACCESS_TOKEN;
     const phoneId = secrets.WHATSAPP_PHONE_ID;
-    const apiVideoKey = secrets.CREATOMATE_API_KEY;
+    const apiVideoKey = secrets.CREATOMATE_API_KEY_TRIAL;
 
     // Log the incoming request body to understand its structure
     console.log('Incoming webhook payload:', JSON.stringify(req.body, null, 2));
@@ -60,6 +60,8 @@ app.post('/webhook', async (req: Request, res: Response) => {
       if (!result.ok) {
         throw new Error('Failed to send message');
       }
+
+      return;
     }
 
     await fetch(`https://graph.facebook.com/v22.0/${phoneId}/messages`, {

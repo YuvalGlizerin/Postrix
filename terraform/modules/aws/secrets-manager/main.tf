@@ -72,7 +72,8 @@ resource "aws_secretsmanager_secret" "creatomate" {
 resource "aws_secretsmanager_secret_version" "creatomate_version" {
   secret_id     = aws_secretsmanager_secret.creatomate.id
   secret_string = jsonencode({
-    api_key     = ""
+    api_key     = "",
+    api_key_trial = ""
   })
 
   lifecycle {
