@@ -2,7 +2,7 @@
   "name": "secret-manager",
   "version": "1.0.0",
   "type": "module",
-  "description": "Initialize all envs/secrets specified in the .env file into process.env",
+  "description": "Initialize all secrets specified in the .env file",
   "main": "src/index.ts",
   "scripts": {
     "type-check": "tsc --noEmit",

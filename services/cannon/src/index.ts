@@ -1,42 +1,28 @@
+import 'env-loader';
+
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 
+import express, { type Request, type Response } from 'express';
+import pkg from 'pg';
+import secrets from 'secret-manager';
+
 // Get current directory in ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-import express, { type Request, type Response } from 'express';
-import dotenv from 'dotenv';
-import pkg from 'pg';
-import { fromIni } from '@aws-sdk/credential-providers';
-import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
 const { Pool } = pkg;
-
-dotenv.config({ path: 'envs/default.env' });
-dotenv.config({ path: `envs/${process.env.ENV}.env` });
 
 process.title = 'cannon';
 const app = express();
 const PORT = process.env.PORT;
 
-const secretsClient = new SecretsManagerClient({
-  region: 'us-east-1',
-  ...(process.env.ENV === 'local' ? { credentials: fromIni() } : {})
-});
-
-const postgres = await secretsClient.send(new GetSecretValueCommand({ SecretId: 'postgres' }));
-if (!postgres.SecretString) {
-  throw new Error('Secrets not found, cannot connect to postgres');
-}
-const { username, password, host, port } = JSON.parse(postgres.SecretString);
-
 const pool = new Pool({
-  user: username,
-  host,
+  user: secrets.POSTGRES_USERNAME,
+  host: secrets.POSTGRES_HOST,
   database: process.env.DATABASE,
-  password,
-  port,
+  password: secrets.POSTGRES_PASSWORD,
+  port: Number(secrets.POSTGRES_PORT),
   ssl: {
     rejectUnauthorized: false
   }

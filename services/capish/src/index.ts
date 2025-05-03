@@ -1,14 +1,13 @@
+import 'env-loader';
 import fs from 'fs';
 
 import express, { type Request, type Response } from 'express';
-import dotenv from 'dotenv';
 import whatsapp from 'whatsapp';
 import creatomate from 'creatomate';
-import { fromIni } from '@aws-sdk/credential-providers';
-import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { PutObjectCommand } from '@aws-sdk/client-s3';
+import secrets from 'secret-manager';
+import fileSystem from 'file-system';
 
-dotenv.config({ path: `envs/${process.env.ENV}.env` });
 process.title = 'Capish';
 const app = express();
 const PORT = process.env.PORT;
@@ -30,23 +29,9 @@ app.post('/webhook', async (req: Request, res: Response) => {
   try {
     res.status(200).send('Message sent successfully'); // no retries
 
-    const client = new SecretsManagerClient({
-      region: 'us-east-1',
-      ...(process.env.ENV === 'local' ? { credentials: fromIni() } : {})
-    });
-
-    const [whatsappSecret, apiVideoSecret] = await Promise.all([
-      client.send(new GetSecretValueCommand({ SecretId: 'capish-whatsapp-api' })),
-      client.send(new GetSecretValueCommand({ SecretId: 'creatomate' }))
-    ]);
-
-    if (!whatsappSecret.SecretString || !apiVideoSecret.SecretString) {
-      throw new Error('Secrets not found');
-    }
-
-    // Parse both secrets
-    const { access_token: accessToken, phone_id: phoneId } = JSON.parse(whatsappSecret.SecretString);
-    const { api_key: apiVideoKey } = JSON.parse(apiVideoSecret.SecretString);
+    const accessToken = secrets.WHATSAPP_ACCESS_TOKEN;
+    const phoneId = secrets.WHATSAPP_PHONE_ID;
+    const apiVideoKey = secrets.CREATOMATE_API_KEY;
 
     // Log the incoming request body to understand its structure
     console.log('Incoming webhook payload:', JSON.stringify(req.body, null, 2));
@@ -98,12 +83,6 @@ app.post('/webhook', async (req: Request, res: Response) => {
     if (media) {
       const videoPath = await whatsapp.downloadMedia(media, accessToken);
 
-      // Upload the video file to S3
-      const s3Client = new S3Client({
-        region: 'us-east-1',
-        ...(process.env.ENV === 'local' ? { credentials: fromIni() } : {})
-      });
-
       const fileContent = fs.readFileSync(videoPath);
       const fileName = `video_${Date.now()}_${Math.floor(Math.random() * 1000)}.mp4`;
 
@@ -114,7 +93,7 @@ app.post('/webhook', async (req: Request, res: Response) => {
         ContentType: 'video/mp4'
       };
 
-      await s3Client.send(new PutObjectCommand(uploadParams));
+      await fileSystem.s3Client.send(new PutObjectCommand(uploadParams));
       const s3VideoUrl = `https://${uploadParams.Bucket}.s3.amazonaws.com/${uploadParams.Key}`;
       console.log('S3 Video URL:', s3VideoUrl);
 
