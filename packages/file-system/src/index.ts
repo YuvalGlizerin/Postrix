@@ -2,6 +2,14 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
+import { S3Client } from '@aws-sdk/client-s3';
+import { fromIni } from '@aws-sdk/credential-providers';
+
+const s3Client = new S3Client({
+  region: 'us-east-1',
+  ...(process.env.ENV === 'local' ? { credentials: fromIni() } : {})
+});
+
 /**
  * Downloads a video from the given URL and saves it to the specified path.
  *
@@ -52,5 +60,6 @@ async function downloadMedia(
 }
 
 export default {
+  s3Client,
   downloadMedia
 };

@@ -7,5 +7,9 @@
   "scripts": {
     "type-check": "tsc --noEmit",
     "test": "jest --config ../../jest.config.mjs --rootDir ./"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.802.0",
+    "@aws-sdk/credential-providers": "^3.799.0"
   }
 }

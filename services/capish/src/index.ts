@@ -4,9 +4,9 @@ import fs from 'fs';
 import express, { type Request, type Response } from 'express';
 import whatsapp from 'whatsapp';
 import creatomate from 'creatomate';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-import { fromIni } from '@aws-sdk/credential-providers';
+import { PutObjectCommand } from '@aws-sdk/client-s3';
 import secrets from 'secret-manager';
+import fileSystem from 'file-system';
 
 process.title = 'Capish';
 const app = express();
@@ -83,12 +83,6 @@ app.post('/webhook', async (req: Request, res: Response) => {
     if (media) {
       const videoPath = await whatsapp.downloadMedia(media, accessToken);
 
-      // Upload the video file to S3
-      const s3Client = new S3Client({
-        region: 'us-east-1',
-        ...(process.env.ENV === 'local' ? { credentials: fromIni() } : {})
-      });
-
       const fileContent = fs.readFileSync(videoPath);
       const fileName = `video_${Date.now()}_${Math.floor(Math.random() * 1000)}.mp4`;
 
@@ -99,7 +93,7 @@ app.post('/webhook', async (req: Request, res: Response) => {
         ContentType: 'video/mp4'
       };
 
-      await s3Client.send(new PutObjectCommand(uploadParams));
+      await fileSystem.s3Client.send(new PutObjectCommand(uploadParams));
       const s3VideoUrl = `https://${uploadParams.Bucket}.s3.amazonaws.com/${uploadParams.Key}`;
       console.log('S3 Video URL:', s3VideoUrl);
 
