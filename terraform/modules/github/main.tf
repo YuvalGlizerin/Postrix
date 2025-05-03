@@ -44,6 +44,12 @@ resource "github_repository_collaborator" "yuval-eb" {
   permission = "admin"
 }
 
+resource "github_repository_collaborator" "ilia-gl" {
+  repository = github_repository.repo.name
+  username   = "ilia-gl"
+  permission = "push"
+}
+
 # Failed to create/import project via terraform, resource will be managed manually
 # resource "github_repository_project" "project" {
 #   name       = "Postrix"
