@@ -28,6 +28,9 @@ const pool = new Pool({
   }
 });
 
+// Serve static files from the assets directory
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
+
 app.use(express.json()); // Add this line to parse JSON request bodies
 
 // Health check endpoint
