@@ -1,14 +1,13 @@
+import 'env-loader';
 import fs from 'fs';
 
 import express, { type Request, type Response } from 'express';
-import dotenv from 'dotenv';
 import whatsapp from 'whatsapp';
 import creatomate from 'creatomate';
-import { fromIni } from '@aws-sdk/credential-providers';
-import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { fromIni } from '@aws-sdk/credential-providers';
+import secrets from 'secret-manager';
 
-dotenv.config({ path: `envs/${process.env.ENV}.env` });
 process.title = 'Capish';
 const app = express();
 const PORT = process.env.PORT;
@@ -30,23 +29,9 @@ app.post('/webhook', async (req: Request, res: Response) => {
   try {
     res.status(200).send('Message sent successfully'); // no retries
 
-    const client = new SecretsManagerClient({
-      region: 'us-east-1',
-      ...(process.env.ENV === 'local' ? { credentials: fromIni() } : {})
-    });
-
-    const [whatsappSecret, apiVideoSecret] = await Promise.all([
-      client.send(new GetSecretValueCommand({ SecretId: 'capish-whatsapp-api' })),
-      client.send(new GetSecretValueCommand({ SecretId: 'creatomate' }))
-    ]);
-
-    if (!whatsappSecret.SecretString || !apiVideoSecret.SecretString) {
-      throw new Error('Secrets not found');
-    }
-
-    // Parse both secrets
-    const { access_token: accessToken, phone_id: phoneId } = JSON.parse(whatsappSecret.SecretString);
-    const { api_key: apiVideoKey } = JSON.parse(apiVideoSecret.SecretString);
+    const accessToken = secrets.WHATSAPP_ACCESS_TOKEN;
+    const phoneId = secrets.WHATSAPP_PHONE_ID;
+    const apiVideoKey = secrets.CREATOMATE_API_KEY;
 
     // Log the incoming request body to understand its structure
     console.log('Incoming webhook payload:', JSON.stringify(req.body, null, 2));

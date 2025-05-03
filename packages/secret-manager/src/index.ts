@@ -8,29 +8,30 @@ const secretsClient = new SecretsManagerClient({
   ...(process.env.ENV === 'local' ? { credentials: fromIni() } : {})
 });
 
-for (const [key, value] of Object.entries(process.env)) {
-  if (!value?.startsWith('/secrets/')) {
-    continue;
-  }
+// Create an array of promises for secret fetching
+const secretPromises = Object.entries(process.env)
+  .filter(([, value]) => value?.startsWith('/secrets/'))
+  .map(async ([key, value]) => {
+    try {
+      // Extract the secret path without the '/secrets/' prefix
+      const parts = value!.substring('/secrets/'.length).split('/');
+      const secretBase = parts[0];
+      const secretKey = parts[1];
 
-  try {
-    // Extract the secret path without the '/secrets/' prefix
-    const parts = value.substring('/secrets/'.length).split('/');
-    const secretBase = parts[0];
-    const secretKey = parts[1];
+      // Fetch the secret from AWS Secrets Manager
+      const command = new GetSecretValueCommand({ SecretId: secretBase });
+      const response = await secretsClient.send(command);
 
-    // Fetch the secret from AWS Secrets Manager
-    const command = new GetSecretValueCommand({ SecretId: secretBase });
-    const response = await secretsClient.send(command);
-
-    if (response.SecretString) {
-      const { [secretKey]: secretValue } = JSON.parse(response.SecretString);
-      secrets[key] = secretValue;
-      console.log(`Secret loaded for ${key}`);
+      if (response.SecretString) {
+        const { [secretKey]: secretValue } = JSON.parse(response.SecretString);
+        secrets[key] = secretValue;
+        console.log(`Secret loaded for ${key}`);
+      }
+    } catch (error) {
+      console.error(`Failed to load secret for ${key}:`, error);
     }
-  } catch (error) {
-    console.error(`Failed to load secret for ${key}:`, error);
-  }
-}
+  });
+
+await Promise.all(secretPromises);
 
 export default secrets;

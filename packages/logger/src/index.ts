@@ -1,5 +1,6 @@
 import os from 'os';
 
+import secrets from 'secret-manager';
 import { Client } from '@elastic/elasticsearch';
 
 interface Metadata {
@@ -17,32 +18,33 @@ const BATCH_SIZE = 10;
 const FLUSH_INTERVAL_MS = 5000;
 const NODE = 'https://elasticsearch.postrix.io';
 const hostname = os.hostname();
+const client = new Client({
+  node: NODE,
+  auth: {
+    username: 'elastic', // Default to elastic user
+    password: secrets.ELASTICSEARCH_PASSWORD
+  },
+  tls: {
+    rejectUnauthorized: false
+  }
+});
+let batchLogs: LogEntry[] = [];
+const flushInterval = setInterval(() => {
+  Logger.flush().catch(err => console.error('Error flushing logs:', err));
+}, FLUSH_INTERVAL_MS);
 
 export class Logger {
-  private client: Client;
   private serviceName: string;
-  private batchLogs: LogEntry[] = [];
-  private flushInterval = setInterval(() => {
-    this.flush().catch(err => console.error('Error flushing logs:', err));
-  }, FLUSH_INTERVAL_MS);
 
-  constructor(options: { node?: string; serviceName: string; password: string }) {
-    this.serviceName = options.serviceName;
-
-    // Create client with authentication and version compatibility fix
-    this.client = new Client({
-      node: options.node || NODE,
-      auth: {
-        username: 'elastic', // Default to elastic user
-        password: options.password
-      },
-      tls: {
-        rejectUnauthorized: false
-      }
-    });
+  constructor(serviceName: string) {
+    this.serviceName = serviceName;
   }
 
-  async logger(level: 'log' | 'info' | 'warn' | 'error' | 'debug' | 'trace', message: string, metadata: Metadata = {}) {
+  private async logger(
+    level: 'log' | 'info' | 'warn' | 'error' | 'debug' | 'trace',
+    message: string,
+    metadata: Metadata = {}
+  ) {
     const logEntry = {
       '@timestamp': new Date().toISOString(),
       level,
@@ -53,24 +55,24 @@ export class Logger {
     };
 
     // Add to batch
-    this.batchLogs.push(logEntry);
+    batchLogs.push(logEntry);
 
     // Log to console immediately
     console[level](message, metadata);
 
     // Flush if we've reached batch size
-    if (this.batchLogs.length >= BATCH_SIZE) {
-      await this.flush();
+    if (batchLogs.length >= BATCH_SIZE) {
+      await Logger.flush();
     }
   }
 
-  async flush() {
-    if (this.batchLogs.length === 0) {
+  static async flush() {
+    if (batchLogs.length === 0) {
       return;
     }
 
-    const logs = [...this.batchLogs];
-    this.batchLogs = [];
+    const logs = [...batchLogs];
+    batchLogs = [];
 
     try {
       // Generate index name in format logs-YYYY.MM.DD
@@ -79,11 +81,11 @@ export class Logger {
       // Use bulk API for more efficient indexing
       const operations = logs.flatMap(doc => [{ index: { _index: indexName } }, doc]);
 
-      await this.client.bulk({ operations });
+      await client.bulk({ operations });
     } catch (error) {
       // Log error and re-add logs to be sent on next flush
       console.error('Failed to send logs to Elasticsearch:', error);
-      this.batchLogs = [...logs, ...this.batchLogs];
+      batchLogs = [...logs, ...batchLogs];
     }
   }
 
@@ -111,9 +113,9 @@ export class Logger {
     return this.logger('trace', message, metadata);
   }
 
-  async close() {
-    clearInterval(this.flushInterval);
-    await this.flush();
-    await this.client.close();
+  static async close() {
+    clearInterval(flushInterval);
+    await Logger.flush();
+    await client.close();
   }
 }
