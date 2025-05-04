@@ -6,8 +6,8 @@
   "scripts": {
     "type-check": "tsc --noEmit",
     "test": "jest --config ../../jest.config.mjs --rootDir ./",
-    "migrate:dev:cannon": "prisma migrate dev --schema=./prisma/cannon/schema.prisma",
-    "migrate:deploy:cannon": "prisma migrate deploy --schema=./prisma/file-system/schema.prisma"
+    "migrate:dev:cannon": "prisma migrate dev --create-only --skip-generate --schema=./prisma/cannon/schema.prisma",
+    "migrate:deploy:cannon": "prisma migrate deploy --schema=./prisma/cannon/schema.prisma"
   },
   "dependencies": {
     "prisma": "^6.7.0"

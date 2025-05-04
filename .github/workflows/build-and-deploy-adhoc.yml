@@ -5,6 +5,16 @@ on:
   pull_request:
 
 jobs:
+  db_migrate:
+    permissions:
+      contents: read
+      id-token: write
+
+    uses: ./.github/workflows/db-migrate.yml
+    with:
+      db: ${{ github.event.inputs.db }}
+    secrets: inherit
+    
   build_and_push:
     permissions:
       contents: read

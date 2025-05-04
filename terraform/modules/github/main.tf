@@ -73,3 +73,9 @@ resource "github_actions_secret" "docker_password" {
   secret_name     = "DOCKER_PASSWORD"
   encrypted_value = "G4zAqUUMSPw8le1RNmJBNR1uh0UeEkrBTBpaeVNKo3VkaBoTKD6iTQ+W4M/3OtFmAd4SpnS0UqeyzhkVZyw1vUT8s+Z5J0pLoWtzH0MEIMS4TwFN"
 }
+
+resource "github_actions_secret" "database_instance_url" {
+  repository      = github_repository.repo.name
+  secret_name     = "DATABASE_INSTANCE_URL"
+  encrypted_value = "WO40i5Us+JUSFfIOZDV8miAd4qOH7IjI57Zv5RlN9Eu5ruDCz3MNvuqd3k5Hxt3VXRsnDTeInRcDR9dCy6d2liwKlQBmC5q64qoKQXXCE6rYHhCpSzbjHZwGRRJarCdfB9omqfLvvlM2g9LPTRumGORWQASpvnuX9AF1ovuMyfCmkbILew=="
+}
