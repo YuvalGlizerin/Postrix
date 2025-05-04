@@ -1,0 +1,15 @@
+{
+  "name": "db",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A db package using postgresql and prisma",
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "test": "jest --config ../../jest.config.mjs --rootDir ./",
+    "migrate:dev:cannon": "prisma migrate dev --schema=./prisma/cannon/schema.prisma",
+    "migrate:deploy:cannon": "prisma migrate deploy --schema=./prisma/file-system/schema.prisma"
+  },
+  "dependencies": {
+    "prisma": "^6.7.0"
+  }
+}

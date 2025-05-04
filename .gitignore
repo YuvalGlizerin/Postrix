@@ -159,3 +159,6 @@ gha-creds-*.json
 kubernetes/**/charts/
 kubernetes/**/*.tgz
 kubernetes/**/Chart.lock
+
+# Prisma
+**/src/generated/**
