@@ -12,7 +12,7 @@ on:
         type: string
 
 jobs:
-  build_and_push:
+  db_migrate:
     runs-on: ubuntu-latest
 
     steps:

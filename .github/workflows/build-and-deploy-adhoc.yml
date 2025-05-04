@@ -10,9 +10,13 @@ jobs:
       contents: read
       id-token: write
 
+    strategy:
+      matrix:
+        db: [cannon]
+
     uses: ./.github/workflows/db-migrate.yml
     with:
-      db: ${{ github.event.inputs.db }}
+      db: ${{ matrix.db }}
     secrets: inherit
     
   build_and_push:
