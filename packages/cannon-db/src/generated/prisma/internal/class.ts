@@ -33,6 +33,10 @@ const config: runtime.GetPrismaClientConfig = {
         "fromEnvVar": null,
         "value": "darwin-arm64",
         "native": true
+      },
+      {
+        "fromEnvVar": null,
+        "value": "debian-openssl-1.1.x"
       }
     ],
     "previewFeatures": [],
@@ -55,8 +59,8 @@ const config: runtime.GetPrismaClientConfig = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel leaderboard {\n  id         Int       @id @default(autoincrement())\n  username   String?   @unique @db.VarChar(100)\n  nickname   String?   @db.VarChar(100)\n  nickname3  String?   @db.VarChar(100)\n  score      Int?\n  created_at DateTime? @default(now()) @db.Timestamp(6)\n  updated_at DateTime? @default(now()) @db.Timestamp(6)\n}\n",
-  "inlineSchemaHash": "cf6ddc50a8f44ef57d182e944a4d89eeb0b8f958f702c5213c8473c64bbeed1e",
+  "inlineSchema": "generator client {\n  provider      = \"prisma-client\"\n  output        = \"../src/generated/prisma\"\n  binaryTargets = [\"native\", \"debian-openssl-1.1.x\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel leaderboard {\n  id         Int       @id @default(autoincrement())\n  username   String?   @unique @db.VarChar(100)\n  nickname   String?   @db.VarChar(100)\n  nickname3  String?   @db.VarChar(100)\n  score      Int?\n  created_at DateTime? @default(now()) @db.Timestamp(6)\n  updated_at DateTime? @default(now()) @db.Timestamp(6)\n}\n",
+  "inlineSchemaHash": "1c7820722d3c3d7b12bcaa317d635060143f2b363525a7594903f5aa8c46f130",
   "copyEngine": true,
   "runtimeDataModel": {
     "models": {},
