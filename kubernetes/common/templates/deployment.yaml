@@ -22,6 +22,8 @@ spec:
           env:
             - name: ENV
               value: {{ .Values.env }}
+            - name: NAMESPACE
+              value: {{ .Release.Namespace }}
           resources:
             limits:
               cpu: {{ .Values.resources.limits.cpu }}
