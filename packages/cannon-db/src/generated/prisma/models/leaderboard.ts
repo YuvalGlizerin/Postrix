@@ -38,8 +38,6 @@ export type LeaderboardSumAggregateOutputType = {
 export type LeaderboardMinAggregateOutputType = {
   id: number | null
   username: string | null
-  nickname: string | null
-  nickname3: string | null
   score: number | null
   created_at: Date | null
   updated_at: Date | null
@@ -48,8 +46,6 @@ export type LeaderboardMinAggregateOutputType = {
 export type LeaderboardMaxAggregateOutputType = {
   id: number | null
   username: string | null
-  nickname: string | null
-  nickname3: string | null
   score: number | null
   created_at: Date | null
   updated_at: Date | null
@@ -58,8 +54,6 @@ export type LeaderboardMaxAggregateOutputType = {
 export type LeaderboardCountAggregateOutputType = {
   id: number
   username: number
-  nickname: number
-  nickname3: number
   score: number
   created_at: number
   updated_at: number
@@ -80,8 +74,6 @@ export type LeaderboardSumAggregateInputType = {
 export type LeaderboardMinAggregateInputType = {
   id?: true
   username?: true
-  nickname?: true
-  nickname3?: true
   score?: true
   created_at?: true
   updated_at?: true
@@ -90,8 +82,6 @@ export type LeaderboardMinAggregateInputType = {
 export type LeaderboardMaxAggregateInputType = {
   id?: true
   username?: true
-  nickname?: true
-  nickname3?: true
   score?: true
   created_at?: true
   updated_at?: true
@@ -100,8 +90,6 @@ export type LeaderboardMaxAggregateInputType = {
 export type LeaderboardCountAggregateInputType = {
   id?: true
   username?: true
-  nickname?: true
-  nickname3?: true
   score?: true
   created_at?: true
   updated_at?: true
@@ -197,8 +185,6 @@ export type leaderboardGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 export type LeaderboardGroupByOutputType = {
   id: number
   username: string | null
-  nickname: string | null
-  nickname3: string | null
   score: number | null
   created_at: Date | null
   updated_at: Date | null
@@ -230,8 +216,6 @@ export type leaderboardWhereInput = {
   NOT?: Prisma.leaderboardWhereInput | Prisma.leaderboardWhereInput[]
   id?: Prisma.IntFilter<"leaderboard"> | number
   username?: Prisma.StringNullableFilter<"leaderboard"> | string | null
-  nickname?: Prisma.StringNullableFilter<"leaderboard"> | string | null
-  nickname3?: Prisma.StringNullableFilter<"leaderboard"> | string | null
   score?: Prisma.IntNullableFilter<"leaderboard"> | number | null
   created_at?: Prisma.DateTimeNullableFilter<"leaderboard"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"leaderboard"> | Date | string | null
@@ -240,8 +224,6 @@ export type leaderboardWhereInput = {
 export type leaderboardOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   username?: Prisma.SortOrderInput | Prisma.SortOrder
-  nickname?: Prisma.SortOrderInput | Prisma.SortOrder
-  nickname3?: Prisma.SortOrderInput | Prisma.SortOrder
   score?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -253,8 +235,6 @@ export type leaderboardWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.leaderboardWhereInput | Prisma.leaderboardWhereInput[]
   OR?: Prisma.leaderboardWhereInput[]
   NOT?: Prisma.leaderboardWhereInput | Prisma.leaderboardWhereInput[]
-  nickname?: Prisma.StringNullableFilter<"leaderboard"> | string | null
-  nickname3?: Prisma.StringNullableFilter<"leaderboard"> | string | null
   score?: Prisma.IntNullableFilter<"leaderboard"> | number | null
   created_at?: Prisma.DateTimeNullableFilter<"leaderboard"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"leaderboard"> | Date | string | null
@@ -263,8 +243,6 @@ export type leaderboardWhereUniqueInput = Prisma.AtLeast<{
 export type leaderboardOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   username?: Prisma.SortOrderInput | Prisma.SortOrder
-  nickname?: Prisma.SortOrderInput | Prisma.SortOrder
-  nickname3?: Prisma.SortOrderInput | Prisma.SortOrder
   score?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -281,8 +259,6 @@ export type leaderboardScalarWhereWithAggregatesInput = {
   NOT?: Prisma.leaderboardScalarWhereWithAggregatesInput | Prisma.leaderboardScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"leaderboard"> | number
   username?: Prisma.StringNullableWithAggregatesFilter<"leaderboard"> | string | null
-  nickname?: Prisma.StringNullableWithAggregatesFilter<"leaderboard"> | string | null
-  nickname3?: Prisma.StringNullableWithAggregatesFilter<"leaderboard"> | string | null
   score?: Prisma.IntNullableWithAggregatesFilter<"leaderboard"> | number | null
   created_at?: Prisma.DateTimeNullableWithAggregatesFilter<"leaderboard"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableWithAggregatesFilter<"leaderboard"> | Date | string | null
@@ -290,8 +266,6 @@ export type leaderboardScalarWhereWithAggregatesInput = {
 
 export type leaderboardCreateInput = {
   username?: string | null
-  nickname?: string | null
-  nickname3?: string | null
   score?: number | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
@@ -300,8 +274,6 @@ export type leaderboardCreateInput = {
 export type leaderboardUncheckedCreateInput = {
   id?: number
   username?: string | null
-  nickname?: string | null
-  nickname3?: string | null
   score?: number | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
@@ -309,8 +281,6 @@ export type leaderboardUncheckedCreateInput = {
 
 export type leaderboardUpdateInput = {
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  nickname3?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -319,8 +289,6 @@ export type leaderboardUpdateInput = {
 export type leaderboardUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  nickname3?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -329,8 +297,6 @@ export type leaderboardUncheckedUpdateInput = {
 export type leaderboardCreateManyInput = {
   id?: number
   username?: string | null
-  nickname?: string | null
-  nickname3?: string | null
   score?: number | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
@@ -338,8 +304,6 @@ export type leaderboardCreateManyInput = {
 
 export type leaderboardUpdateManyMutationInput = {
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  nickname3?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -348,8 +312,6 @@ export type leaderboardUpdateManyMutationInput = {
 export type leaderboardUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  nickname3?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   score?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -358,8 +320,6 @@ export type leaderboardUncheckedUpdateManyInput = {
 export type leaderboardCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   username?: Prisma.SortOrder
-  nickname?: Prisma.SortOrder
-  nickname3?: Prisma.SortOrder
   score?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -373,8 +333,6 @@ export type leaderboardAvgOrderByAggregateInput = {
 export type leaderboardMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   username?: Prisma.SortOrder
-  nickname?: Prisma.SortOrder
-  nickname3?: Prisma.SortOrder
   score?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -383,8 +341,6 @@ export type leaderboardMaxOrderByAggregateInput = {
 export type leaderboardMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   username?: Prisma.SortOrder
-  nickname?: Prisma.SortOrder
-  nickname3?: Prisma.SortOrder
   score?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -424,8 +380,6 @@ export type IntFieldUpdateOperationsInput = {
 export type leaderboardSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   username?: boolean
-  nickname?: boolean
-  nickname3?: boolean
   score?: boolean
   created_at?: boolean
   updated_at?: boolean
@@ -434,8 +388,6 @@ export type leaderboardSelect<ExtArgs extends runtime.Types.Extensions.InternalA
 export type leaderboardSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   username?: boolean
-  nickname?: boolean
-  nickname3?: boolean
   score?: boolean
   created_at?: boolean
   updated_at?: boolean
@@ -444,8 +396,6 @@ export type leaderboardSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
 export type leaderboardSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   username?: boolean
-  nickname?: boolean
-  nickname3?: boolean
   score?: boolean
   created_at?: boolean
   updated_at?: boolean
@@ -454,14 +404,12 @@ export type leaderboardSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
 export type leaderboardSelectScalar = {
   id?: boolean
   username?: boolean
-  nickname?: boolean
-  nickname3?: boolean
   score?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type leaderboardOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "username" | "nickname" | "nickname3" | "score" | "created_at" | "updated_at", ExtArgs["result"]["leaderboard"]>
+export type leaderboardOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "username" | "score" | "created_at" | "updated_at", ExtArgs["result"]["leaderboard"]>
 
 export type $leaderboardPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "leaderboard"
@@ -469,8 +417,6 @@ export type $leaderboardPayload<ExtArgs extends runtime.Types.Extensions.Interna
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     username: string | null
-    nickname: string | null
-    nickname3: string | null
     score: number | null
     created_at: Date | null
     updated_at: Date | null
@@ -899,8 +845,6 @@ export interface Prisma__leaderboardClient<T, Null = never, ExtArgs extends runt
 export interface leaderboardFieldRefs {
   readonly id: Prisma.FieldRef<"leaderboard", 'Int'>
   readonly username: Prisma.FieldRef<"leaderboard", 'String'>
-  readonly nickname: Prisma.FieldRef<"leaderboard", 'String'>
-  readonly nickname3: Prisma.FieldRef<"leaderboard", 'String'>
   readonly score: Prisma.FieldRef<"leaderboard", 'Int'>
   readonly created_at: Prisma.FieldRef<"leaderboard", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"leaderboard", 'DateTime'>

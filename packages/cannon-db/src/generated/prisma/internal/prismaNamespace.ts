@@ -530,8 +530,6 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const LeaderboardScalarFieldEnum = {
   id: 'id',
   username: 'username',
-  nickname: 'nickname',
-  nickname3: 'nickname3',
   score: 'score',
   created_at: 'created_at',
   updated_at: 'updated_at'
