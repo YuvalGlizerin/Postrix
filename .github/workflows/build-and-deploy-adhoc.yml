@@ -34,7 +34,7 @@ jobs:
     secrets: inherit
 
   deploy:
-    needs: build_and_push
+    needs: [db_migrate, build_and_push]
 
     permissions:
       contents: read
