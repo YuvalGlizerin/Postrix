@@ -17,7 +17,9 @@ export default [
       '**/.history/**',
       '**/.git/**',
       '**/coverage/**',
-      '**/kubernetes/**/templates/**/*.{yml,yaml}' // Ignore helm files
+      '**/kubernetes/**/templates/**/*.{yml,yaml}', // Ignore helm files
+      '**/prisma/migrations/**', // Ignore prisma migration files
+      '**/src/generated/**' // Ignore generated prisma client
     ]
   },
   js.configs.recommended,

@@ -1,0 +1,35 @@
+name: DB Migrate
+
+permissions:
+  contents: read
+  id-token: write
+
+on:
+  workflow_call:
+    inputs:
+      db:
+        required: true
+        type: string
+      namespace:
+        required: false
+        description: 'The k8s namespace, which will also be used as the database schema name'
+        type: string
+
+jobs:
+  db_migrate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Repo Warm Up
+        id: repo_warm_up
+        uses: ./.github/actions/repo-warm-up
+
+      - name: Configure AWS credentials
+        uses: ./.github/actions/aws-warm-up
+
+      - name: DB Migrate
+        working-directory: packages/cannon-db
+        run: DATABASE_URL='${{ secrets.DATABASE_INSTANCE_URL }}/${{ inputs.db }}?schema=${{ inputs.namespace || steps.repo_warm_up.outputs.adhoc_namespace }}' npm run migrate:deploy

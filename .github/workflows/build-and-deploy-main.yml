@@ -11,6 +11,22 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  db_migrate:
+    permissions:
+      contents: read
+      id-token: write
+
+    strategy:
+      matrix:
+        environment: [dev, prod]
+        db: [cannon]
+
+    uses: ./.github/workflows/db-migrate.yml
+    with:
+      db: ${{ matrix.db }}
+      namespace: ${{ matrix.environment }}
+    secrets: inherit
+
   build_and_push:
     permissions:
       contents: read
@@ -27,7 +43,7 @@ jobs:
     secrets: inherit
 
   deploy:
-    needs: build_and_push
+    needs: [db_migrate, build_and_push]
     
     permissions:
       contents: read

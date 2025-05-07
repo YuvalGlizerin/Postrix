@@ -7,6 +7,10 @@
 # https://hub.docker.com/_/node
 FROM node:23.10.0-slim
 
+# TODO: Examine this when prisma 7 is released
+# Install OpenSSL (required by Prisma)
+RUN apt-get update -y && apt-get install -y openssl
+
 # Set up the workspace directory and cd into it
 WORKDIR /usr/workspace
 
