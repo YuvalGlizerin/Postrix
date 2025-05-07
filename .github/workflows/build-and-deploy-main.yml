@@ -18,11 +18,13 @@ jobs:
 
     strategy:
       matrix:
+        environment: [dev, prod]
         db: [cannon]
 
     uses: ./.github/workflows/db-migrate.yml
     with:
       db: ${{ matrix.db }}
+      namespace: ${{ matrix.environment }}
     secrets: inherit
 
   build_and_push:
