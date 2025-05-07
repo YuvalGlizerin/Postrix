@@ -5,28 +5,15 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 import express, { type Request, type Response } from 'express';
-import pkg from 'pg';
-import secrets from 'secret-manager';
+import prisma from 'cannon-db';
 
 // Get current directory in ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const { Pool } = pkg;
 
 process.title = 'cannon';
 const app = express();
 const PORT = process.env.PORT;
-
-const pool = new Pool({
-  user: secrets.POSTGRES_USERNAME,
-  host: secrets.POSTGRES_HOST,
-  database: process.env.DATABASE,
-  password: secrets.POSTGRES_PASSWORD,
-  port: Number(secrets.POSTGRES_PORT),
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
 
 // Serve static files from the assets directory
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
@@ -53,8 +40,12 @@ app.get('/', (req: Request, res: Response) => {
 // Updated leaderboard endpoint to query the database
 app.get('/leaderboard', async (req: Request, res: Response) => {
   try {
-    const result = await pool.query('SELECT * FROM leaderboard');
-    res.status(200).json(result.rows);
+    const leaderboardEntries = await prisma.leaderboard.findMany({
+      orderBy: {
+        score: 'desc'
+      }
+    });
+    res.status(200).json(leaderboardEntries);
   } catch (error) {
     console.error('Error querying leaderboard:', error);
     res.status(500).json({ error: 'Failed to fetch leaderboard data' });
@@ -65,11 +56,12 @@ app.get('/leaderboard', async (req: Request, res: Response) => {
 app.post('/leaderboard', async (req: Request, res: Response) => {
   try {
     const { username, score } = req.body;
-    const result = await pool.query(
-      'INSERT INTO leaderboard (username, score) VALUES ($1, $2) ON CONFLICT (username) DO UPDATE SET score = EXCLUDED.score RETURNING *',
-      [username, score]
-    );
-    res.status(201).json(result.rows[0]);
+    const result = await prisma.leaderboard.upsert({
+      where: { username },
+      update: { score },
+      create: { username, score }
+    });
+    res.status(201).json(result);
   } catch (error) {
     console.error('Error adding to leaderboard:', error);
     res.status(500).json({ error: 'Failed to add to leaderboard' });

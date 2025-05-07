@@ -161,4 +161,7 @@ kubernetes/**/*.tgz
 kubernetes/**/Chart.lock
 
 # Prisma
-**/src/generated/**
+# TODO: Re-look into this when prisma 7 is released
+# With prisma 7 the generated files can be in source control
+# In the future, you can safely include the generated directory in version control when Prisma ORM is fully transitioned from Rust to TypeScript.
+# **/src/generated/**

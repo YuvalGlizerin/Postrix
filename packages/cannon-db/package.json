@@ -1,0 +1,20 @@
+{
+  "name": "cannon-db",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A db package using postgresql and prisma for cannon database",
+  "main": "src/index.ts",
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "test": "jest --config ../../jest.config.mjs --rootDir ./",
+    "migrate:dev:cannon": "prisma migrate dev --skip-generate",
+    "migrate:deploy:cannon": "prisma migrate deploy",
+    "generate:cannon": "prisma generate"
+  },
+  "devDependencies": {
+    "prisma": "^6.7.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.7.0"
+  }
+}
