@@ -53,7 +53,7 @@ jobs:
           --environment=${{ inputs.environment }} \
           --namespace=${{ inputs.namespace || steps.repo_warm_up.outputs.adhoc_namespace }} \
           --set postrixImage.tag=${{ steps.repo_warm_up.outputs.git_hash }} \
-          --set env.NAMESPACE=${{ inputs.namespace || steps.repo_warm_up.outputs.adhoc_namespace }}
+          --set variables.NAMESPACE=${{ inputs.namespace || steps.repo_warm_up.outputs.adhoc_namespace }}
 
       - name: Label namespace
         if: ${{ inputs.namespace_label }}
