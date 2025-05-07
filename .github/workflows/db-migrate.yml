@@ -28,4 +28,4 @@ jobs:
 
       - name: DB Migrate
         working-directory: packages/db
-        run: DATABASE_URL='${{ secrets.DATABASE_INSTANCE_URL }}/${{ inputs.db }}?schema=${{ steps.repo_warm_up.outputs.adhoc_namespace }}' npm run migrate:deploy:${{ inputs.db }}
+        run: DATABASE_URL='${{ secrets.DATABASE_INSTANCE_URL }}/${{ inputs.db }}?schema=${{ steps.repo_warm_up.outputs.adhoc_namespace }}' npm run migrate:deploy
