@@ -6,8 +6,8 @@
   "main": "src/index.ts",
   "scripts": {
     "type-check": "tsc --noEmit",
-    "start:local": "ENV=local node --experimental-strip-types --watch src/index.ts",
-    "start:server": "node --experimental-strip-types src/index.ts",
+    "start:local": "ENV=local node --watch src/index.ts",
+    "start:server": "node src/index.ts",
     "test": "jest --config ../../jest.config.mjs --rootDir ./"
   },
   "dependencies": {

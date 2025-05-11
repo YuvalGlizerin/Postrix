@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Useful scripts for the project",
   "scripts": {
-    "script": "node --experimental-strip-types"
+    "script": "node"
   },
   "dependencies": {
     "tweetnacl-sealedbox-js": "^1.2.0"

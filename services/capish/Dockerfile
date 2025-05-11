@@ -5,7 +5,7 @@
 
 # Use the official lightweight Node.js image.
 # https://hub.docker.com/_/node
-FROM node:23.10.0-slim
+FROM node:24.0.1-slim
 
 # Set up the workspace directory and cd into it
 WORKDIR /usr/workspace
