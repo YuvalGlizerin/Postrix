@@ -1,6 +1,7 @@
 ingress-nginx:
   tcp:
     6379: "redis/redis-master:6379"
+    5432: "postgresql/postgresql:5432"
 
   controller:
     extraArgs:
@@ -17,10 +18,12 @@ ingress-nginx:
         http: 80
         https: 443
         redis: 6379
+        postgresql: 5432
       targetPorts:
         http: http
         https: http
         redis: redis
+        postgresql: postgresql
       annotations:
         service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
         service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
@@ -28,7 +31,7 @@ ingress-nginx:
         service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
         service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
         service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
-        external-dns.alpha.kubernetes.io/hostname: redis.postrix.io
+        external-dns.alpha.kubernetes.io/hostname: redis.postrix.io,postgresql.postrix.io
     
     config:
       use-proxy-protocol: "false"

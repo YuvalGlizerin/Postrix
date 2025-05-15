@@ -1,0 +1,39 @@
+postgresql:
+  ## Architecture configuration
+  architecture: "standalone"
+
+  ## PostgreSQL Authentication parameters
+  auth:
+    enablePostgresUser: true
+    existingSecret: "postgresql-auth"
+    secretKeys:
+      adminPasswordKey: postgresql-password
+
+  ## PostgreSQL Primary parameters
+  primary:
+    persistence:
+      enabled: true
+      storageClass: gp2
+      size: 8Gi
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 250m
+      limits:
+        memory: 1Gi
+        cpu: 1000m
+
+  ## Network configuration
+  service:
+    type: ClusterIP
+    ports:
+      postgresql: 5432
+
+  ## PostgreSQL configuration
+  postgresql:
+    # Additional PostgreSQL configuration parameters
+    pgHbaConfiguration: |
+      local all all trust
+      host all all 127.0.0.1/32 trust
+      host all all ::1/128 trust
+      host all all 0.0.0.0/0 md5
