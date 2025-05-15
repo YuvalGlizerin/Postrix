@@ -25,7 +25,7 @@ app.get('/health', (req, res) => {
   res.status(200).send('OK');
 });
 
-// Root route to serve the HTML website
+// Root route to serve the HTML toybuttons website
 app.get('/', (req: Request, res: Response) => {
   try {
     const htmlPath = path.join(__dirname, 'index.html');
