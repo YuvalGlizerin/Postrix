@@ -5,3 +5,4 @@ metadata:
   namespace: {{ .Release.Namespace }}
 data:
   "6379": "redis/redis-master:6379"
+  "5432": "postgresql/postgresql:5432"

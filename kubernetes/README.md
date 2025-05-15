@@ -35,7 +35,7 @@ Example on how to create a secret:
 kubectl create secret generic elasticsearch-auth \
   --namespace elastic \
   --dry-run=client \
-  --from-literal=elasticsearch-password="my-password" \
+  --from-literal=elasticsearch-password='my-password' \
   -o yaml | \
 kubeseal --format yaml \
   --controller-name=sealed-secrets-controller \
