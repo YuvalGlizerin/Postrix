@@ -18,6 +18,9 @@ const PORT = process.env.PORT;
 // Serve static files from the assets directory
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
+// ✅ Serve public directory (including App-ads.txt)
+app.use(express.static(path.join(__dirname, '../public')));
+
 app.use(express.json()); // Add this line to parse JSON request bodies
 
 // Health check endpoint
