@@ -41,16 +41,17 @@ jobs:
               owner,
               repo,
               status: 'in_progress',
-              workflow_id: 'build-and-deploy-adhoc.yml',
               head_sha: context.payload.pull_request.head.sha
             });
             
             for (const run of workflows.data.workflow_runs) {
-              await github.rest.actions.cancelWorkflowRun({
-                owner,
-                repo,
-                run_id: run.id
-              });
+              if (run.path.includes('.github/workflows/build-and-deploy-adhoc.yml')) {
+                await github.rest.actions.cancelWorkflowRun({
+                  owner,
+                  repo,
+                  run_id: run.id
+                });
+              }
             }
 
       - name: Delete PostgreSQL namespace schema
