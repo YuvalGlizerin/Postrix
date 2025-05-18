@@ -41,6 +41,8 @@ jobs:
       - name: Repo Warm Up
         id: repo_warm_up
         uses: ./.github/actions/repo-warm-up
+        with:
+          namespace: ${{ inputs.namespace }}
 
       - name: Configure AWS credentials
         uses: ./.github/actions/aws-warm-up
@@ -51,13 +53,13 @@ jobs:
           -l group=app \
           --wait --args "--timeout ${{ env.WAIT_FOR_PODS_READY_TIMEOUT }}" \
           --environment=${{ inputs.environment }} \
-          --namespace=${{ inputs.namespace || steps.repo_warm_up.outputs.adhoc_namespace }} \
+          --namespace=${{ steps.repo_warm_up.outputs.namespace }} \
           --set postrixImage.tag=${{ steps.repo_warm_up.outputs.git_hash }}
 
       - name: Label namespace
         if: ${{ inputs.namespace_label }}
         run: |
-          kubectl label namespace ${{ inputs.namespace || steps.repo_warm_up.outputs.adhoc_namespace }} \
+          kubectl label namespace ${{ steps.repo_warm_up.outputs.namespace }} \
           environment=${{ inputs.namespace_label }}
 
       - name: Comment PR
@@ -67,6 +69,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           title: "Service URLs"
           message: |
-            [Joby](https://${{ steps.repo_warm_up.outputs.adhoc_namespace }}-joby.postrix.io)
-            [Capish](https://${{ steps.repo_warm_up.outputs.adhoc_namespace }}-capish.postrix.io)
-            [Cannon](https://${{ steps.repo_warm_up.outputs.adhoc_namespace }}-cannon.postrix.io)
+            [Joby](https://${{ steps.repo_warm_up.outputs.namespace }}-joby.postrix.io)
+            [Capish](https://${{ steps.repo_warm_up.outputs.namespace }}-capish.postrix.io)
+            [Cannon](https://${{ steps.repo_warm_up.outputs.namespace }}-cannon.postrix.io)
