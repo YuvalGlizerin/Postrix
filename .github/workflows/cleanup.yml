@@ -40,7 +40,7 @@ jobs:
             # Delete schema from all databases
             for db in $DATABASES; do
               echo "Cleaning up schema in database: $db"
-              psql '${{ secrets.DATABASE_INSTANCE_URL }}'"/$db" -c "DROP SCHEMA IF EXISTS ${{ steps.repo_warm_up.outputs.namespace }} CASCADE;"
+              psql '${{ secrets.DATABASE_INSTANCE_URL }}'"/$db" -c "DROP SCHEMA IF EXISTS \"${{ steps.repo_warm_up.outputs.namespace }}\" CASCADE;"
             done
           fi
 
