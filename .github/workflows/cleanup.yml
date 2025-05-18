@@ -30,8 +30,8 @@ jobs:
       - name: Configure AWS credentials
         uses: ./.github/actions/aws-warm-up
 
-      - name: Cancel running adhoc workflows
-        if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+      - name: Cancel running adhoc workflows for current PR
+        if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
@@ -55,9 +55,9 @@ jobs:
       - name: Delete PostgreSQL namespace schema
         if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
         run: |
-          if kubectl get namespace ${{ steps.repo_warm_up.outputs.namespace }} -o jsonpath='{.metadata.labels.environment}' | grep -q "adhoc"; then
+          if kubectl get namespace "${{ steps.repo_warm_up.outputs.namespace }}" -o jsonpath='{.metadata.labels.environment}' --ignore-not-found | grep -q "adhoc"; then
             # Get list of all databases except system databases
-            DATABASES=$(psql '${{ secrets.DATABASE_INSTANCE_URL }}' -t -c "SELECT datname FROM pg_database WHERE datname NOT IN ('postgres', 'template0', 'template1')" | grep -v '^$')
+            DATABASES=$(psql '${{ secrets.DATABASE_INSTANCE_URL }}' -At -c "SELECT datname FROM pg_database WHERE datname NOT IN ('postgres', 'template0', 'template1')")
             
             # Delete schema from all databases
             for db in $DATABASES; do
@@ -69,8 +69,8 @@ jobs:
       - name: Delete adhoc namespace from PR
         if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
         run: |
-          if kubectl get namespace ${{ steps.repo_warm_up.outputs.namespace }} -o jsonpath='{.metadata.labels.environment}' | grep -q "adhoc"; then
-            kubectl delete namespace ${{ steps.repo_warm_up.outputs.namespace }} --ignore-not-found
+          if kubectl get namespace "${{ steps.repo_warm_up.outputs.namespace }}" -o jsonpath='{.metadata.labels.environment}' --ignore-not-found | grep -q "adhoc"; then
+            kubectl delete namespace "${{ steps.repo_warm_up.outputs.namespace }}" --ignore-not-found
           fi
 
       - name: Delete all expired adhoc environments
