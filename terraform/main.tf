@@ -113,14 +113,15 @@ module "aws_secrets_manager" {
   }
 }
 
-module "aws_rds" {
-  source = "./modules/aws/rds"
-  subnet_ids = var.subnet_ids
+# Using K8s instead of RDS for now
+# module "aws_rds" {
+#   source = "./modules/aws/rds"
+#   subnet_ids = var.subnet_ids
 
-  providers = {
-    aws = aws
-  }
-}
+#   providers = {
+#     aws = aws
+#   }
+# }
 
 module "github" {
   source = "./modules/github"
