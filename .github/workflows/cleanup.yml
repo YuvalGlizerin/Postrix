@@ -30,6 +30,20 @@ jobs:
       - name: Configure AWS credentials
         uses: ./.github/actions/aws-warm-up
 
+      - name: Delete PostgreSQL namespace schema
+        if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+        run: |
+          if kubectl get namespace ${{ steps.repo_warm_up.outputs.namespace }} -o jsonpath='{.metadata.labels.environment}' | grep -q "adhoc"; then
+            # Get list of all databases except system databases
+            DATABASES=$(psql '${{ secrets.DATABASE_INSTANCE_URL }}' -t -c "SELECT datname FROM pg_database WHERE datname NOT IN ('postgres', 'template0', 'template1')" | grep -v '^$')
+            
+            # Delete schema from all databases
+            for db in $DATABASES; do
+              echo "Cleaning up schema in database: $db"
+              psql '${{ secrets.DATABASE_INSTANCE_URL }}/$db' -c "DROP SCHEMA IF EXISTS ${{ steps.repo_warm_up.outputs.namespace }} CASCADE;"
+            done
+          fi
+
       - name: Delete adhoc namespace from PR
         if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
         run: |
