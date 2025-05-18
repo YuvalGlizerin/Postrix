@@ -33,7 +33,9 @@ jobs:
       - name: Delete adhoc namespace from PR
         if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
         run: |
-          kubectl delete namespace ${{ steps.repo_warm_up.outputs.adhoc_namespace }} --ignore-not-found
+          if kubectl get namespace ${{ steps.repo_warm_up.outputs.namespace }} -o jsonpath='{.metadata.labels.environment}' | grep -q "adhoc"; then
+            kubectl delete namespace ${{ steps.repo_warm_up.outputs.namespace }} --ignore-not-found
+          fi
 
       - name: Delete all expired adhoc environments
         run: |

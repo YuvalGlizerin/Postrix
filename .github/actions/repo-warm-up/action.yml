@@ -1,12 +1,17 @@
 name: 'Repo Warm Up'
 description: 'Warm up resources for GitHub Actions'
 
+inputs:
+  namespace:
+    required: false
+    description: 'The namespace to deploy to, defaults to adhoc namespace'
+
 outputs:
   git_hash:
     description: 'The git hash of the current commit'
     value: ${{ steps.git_hash.outputs.git_hash }}
-  adhoc_namespace:
-    description: 'The k8s namespace to deploy your adhoc service to'
+  namespace:
+    description: 'The k8s namespace to deploy your service to'
     value: ${{ steps.adhoc_namespace.outputs.namespace }}
 
 runs:
@@ -21,8 +26,12 @@ runs:
     - name: Get namespace
       id: adhoc_namespace
       run: |
-        namespace=$(echo "${{ github.head_ref || github.ref_name }}" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-zA-Z0-9]/-/g' | cut -c -30 | sed 's/-*$//')
-        echo "namespace=$namespace" >> $GITHUB_OUTPUT
+        if [ -n "${{ inputs.namespace }}" ]; then
+          echo "namespace=${{ inputs.namespace }}" >> $GITHUB_OUTPUT
+        else
+          namespace=$(echo "${{ github.head_ref || github.ref_name }}" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-zA-Z0-9]/-/g' | cut -c -30 | sed 's/-*$//')-adhoc
+          echo "namespace=$namespace" >> $GITHUB_OUTPUT
+        fi
       shell: bash
 
     - name: Use Node.js
