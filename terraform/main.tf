@@ -49,6 +49,14 @@ provider "docker" {
   # Using DOCKER_USERNAME and DOCKER_PASSWORD
 }
 
+module "aws_vpc" {
+  source = "./modules/aws/vpc"
+
+  providers = {
+    aws = aws
+  }
+}
+
 module "aws_eks" {
   source       = "./modules/aws/eks"
   cluster_name = "postrix"
