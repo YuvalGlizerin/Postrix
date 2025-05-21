@@ -66,7 +66,8 @@ resource "aws_eks_node_group" "postrix_nodes" {
     max_size     = 5
   }
 
-  instance_types = ["t3.medium"]
+  instance_types = ["t3.medium"]  // 1$ per hour for on-demand, 0.40$ per hour for spot
+  capacity_type  = "SPOT" // Use spot instances to save money
 
   tags = {
     "k8s.io/cluster-autoscaler/enabled" = "true"
