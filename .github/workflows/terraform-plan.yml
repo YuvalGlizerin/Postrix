@@ -13,7 +13,7 @@ env:
 
 jobs:
   terraform-plan:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-arm64
 
     permissions:
       contents: read

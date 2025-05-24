@@ -4,8 +4,8 @@ on:
   pull_request:
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  type-check:
+    runs-on: ubuntu-latest-arm64
 
     permissions:
       contents: read
