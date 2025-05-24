@@ -66,7 +66,8 @@ resource "aws_eks_node_group" "postrix_nodes" {
     max_size     = 5
   }
 
-  instance_types = ["t3.medium"]  // 1$ per hour for on-demand, 0.40$ per hour for spot
+  instance_types = ["t4g.medium"]  // ARM Architecture: 0.8$ per day for on-demand, 0.24$ per day for spot
+  ami_type       = "AL2023_ARM_64_STANDARD"
   capacity_type  = "SPOT" // Use spot instances to save money
 
   tags = {

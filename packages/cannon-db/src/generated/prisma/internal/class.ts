@@ -41,6 +41,10 @@ const config: runtime.GetPrismaClientConfig = {
       {
         "fromEnvVar": null,
         "value": "debian-openssl-3.0.x"
+      },
+      {
+        "fromEnvVar": null,
+        "value": "linux-arm64-openssl-3.0.x"
       }
     ],
     "previewFeatures": [],
@@ -63,8 +67,8 @@ const config: runtime.GetPrismaClientConfig = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider      = \"prisma-client\"\n  output        = \"../src/generated/prisma\"\n  binaryTargets = [\"native\", \"debian-openssl-1.1.x\", \"debian-openssl-3.0.x\"] // Add debian for server environments\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel leaderboard {\n  id         Int       @id @default(autoincrement())\n  username   String?   @unique @db.VarChar(100)\n  score      Int?\n  created_at DateTime? @default(now()) @db.Timestamp(6)\n  updated_at DateTime? @default(now()) @db.Timestamp(6)\n}\n",
-  "inlineSchemaHash": "2c8750e8b9b607ab7d63e46753ed80c10fe62663a1539ac72f9d593a938a02a0",
+  "inlineSchema": "generator client {\n  provider      = \"prisma-client\"\n  output        = \"../src/generated/prisma\"\n  binaryTargets = [\"native\", \"debian-openssl-1.1.x\", \"debian-openssl-3.0.x\", \"linux-arm64-openssl-3.0.x\"] // Add debian for server environments, TODO: Review this on prisma 7\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel leaderboard {\n  id         Int       @id @default(autoincrement())\n  username   String?   @unique @db.VarChar(100)\n  score      Int?\n  created_at DateTime? @default(now()) @db.Timestamp(6)\n  updated_at DateTime? @default(now()) @db.Timestamp(6)\n}\n",
+  "inlineSchemaHash": "a10e6b081e4b285a105d1f4eedf805a0c1347aeb2bee663bc8004287391e210d",
   "copyEngine": true,
   "runtimeDataModel": {
     "models": {},

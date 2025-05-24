@@ -23,6 +23,15 @@ releases:
     values:
       - ./sealed-secrets/values/defaults.yaml
 
+  - name: metrics-server
+    namespace: kube-system
+    chart: bitnami/metrics-server
+    version: 7.4.5
+    labels:
+      app: metrics-server
+    values:
+      - ./metrics-server/values/defaults.yaml
+
   - name: ingress-controller
     namespace: ingress-nginx
     chart: ./ingress-controller
