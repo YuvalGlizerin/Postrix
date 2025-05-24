@@ -1,11 +1,10 @@
-# Local Build: docker build --platform linux/arm64 -t yuvadius/cannon:latest -f services/cannon/Dockerfile .
-# Server Build: docker build --platform linux/amd64 -t yuvadius/cannon:latest -f services/cannon/Dockerfile .
+# Build: docker build -t yuvadius/cannon:latest -f services/cannon/Dockerfile .
 # docker push yuvadius/cannon:latest
 # docker run -p 8082:8082 -e ENV=local yuvadius/cannon:latest
 
 # Use the official lightweight Node.js image.
 # https://hub.docker.com/_/node
-FROM node:24.0.1-slim
+FROM --platform=linux/arm64 node:24.0.1-slim
 
 # TODO: Examine this when prisma 7 is released
 # Install OpenSSL (required by Prisma)

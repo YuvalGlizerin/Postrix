@@ -2,7 +2,7 @@ import { createClient } from 'redis';
 import secrets from 'secret-manager';
 
 const client = createClient({
-  url: process.env.ENV === 'local' ? 'redis://redis.postrix.io' : 'redis://redis-master.redis.svc.cluster.local:6379',
+  url: process.env.REDIS_URL,
   password: secrets.REDIS_PASSWORD
 });
 
