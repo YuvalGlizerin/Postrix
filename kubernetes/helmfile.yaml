@@ -8,10 +8,14 @@ repositories:
   - name: autoscaler
     url: https://kubernetes.github.io/autoscaler
 
+---
+
 environments:
   local: {}
   dev: {}
   prod: {}
+
+---
 
 releases:
   - name: sealed-secrets

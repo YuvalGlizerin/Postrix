@@ -1,4 +1,25 @@
 apiService:
   create: true
+
+# Use a non-privileged port instead of 443
+securePort: 8443
+
+# Security context to allow the container to run properly
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 65534
+
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 65534
+
 args:
   - --kubelet-insecure-tls
+  - --secure-port=8443
+
+replicas: 1
