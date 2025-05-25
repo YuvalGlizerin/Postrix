@@ -66,9 +66,14 @@ resource "aws_eks_node_group" "postrix_nodes" {
     max_size     = 5
   }
 
-  instance_types = ["t4g.medium"]  // ARM Architecture: 0.8$ per day for on-demand, 0.24$ per day for spot
+  instance_types = ["t4g.medium"]  // ARM Architecture: 0.8$ per day for on-demand, 0.24$ per day for spot(per node)
   ami_type       = "AL2023_ARM_64_STANDARD"
   capacity_type  = "SPOT" // Use spot instances to save money
+
+  launch_template {
+    name    = aws_launch_template.postrix_nodes.name
+    version = aws_launch_template.postrix_nodes.latest_version
+  }
 
   tags = {
     "k8s.io/cluster-autoscaler/enabled" = "true"
@@ -77,6 +82,27 @@ resource "aws_eks_node_group" "postrix_nodes" {
 
   lifecycle {
     ignore_changes = [scaling_config[0].desired_size]
+  }
+}
+
+# Simple launch template for volume naming and type
+resource "aws_launch_template" "postrix_nodes" {
+  name = "${var.cluster_name}-node-template"
+
+  block_device_mappings {
+    device_name = "/dev/xvda"
+    ebs {
+      volume_size = 20 // 20GB of gp3: 1.6$ per month(per node)
+      volume_type = "gp3"
+      delete_on_termination = true
+    }
+  }
+
+  tag_specifications {
+    resource_type = "volume"
+    tags = {
+      Name = "${var.cluster_name}-node-disk"
+    }
   }
 }
 

@@ -1,0 +1,15 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: gp3-redis
+provisioner: ebs.csi.aws.com
+parameters:
+  type: gp3
+  encrypted: "false"
+  # Tags for the EBS volume
+  tagSpecification_1: "Name=redis-persistent-storage"
+  tagSpecification_2: "Application=redis"
+  tagSpecification_3: "Component=database"
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: false
+reclaimPolicy: Delete

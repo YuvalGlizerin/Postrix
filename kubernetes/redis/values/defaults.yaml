@@ -5,7 +5,7 @@ redis:
     persistence:
       enabled: true 
       size: 1Gi
-      storageClass: gp2
+      storageClass: gp3-redis
     service:
       type: ClusterIP
       port: 6379
