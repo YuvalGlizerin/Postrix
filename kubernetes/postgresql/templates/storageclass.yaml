@@ -1,0 +1,15 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: gp3-postgresql
+provisioner: ebs.csi.aws.com
+parameters:
+  type: gp3
+  encrypted: "false"
+  # Tags for the EBS volume
+  tagSpecification_1: "Name=postgresql-persistent-storage"
+  tagSpecification_2: "Application=postgresql"
+  tagSpecification_3: "Component=database"
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: false
+reclaimPolicy: Delete

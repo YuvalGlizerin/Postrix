@@ -13,8 +13,8 @@ elasticsearch:
         memory: 2Gi
     persistence:
       enabled: true
-      storageClass: gp2
-      size: 10Gi
+      storageClass: gp3-elasticsearch
+      size: 2Gi
     
   # Disable additional nodes for minimal setup
   data:
@@ -73,8 +73,8 @@ elasticsearch:
         
     persistence:
       enabled: true
-      storageClass: gp2
-      size: 2Gi
+      storageClass: gp3-kibana
+      size: 1Gi
       
     ingress:
       enabled: true
