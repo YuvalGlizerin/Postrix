@@ -58,10 +58,11 @@ module "aws_vpc" {
 }
 
 module "aws_eks" {
-  source       = "./modules/aws/eks"
-  cluster_name = "postrix"
-  region       = var.aws_region
-  subnet_ids   = var.subnet_ids
+  source         = "./modules/aws/eks"
+  cluster_name   = "postrix"
+  region         = var.aws_region
+  subnet_ids     = module.aws_vpc.subnet_ids  # Use VPC module output instead of hardcoded IDs
+  node_subnet_id = module.aws_vpc.subnet_a_id # Use only us-east-1a subnet for nodes
 
   providers = {
     aws = aws
