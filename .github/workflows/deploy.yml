@@ -28,7 +28,7 @@ on:
         default: false
 
 env:
-  WAIT_FOR_PODS_READY_TIMEOUT: 60s 
+  WAIT_FOR_PODS_READY_TIMEOUT: 120s 
 
 jobs:
   deploy:

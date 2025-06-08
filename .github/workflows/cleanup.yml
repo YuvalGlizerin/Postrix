@@ -58,6 +58,9 @@ jobs:
         if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
         run: |
           if kubectl get namespace "${{ steps.repo_warm_up.outputs.namespace }}" -o jsonpath='{.metadata.labels.environment}' --ignore-not-found | grep -q "adhoc"; then
+            # Delete all helm releases in the namespace
+            helm list -n "${{ steps.repo_warm_up.outputs.namespace }}" -q | xargs -r helm uninstall -n "${{ steps.repo_warm_up.outputs.namespace }}"
+
             kubectl delete namespace "${{ steps.repo_warm_up.outputs.namespace }}" --ignore-not-found
           fi
 
@@ -67,6 +70,9 @@ jobs:
             awk -v date="$(date -u +%Y-%m-%dT%H:%M:%SZ -d '${{ env.NAMESPACE_AGE_DAYS_EXPIRATION }} days ago')" '$2 <= date {print $1}')
           
           for namespace in $ADHOC_NAMESPACES; do
+            # Delete all helm releases in the namespace
+            helm list -n $namespace -q | xargs -r helm uninstall -n $namespace
+            
             kubectl delete namespace $namespace
           done
 
