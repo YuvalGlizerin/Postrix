@@ -44,3 +44,9 @@ kubeseal --format yaml \
 
 Note: This does not create a secret in your cluster, it only creates the file
 Note: You need to restart the pods after changing the secret only because it does not count as a change
+
+# How to view secrets
+Example:
+```bash
+kubectl get secret postgresql-auth -n postgresql -o jsonpath='{.data.postgresql-password}' | base64 -d
+```

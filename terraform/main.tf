@@ -114,13 +114,14 @@ module "aws_s3" {
   }
 }
 
-module "aws_secrets_manager" {
-  source = "./modules/aws/secrets-manager" 
+# Using K8s secrets instead of AWS Secrets Manager for now
+# module "aws_secrets_manager" {
+#   source = "./modules/aws/secrets-manager" 
 
-  providers = {
-    aws = aws
-  }
-}
+#   providers = {
+#     aws = aws
+#   }
+# }
 
 # Using K8s instead of RDS for now
 # module "aws_rds" {

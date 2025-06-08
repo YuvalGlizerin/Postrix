@@ -16,7 +16,6 @@ variable "subnet_ids" {
 variable "node_subnet_id" {
   description = "Specific subnet ID for EKS worker nodes (us-east-1a)"
   type        = string
-  default     = ""
 }
 
 resource "aws_eks_cluster" "postrix" {
