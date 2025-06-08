@@ -27,6 +27,12 @@ releases:
     values:
       - ./sealed-secrets/values/defaults.yaml
 
+  - name: secrets
+    namespace: secrets
+    chart: ./secrets
+    labels:
+      app: secrets
+
   - name: metrics-server
     namespace: kube-system
     chart: bitnami/metrics-server
