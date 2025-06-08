@@ -1,8 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+kind: ClusterRole
 metadata:
   name: secret-reader
-  namespace: {{ .Release.Namespace }}
 rules:
 - apiGroups: [""]
   resources: ["secrets"]
