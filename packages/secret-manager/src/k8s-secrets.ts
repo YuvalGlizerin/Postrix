@@ -1,32 +1,28 @@
-import { readFileSync, existsSync } from 'fs';
-import { join } from 'path';
-
 import * as k8s from '@kubernetes/client-node';
 
 const secrets: Record<string, string> = {};
 const isLocal = process.env.ENV === 'local';
 const clusterName = process.env.CLUSTER_NAME as string;
-const K8S_SECRETS_BASE_PATH = process.env.K8S_SECRETS_BASE_PATH || '/var/run/secrets';
 let k8sApi: k8s.CoreV1Api | null = null;
 
 try {
   const kc = new k8s.KubeConfig();
 
   if (isLocal) {
-    // Local mode: use kubeconfig and set context to postrix cluster specifically
+    // Local mode: use kubeconfig and set context to cluster
     kc.loadFromDefault();
 
-    // Find and set context to postrix cluster
-    const postrixContext = kc
+    // Find and set context to specified cluster
+    const targetContext = kc
       .getContexts()
       .find(context => context.name.includes(clusterName) || context.cluster.includes(clusterName));
 
-    if (postrixContext) {
-      kc.setCurrentContext(postrixContext.name);
-      console.log(`Using Kubernetes context: ${postrixContext.name}`);
+    if (targetContext) {
+      kc.setCurrentContext(targetContext.name);
+      console.log(`Using Kubernetes context: ${targetContext.name}`);
     } else {
       console.warn(
-        'Postrix cluster context not found. Available contexts:',
+        `${clusterName} cluster context not found. Available contexts:`,
         kc
           .getContexts()
           .map(c => c.name)
@@ -37,17 +33,21 @@ try {
   } else {
     // Production mode: use in-cluster config (service account)
     kc.loadFromCluster();
+    console.log('Using in-cluster Kubernetes config');
   }
 
   k8sApi = kc.makeApiClient(k8s.CoreV1Api);
 } catch (error) {
   if (isLocal) {
     console.error(
-      'Failed to load Kubernetes config. Make sure kubectl is configured and you have access to the postrix cluster:',
+      `Failed to load Kubernetes config. Make sure kubectl is configured and you have access to the ${clusterName} cluster:`,
       error
     );
   } else {
-    console.error('Failed to load in-cluster Kubernetes config:', error);
+    console.error(
+      'Failed to load in-cluster Kubernetes config. Ensure service account has proper RBAC permissions:',
+      error
+    );
   }
 }
 
@@ -82,23 +82,8 @@ const loadSecretFromAPI = async (
   }
 };
 
-// Function to load secret from filesystem (for production)
-const loadSecretFromFile = async (secretName: string, secretKey: string, envKey: string): Promise<void> => {
-  try {
-    const filePath = join(K8S_SECRETS_BASE_PATH, secretName, secretKey);
-
-    if (!existsSync(filePath)) {
-      console.error(`Secret file not found for ${envKey}: ${filePath}`);
-      return;
-    }
-
-    const secretValue = readFileSync(filePath, 'utf8').trim();
-    secrets[envKey] = secretValue;
-    console.log(`Secret loaded for ${envKey} from file: ${filePath}`);
-  } catch (error) {
-    console.error(`Failed to load secret file for ${envKey}:`, error);
-  }
-};
+// Note: We now use Kubernetes API for both local and production modes
+// No filesystem-based secret loading needed
 
 // Create an array of promises for secret loading
 const secretPromises = Object.entries(process.env)
@@ -121,13 +106,8 @@ const secretPromises = Object.entries(process.env)
       const secretName = parts[1];
       const secretKey = parts[2];
 
-      if (isLocal) {
-        // Local mode: fetch from Kubernetes API
-        await loadSecretFromAPI(namespace, secretName, secretKey, key);
-      } else {
-        // Production mode: read from mounted filesystem
-        await loadSecretFromFile(secretName, secretKey, key);
-      }
+      // Use Kubernetes API for both local and production modes
+      await loadSecretFromAPI(namespace, secretName, secretKey, key);
     } catch (error) {
       console.error(`Failed to load secret for ${key}:`, error);
     }
