@@ -81,17 +81,13 @@ jobs:
       - name: Delete PostgreSQL namespace schema
         if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
         run: |
-          # Install PostgreSQL client for ARM github actions runner
-          sudo apt-get update
-          sudo apt-get install -y postgresql-client
-
           # Get list of all databases except system databases
-          DATABASES=$(psql '${{ secrets.DATABASE_INSTANCE_URL }}' -At -c "SELECT datname FROM pg_database WHERE datname NOT IN ('postgres', 'template0', 'template1')")
+          DATABASES=$(kubectl exec -n postgresql postgresql-0 -- psql -U postgres -At -c "SELECT datname FROM pg_database WHERE datname NOT IN ('postgres', 'template0', 'template1')")
           
           # Delete schema from all databases
           for db in $DATABASES; do
             echo "Cleaning up schema in database: $db"
-            psql '${{ secrets.DATABASE_INSTANCE_URL }}'"/$db" -c "DROP SCHEMA IF EXISTS \"${{ steps.repo_warm_up.outputs.namespace }}\" CASCADE;"
+            kubectl exec -n postgresql $POSTGRES_POD -- psql -U postgres -d "$db" -c "DROP SCHEMA IF EXISTS \"${{ steps.repo_warm_up.outputs.namespace }}\" CASCADE;"
           done
 
       # TODO: Add a step to delete the expired schemas if we missed any
