@@ -5,9 +5,9 @@ metadata:
 subjects:
 # Option 1: Bind to default service account (recommended)
 # This applies to the default service account in any namespace where your pods run
-- kind: ServiceAccount
-  name: default
-  namespace: {{ .Release.Namespace }}
+# - kind: ServiceAccount
+#   name: default
+#   namespace: {{ .Release.Namespace }}
 
 # Option 2: Bind to all service accounts in a specific namespace (uncomment if preferred)
 # - kind: Group
@@ -15,9 +15,9 @@ subjects:
 #   apiGroup: rbac.authorization.k8s.io
 
 # Option 3: Bind to ALL service accounts in ALL namespaces (use with caution - very broad permissions)
-# - kind: Group
-#   name: system:serviceaccounts
-#   apiGroup: rbac.authorization.k8s.io
+- kind: Group
+  name: system:serviceaccounts
+  apiGroup: rbac.authorization.k8s.io
 
 roleRef:
   kind: ClusterRole
