@@ -1,20 +1,10 @@
+# Add permission to read secrets in all namespaces for all service accounts
+# This is needed so that our pods will be able to read secrets in all namespaces
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: secret-reader-binding
 subjects:
-# Option 1: Bind to default service account (recommended)
-# This applies to the default service account in any namespace where your pods run
-# - kind: ServiceAccount
-#   name: default
-#   namespace: {{ .Release.Namespace }}
-
-# Option 2: Bind to all service accounts in a specific namespace (uncomment if preferred)
-# - kind: Group
-#   name: system:serviceaccounts:{{ .Release.Namespace }}
-#   apiGroup: rbac.authorization.k8s.io
-
-# Option 3: Bind to ALL service accounts in ALL namespaces (use with caution - very broad permissions)
 - kind: Group
   name: system:serviceaccounts
   apiGroup: rbac.authorization.k8s.io

@@ -62,7 +62,7 @@ jobs:
             # TODO: I think i need to install helm here
             helm list -n "${{ steps.repo_warm_up.outputs.namespace }}" -q | xargs -r helm uninstall -n "${{ steps.repo_warm_up.outputs.namespace }}"
 
-            kubectl delete namespace "${{ steps.repo_warm_up.outputs.namespace }}" --ignore-not-found
+            # kubectl delete namespace "${{ steps.repo_warm_up.outputs.namespace }}" --ignore-not-found
           fi
 
       - name: Delete all expired adhoc environments
@@ -81,7 +81,7 @@ jobs:
       - name: Delete PostgreSQL namespace schema
         if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
         run: |
-          # Install PostgreSQL client
+          # Install PostgreSQL client for ARM github actions runner
           sudo apt-get update
           sudo apt-get install -y postgresql-client
 
