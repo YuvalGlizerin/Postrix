@@ -59,7 +59,7 @@ resource "aws_eks_node_group" "postrix_nodes" {
   cluster_name    = aws_eks_cluster.postrix.name
   node_group_name = "${var.cluster_name}-node-group"
   node_role_arn   = aws_iam_role.eks_node.arn
-  subnet_ids      = var.subnet_ids  # Use both AZs to match cluster configuration
+  subnet_ids      = var.subnet_ids
 
   scaling_config {
     desired_size = 2
@@ -67,9 +67,9 @@ resource "aws_eks_node_group" "postrix_nodes" {
     max_size     = 5
   }
 
-  instance_types = ["t4g.medium"]  // ARM Architecture: 0.8$ per day for on-demand, 0.24$ per day for spot(per node)
+  instance_types = ["t4g.small"]
   ami_type       = "AL2023_ARM_64_STANDARD"
-  capacity_type  = "ON_DEMAND" // Switch back to on-demand for reliability
+  capacity_type  = "ON_DEMAND"
 
   launch_template {
     name    = aws_launch_template.postrix_nodes.name
