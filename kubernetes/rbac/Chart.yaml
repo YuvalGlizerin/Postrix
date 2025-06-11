@@ -1,0 +1,5 @@
+apiVersion: v2
+name: rbac
+description: Custom rbac deployment
+version: 0.1.0
+appVersion: "1.0"

@@ -33,6 +33,12 @@ releases:
     labels:
       app: secrets
 
+  - name: rbac
+    namespace: rbac
+    chart: ./rbac
+    labels:
+      app: rbac
+
   - name: metrics-server
     namespace: kube-system
     chart: bitnami/metrics-server

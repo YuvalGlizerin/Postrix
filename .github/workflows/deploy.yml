@@ -28,7 +28,9 @@ on:
         default: false
 
 env:
-  WAIT_FOR_PODS_READY_TIMEOUT: 120s 
+  # TODO: It hangs here because of the cluster roles i added
+  # TODO: Remove schemas and cluster roles hanging
+  WAIT_FOR_PODS_READY_TIMEOUT: 60s 
 
 jobs:
   deploy:
