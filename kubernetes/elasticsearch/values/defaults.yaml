@@ -9,8 +9,8 @@ elasticsearch:
         cpu: 2000m
         memory: 4Gi
       requests:
-        cpu: 1000m
-        memory: 2Gi
+        cpu: 500m
+        memory: 1Gi
     persistence:
       enabled: true
       storageClass: gp3-elasticsearch
@@ -68,8 +68,8 @@ elasticsearch:
         cpu: 1000m
         memory: 2Gi
       requests:
-        cpu: 500m
-        memory: 1Gi
+        cpu: 250m
+        memory: 512Mi
         
     persistence:
       enabled: true

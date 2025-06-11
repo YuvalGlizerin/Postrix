@@ -13,18 +13,13 @@ variable "subnet_ids" {
   type        = list(string)
 }
 
-variable "node_subnet_id" {
-  description = "Specific subnet ID for EKS worker nodes (us-east-1a)"
-  type        = string
-}
-
 resource "aws_eks_cluster" "postrix" {
   name     = var.cluster_name
   role_arn = aws_iam_role.eks_cluster.arn
   version  = "1.33"
 
   vpc_config {
-    subnet_ids = var.subnet_ids
+    subnet_ids = var.subnet_ids  # AWS requires at least 2 AZs for EKS
   }
 
   tags = {
@@ -64,7 +59,7 @@ resource "aws_eks_node_group" "postrix_nodes" {
   cluster_name    = aws_eks_cluster.postrix.name
   node_group_name = "${var.cluster_name}-node-group"
   node_role_arn   = aws_iam_role.eks_node.arn
-  subnet_ids      = [var.node_subnet_id]  # Only use us-east-1a subnet to avoid cross-AZ volume issues
+  subnet_ids      = var.subnet_ids  # Use both AZs to match cluster configuration
 
   scaling_config {
     desired_size = 2
@@ -74,7 +69,7 @@ resource "aws_eks_node_group" "postrix_nodes" {
 
   instance_types = ["t4g.medium"]  // ARM Architecture: 0.8$ per day for on-demand, 0.24$ per day for spot(per node)
   ami_type       = "AL2023_ARM_64_STANDARD"
-  capacity_type  = "SPOT" // Use spot instances to save money
+  capacity_type  = "ON_DEMAND" // Switch back to on-demand for reliability
 
   launch_template {
     name    = aws_launch_template.postrix_nodes.name
