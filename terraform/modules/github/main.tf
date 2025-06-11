@@ -79,3 +79,9 @@ resource "github_actions_secret" "database_instance_url" {
   secret_name     = "DATABASE_INSTANCE_URL"
   encrypted_value = "p8nxvspcuzzQC+KcDvQstqnxwTO8ZLKrK/+A/YLl/UXzuhIBUl/zcfsb/DiRqmHt/+KwKHjqEsYDrmrncV928OMpUmeq3y6D34YutyXsso5G2JOXBmz6/ZBSxg4rUTsR8/IZ8VN7ApXQJkk="
 }
+
+resource "github_actions_secret" "database_instance_password" {
+  repository      = github_repository.repo.name
+  secret_name     = "DATABASE_INSTANCE_PASSWORD"
+  encrypted_value = "vZ1D2EQe5APae0oQb1UGygB/Pc9gA77hXTrPF9NXJztnMVAduH4VVFahp/8Oy3GNpnfOh0Xo33kGpg=="
+}

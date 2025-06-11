@@ -82,12 +82,12 @@ jobs:
         if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
         run: |
           # Get list of all databases except system databases
-          DATABASES=$(kubectl exec -n postgresql postgresql-0 -- psql -U postgres -At -c "SELECT datname FROM pg_database WHERE datname NOT IN ('postgres', 'template0', 'template1')")
+          DATABASES=$(kubectl exec -n postgresql postgresql-0 -- bash -c "PGPASSWORD='${{ secrets.DATABASE_INSTANCE_PASSWORD }}' psql -U postgres -At -c \"SELECT datname FROM pg_database WHERE datname NOT IN ('postgres', 'template0', 'template1')\"")
           
           # Delete schema from all databases
           for db in $DATABASES; do
             echo "Cleaning up schema in database: $db"
-            kubectl exec -n postgresql $POSTGRES_POD -- psql -U postgres -d "$db" -c "DROP SCHEMA IF EXISTS \"${{ steps.repo_warm_up.outputs.namespace }}\" CASCADE;"
+            kubectl exec -n postgresql postgresql-0 -- bash -c "PGPASSWORD='${{ secrets.DATABASE_INSTANCE_PASSWORD }}' psql -U postgres -d '$db' -c \"DROP SCHEMA IF EXISTS \\\"${{ steps.repo_warm_up.outputs.namespace }}\\\" CASCADE;\""
           done
 
       # TODO: Add a step to delete the expired schemas if we missed any
