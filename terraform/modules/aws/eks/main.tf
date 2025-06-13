@@ -13,6 +13,11 @@ variable "subnet_ids" {
   type        = list(string)
 }
 
+variable "node_subnet_ids" {
+  description = "A list of subnet IDs for the EKS node group"
+  type        = list(string)
+}
+
 resource "aws_eks_cluster" "postrix" {
   name     = var.cluster_name
   role_arn = aws_iam_role.eks_cluster.arn
@@ -55,21 +60,53 @@ resource "aws_eks_access_policy_association" "postrix_user_admin" {
 # }
 
 // Managed node group for the EKS cluster, specifying instance type and scaling
+// Free trial until end of 2025 for one t4g.small instance
 resource "aws_eks_node_group" "postrix_nodes" {
   cluster_name    = aws_eks_cluster.postrix.name
-  node_group_name = "${var.cluster_name}-node-group"
+  node_group_name = "${var.cluster_name}-node-group-on-demand"
   node_role_arn   = aws_iam_role.eks_node.arn
-  subnet_ids      = var.subnet_ids  # Use both AZs to match cluster configuration
+  subnet_ids      = var.node_subnet_ids
 
   scaling_config {
-    desired_size = 2
+    desired_size = 1
     min_size     = 1
-    max_size     = 5
+    max_size     = 1
   }
 
-  instance_types = ["t4g.medium"]  // ARM Architecture: 0.8$ per day for on-demand, 0.24$ per day for spot(per node)
+  instance_types = ["t4g.small"]
   ami_type       = "AL2023_ARM_64_STANDARD"
-  capacity_type  = "ON_DEMAND" // Switch back to on-demand for reliability
+  capacity_type  = "ON_DEMAND"
+
+  launch_template {
+    name    = aws_launch_template.postrix_nodes.name
+    version = aws_launch_template.postrix_nodes.latest_version
+  }
+
+  tags = {
+    "k8s.io/cluster-autoscaler/enabled" = "true"
+    "k8s.io/cluster-autoscaler/${var.cluster_name}" = "owned"
+  }
+
+  lifecycle {
+    ignore_changes = [scaling_config[0].desired_size]
+  }
+}
+
+resource "aws_eks_node_group" "postrix_nodes_spot" {
+  cluster_name    = aws_eks_cluster.postrix.name
+  node_group_name = "${var.cluster_name}-node-group-spot"
+  node_role_arn   = aws_iam_role.eks_node.arn
+  subnet_ids      = var.node_subnet_ids
+
+  scaling_config {
+    desired_size = 1
+    min_size     = 1
+    max_size     = 2
+  }
+
+  instance_types = ["t4g.large"]
+  ami_type       = "AL2023_ARM_64_STANDARD"
+  capacity_type  = "SPOT"
 
   launch_template {
     name    = aws_launch_template.postrix_nodes.name
@@ -292,7 +329,9 @@ resource "aws_iam_role_policy" "cluster_autoscaler" {
           "autoscaling:SetDesiredCapacity",
           "autoscaling:TerminateInstanceInAutoScalingGroup",
           "ec2:DescribeLaunchTemplateVersions",
-          "ec2:DescribeInstanceTypes"
+          "ec2:DescribeInstanceTypes",
+          "eks:DescribeNodegroup",
+          "eks:DescribeCluster"
         ]
         Resource = ["*"]
       }

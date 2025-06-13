@@ -1,0 +1,14 @@
+# Cluster Autoscaler additional RBAC role binding
+# This binds the additional permissions to the cluster autoscaler service account
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cluster-autoscaler-additional-permissions
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-autoscaler-additional-permissions
+subjects:
+- kind: ServiceAccount
+  name: cluster-autoscaler-aws-cluster-autoscaler
+  namespace: kube-system 
