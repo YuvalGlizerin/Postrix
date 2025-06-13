@@ -4,27 +4,4 @@ awsRegion: us-east-1
 rbac:
   serviceAccount:
     annotations:
-      eks.amazonaws.com/role-arn: arn:aws:iam::384389382109:role/postrix-cluster-autoscaler-role
-extraArgs:
-  # More conservative scale-down timing
-  scale-down-delay-after-add: 10m
-  scale-down-unneeded-time: 10m
-  unremovable-node-recheck-timeout: 5m
-  
-  # Add utilization threshold to prevent premature scale-down
-  scale-down-utilization-threshold: 0.5
-  
-  # Limit scale-down to one node at a time
-  max-nodes-total: 10
-  max-node-provision-time: 15m
-  
-  # Skip nodes with system pods and local storage
-  skip-nodes-with-local-storage: true
-  skip-nodes-with-system-pods: true
-  
-  # More conservative resource thresholds
-  scale-down-gpu-utilization-threshold: 0.5
-  scale-down-non-empty-candidates-count: 30
-  
-  # Logging for debugging
-  v: 1 
+      eks.amazonaws.com/role-arn: arn:aws:iam::384389382109:role/postrix-cluster-autoscaler-role 
