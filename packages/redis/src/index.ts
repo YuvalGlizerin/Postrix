@@ -1,3 +1,4 @@
+// TODO: Use ioredis with keyprefix
 import { createClient } from 'redis';
 import secrets from 'secret-manager';
 
