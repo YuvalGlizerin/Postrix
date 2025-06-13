@@ -54,7 +54,8 @@ jobs:
           --wait --args "--timeout ${{ env.WAIT_FOR_PODS_READY_TIMEOUT }}" \
           --environment=${{ inputs.environment }} \
           --namespace=${{ steps.repo_warm_up.outputs.namespace }} \
-          --set postrixImage.tag=${{ steps.repo_warm_up.outputs.git_hash }}
+          --set postrixImage.tag=${{ steps.repo_warm_up.outputs.git_hash }} \
+          --set variables.NAMESPACE=${{ steps.repo_warm_up.outputs.namespace }}
 
       - name: Label namespace
         if: ${{ inputs.namespace_label }}

@@ -1,14 +1,16 @@
-// TODO: Use ioredis with keyprefix
-import { createClient } from 'redis';
+import { Redis } from 'ioredis';
 import secrets from 'secret-manager';
+import { Logger } from 'logger';
 
-const client = createClient({
-  url: process.env.REDIS_URL,
+const logger = new Logger('redis');
+
+const keyPrefix = `${process.env.ENV}:${process.env.NAMESPACE}:`;
+
+const client = new Redis(process.env.REDIS_URL!, {
+  keyPrefix,
   password: secrets.REDIS_PASSWORD
 });
 
-client.on('error', (err: Error) => console.log('Redis Client Error', err));
-
-await client.connect();
+client.on('error', (err: Error) => logger.log('Redis Client Error', { err }));
 
 export default client;
