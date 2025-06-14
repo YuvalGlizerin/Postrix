@@ -123,6 +123,40 @@ resource "aws_eks_node_group" "postrix_nodes_spot" {
   }
 }
 
+# Disable capacity_rebalance on the ASG created by the EKS node group
+# This will run after the node group is created/recreated and will disable capacity rebalance
+resource "null_resource" "disable_spot_capacity_rebalance" {
+  provisioner "local-exec" {
+    command = <<-EOT
+      # Wait a bit for the ASG to be fully created
+      sleep 30
+      
+      # Find the ASG name created by EKS for this node group
+      ASG_NAME=$(aws autoscaling describe-auto-scaling-groups \
+        --region ${var.region} \
+        --query "AutoScalingGroups[?contains(Tags[?Key=='eks:nodegroup-name'].Value, '${var.cluster_name}-node-group-spot')].AutoScalingGroupName" \
+        --output text)
+      
+      # Disable capacity rebalancing if ASG found
+      if [ ! -z "$ASG_NAME" ]; then
+        aws autoscaling update-auto-scaling-group \
+          --auto-scaling-group-name "$ASG_NAME" \
+          --no-capacity-rebalance \
+          --region ${var.region}
+        echo "Disabled capacity_rebalance for ASG: $ASG_NAME"
+      else
+        echo "ASG not found for node group ${var.cluster_name}-node-group-spot"
+      fi
+    EOT
+  }
+
+  depends_on = [aws_eks_node_group.postrix_nodes_spot]
+  
+  triggers = {
+    node_group_id = aws_eks_node_group.postrix_nodes_spot.id
+  }
+}
+
 # Simple launch template for volume naming and type
 resource "aws_launch_template" "postrix_nodes" {
   name = "${var.cluster_name}-node-template"
