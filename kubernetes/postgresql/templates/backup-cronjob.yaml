@@ -23,23 +23,29 @@ spec:
               # Install AWS CLI
               apt-get update && apt-get install -y awscli
 
-              # Set backup file name with timestamp
-              BACKUP_FILE="backup-$(date +%Y%m%d-%H%M%S).sql"
+              # List of databases to backup
+              DATABASES=("postgres" "cannon")
               
               # Get password from secret and export it for pg_dump
               export PGPASSWORD=$(cat /etc/postgresql/auth/postgresql-password)
               
-              # Create backup
-              pg_dump -h postgresql -U postgres -d postgres > "/tmp/$BACKUP_FILE"
-              
-              # Upload to S3
-              aws s3 cp "/tmp/$BACKUP_FILE" "s3://postrix-postgresql-backups/$BACKUP_FILE"
-              
-              # Cleanup
-              rm "/tmp/$BACKUP_FILE"
+              # Backup each database
+              for DB in "${DATABASES[@]}"; do
+                # Set backup file name with timestamp
+                BACKUP_FILE="backup-${DB}-$(date +%Y%m%d-%H%M%S).sql"
+                
+                # Create backup of the database
+                pg_dump -h postgresql -U postgres -d "$DB" > "/tmp/$BACKUP_FILE"
+                
+                # Upload to S3
+                aws s3 cp "/tmp/$BACKUP_FILE" "s3://postrix-postgresql-backups/$BACKUP_FILE"
+                
+                # Cleanup
+                rm "/tmp/$BACKUP_FILE"
+              done
             env:
             - name: AWS_DEFAULT_REGION
-              value: "us-east-1"  # Change this to your desired region
+              value: "us-east-1"
             volumeMounts:
             - name: postgresql-auth
               mountPath: /etc/postgresql/auth
