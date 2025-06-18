@@ -74,3 +74,22 @@ resource "aws_s3_bucket_policy" "capish_videos_policy" {
 
   depends_on = [aws_s3_bucket_public_access_block.capish_videos_access]
 }
+
+# S3 bucket for storing PostgreSQL backups
+resource "aws_s3_bucket" "postgresql_backups" {
+  bucket = "postrix-postgresql-backups"
+}
+
+# Lifecycle configuration for PostgreSQL backups bucket
+resource "aws_s3_bucket_lifecycle_configuration" "postgresql_backups" {
+  bucket = aws_s3_bucket.postgresql_backups.id
+
+  rule {
+    id     = "expire_after_30_days"
+    status = "Enabled"
+
+    expiration {
+      days = 30
+    }
+  }
+}

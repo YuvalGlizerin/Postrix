@@ -61,9 +61,9 @@ resource "aws_eks_access_policy_association" "postrix_user_admin" {
 
 // Managed node group for the EKS cluster, specifying instance type and scaling
 // Free trial until end of 2025 for one t4g.small instance
-resource "aws_eks_node_group" "postrix_nodes" {
+resource "aws_eks_node_group" "postrix_nodes_free_trial" {
   cluster_name    = aws_eks_cluster.postrix.name
-  node_group_name = "${var.cluster_name}-node-group-on-demand"
+  node_group_name = "${var.cluster_name}-node-group-free-trial"
   node_role_arn   = aws_iam_role.eks_node.arn
   subnet_ids      = var.node_subnet_ids
 
@@ -92,9 +92,9 @@ resource "aws_eks_node_group" "postrix_nodes" {
   }
 }
 
-resource "aws_eks_node_group" "postrix_nodes_spot" {
+resource "aws_eks_node_group" "postrix_nodes" {
   cluster_name    = aws_eks_cluster.postrix.name
-  node_group_name = "${var.cluster_name}-node-group-spot"
+  node_group_name = "${var.cluster_name}-node-group"
   node_role_arn   = aws_iam_role.eks_node.arn
   subnet_ids      = var.node_subnet_ids
 
@@ -106,7 +106,7 @@ resource "aws_eks_node_group" "postrix_nodes_spot" {
 
   instance_types = ["t4g.large"]
   ami_type       = "AL2023_ARM_64_STANDARD"
-  capacity_type  = "SPOT"
+  capacity_type  = "ON_DEMAND"
 
   launch_template {
     name    = aws_launch_template.postrix_nodes.name
@@ -123,39 +123,39 @@ resource "aws_eks_node_group" "postrix_nodes_spot" {
   }
 }
 
-# Disable capacity_rebalance on the ASG created by the EKS node group
+# Disable capacity_rebalance for spot node group on the ASG created by the EKS node group
 # This will run after the node group is created/recreated and will disable capacity rebalance
-resource "null_resource" "disable_spot_capacity_rebalance" {
-  provisioner "local-exec" {
-    command = <<-EOT
-      # Wait a bit for the ASG to be fully created
-      sleep 30
+# resource "null_resource" "disable_spot_capacity_rebalance" {
+#   provisioner "local-exec" {
+#     command = <<-EOT
+#       # Wait a bit for the ASG to be fully created
+#       sleep 30
       
-      # Find the ASG name created by EKS for this node group
-      ASG_NAME=$(aws autoscaling describe-auto-scaling-groups \
-        --region ${var.region} \
-        --query "AutoScalingGroups[?contains(Tags[?Key=='eks:nodegroup-name'].Value, '${var.cluster_name}-node-group-spot')].AutoScalingGroupName" \
-        --output text)
+#       # Find the ASG name created by EKS for this node group
+#       ASG_NAME=$(aws autoscaling describe-auto-scaling-groups \
+#         --region ${var.region} \
+#         --query "AutoScalingGroups[?contains(Tags[?Key=='eks:nodegroup-name'].Value, '${var.cluster_name}-node-group-spot')].AutoScalingGroupName" \
+#         --output text)
       
-      # Disable capacity rebalancing if ASG found
-      if [ ! -z "$ASG_NAME" ]; then
-        aws autoscaling update-auto-scaling-group \
-          --auto-scaling-group-name "$ASG_NAME" \
-          --no-capacity-rebalance \
-          --region ${var.region}
-        echo "Disabled capacity_rebalance for ASG: $ASG_NAME"
-      else
-        echo "ASG not found for node group ${var.cluster_name}-node-group-spot"
-      fi
-    EOT
-  }
+#       # Disable capacity rebalancing if ASG found
+#       if [ ! -z "$ASG_NAME" ]; then
+#         aws autoscaling update-auto-scaling-group \
+#           --auto-scaling-group-name "$ASG_NAME" \
+#           --no-capacity-rebalance \
+#           --region ${var.region}
+#         echo "Disabled capacity_rebalance for ASG: $ASG_NAME"
+#       else
+#         echo "ASG not found for node group ${var.cluster_name}-node-group-spot"
+#       fi
+#     EOT
+#   }
 
-  depends_on = [aws_eks_node_group.postrix_nodes_spot]
+#   depends_on = [aws_eks_node_group.postrix_nodes_spot]
   
-  triggers = {
-    node_group_id = aws_eks_node_group.postrix_nodes_spot.id
-  }
-}
+#   triggers = {
+#     node_group_id = aws_eks_node_group.postrix_nodes_spot.id
+#   }
+# }
 
 # Simple launch template for volume naming and type
 resource "aws_launch_template" "postrix_nodes" {
@@ -282,7 +282,7 @@ resource "aws_iam_openid_connect_provider" "eks" {
   url             = "https://oidc.eks.us-east-1.amazonaws.com/id/27822741B2F3481942B42867BB3425A5"
 
   tags = {
-    "alpha.eksctl.io/cluster-name"   = "postrix"
+    "alpha.eksctl.io/cluster-name"   = var.cluster_name
     "alpha.eksctl.io/eksctl-version" = "0.198.0"
   }
 }
@@ -429,4 +429,54 @@ resource "aws_iam_policy" "resources_policy" {
 resource "aws_iam_role_policy_attachment" "resources_attachment" {
   role       = aws_iam_role.resources_role.name
   policy_arn = aws_iam_policy.resources_policy.arn
+}
+
+# IAM Role for PostgreSQL deployment to access resources on AWS
+resource "aws_iam_role" "postgresql_resources_role" {
+  name = "postgresql-resources-role"
+  
+  # Trust relationship policy that allows EKS to assume this role
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Federated = aws_iam_openid_connect_provider.eks.arn
+        }
+        Action = "sts:AssumeRoleWithWebIdentity"
+      }
+    ]
+  })
+}
+
+# IAM Policy for accessing resources on AWS
+resource "aws_iam_policy" "postgresql_resources_policy" {
+  name        = "postgresql-resources-policy"
+  description = "Policy that allows access to the resources on AWS"
+  
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:DeleteObject",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          "arn:aws:s3:::postrix-postgresql-backups",
+          "arn:aws:s3:::postrix-postgresql-backups/*"
+        ]
+      }
+    ]
+  })
+}
+
+# Attach the policy to the role
+resource "aws_iam_role_policy_attachment" "postgresql_resources_attachment" {
+  role       = aws_iam_role.postgresql_resources_role.name
+  policy_arn = aws_iam_policy.postgresql_resources_policy.arn
 }
