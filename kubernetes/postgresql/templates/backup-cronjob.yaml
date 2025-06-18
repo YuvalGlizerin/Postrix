@@ -1,0 +1,57 @@
+# To Run Manually: kubectl create job --from=cronjob/postgresql-backup postgresql-backup-test -n postgresql
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgresql-backup
+  namespace: postgresql
+spec:
+  schedule: "0 0 * * *"  # Run daily at midnight
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 60  # Delete job 1 minute after completion
+      template:
+        spec:
+          serviceAccountName: {{ .Release.Name }}
+          containers:
+          - name: backup
+            image: postgres:17.5
+            command:
+            - /bin/bash
+            - -c
+            - |
+              # Install AWS CLI
+              apt-get update && apt-get install -y awscli
+
+              # List of databases to backup
+              DATABASES=("postgres" "cannon")
+              
+              # Get password from secret and export it for pg_dump
+              export PGPASSWORD=$(cat /etc/postgresql/auth/postgresql-password)
+              
+              # Backup each database
+              for DB in "${DATABASES[@]}"; do
+                # Set backup file name with timestamp
+                BACKUP_FILE="backup-${DB}-$(date +%Y%m%d-%H%M%S).sql"
+                
+                # Create backup of the database
+                pg_dump -h postgresql -U postgres -d "$DB" > "/tmp/$BACKUP_FILE"
+                
+                # Upload to S3
+                aws s3 cp "/tmp/$BACKUP_FILE" "s3://postrix-postgresql-backups/$BACKUP_FILE"
+                
+                # Cleanup
+                rm "/tmp/$BACKUP_FILE"
+              done
+            env:
+            - name: AWS_DEFAULT_REGION
+              value: "us-east-1"
+            volumeMounts:
+            - name: postgresql-auth
+              mountPath: /etc/postgresql/auth
+              readOnly: true
+          volumes:
+          - name: postgresql-auth
+            secret:
+              secretName: postgresql-auth
+          restartPolicy: Never 

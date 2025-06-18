@@ -1,0 +1,72 @@
+# Required environment variables:
+# - DATABASE_NAME: The name of the database to restore
+# - BACKUP_FILE: The name of the backup file in S3
+# Example: DATABASE_NAME=cannon BACKUP_FILE=backup-cannon-20250618-155426.sql envsubst < postgresql/jobs/restore-db-job.yaml | kubectl apply -n postgresql -f -
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgresql-restore
+  namespace: postgresql
+spec:
+  ttlSecondsAfterFinished: 60 # Delete job 1 minute after completion
+  template:
+    spec:
+      serviceAccountName: postgresql
+      containers:
+        - name: restore
+          image: postgres:17.5
+          command:
+            - /bin/bash
+            - -c
+            - |
+              # Validate required environment variables
+              if [ -z "$DATABASE_NAME" ] || [ -z "$BACKUP_FILE" ]; then
+                echo "Error: DATABASE_NAME and BACKUP_FILE environment variables are required"
+                exit 1
+              fi
+              
+              echo "Starting restore of database '$DATABASE_NAME' from backup '$BACKUP_FILE'"
+              
+              # Install AWS CLI
+              apt-get update && apt-get install -y awscli
+              
+              # Download backup from S3
+              aws s3 cp "s3://postrix-postgresql-backups/$BACKUP_FILE" "/tmp/$BACKUP_FILE"
+              
+              # Get password from secret and export it
+              export PGPASSWORD=$(cat /etc/postgresql/auth/postgresql-password)
+              
+              # Drop existing connections to the target database
+              psql -h postgresql -U postgres -d postgres -c "
+                SELECT pg_terminate_backend(pid) 
+                FROM pg_stat_activity 
+                WHERE datname = '$DATABASE_NAME' 
+                AND pid <> pg_backend_pid();"
+              
+              # Drop and recreate the database
+              psql -h postgresql -U postgres -d postgres -c "DROP DATABASE IF EXISTS $DATABASE_NAME;"
+              psql -h postgresql -U postgres -d postgres -c "CREATE DATABASE $DATABASE_NAME;"
+              
+              # Restore the database
+              psql -h postgresql -U postgres -d "$DATABASE_NAME" < "/tmp/$BACKUP_FILE"
+              
+              # Cleanup
+              rm "/tmp/$BACKUP_FILE"
+              
+              echo "Database restore completed successfully"
+          env:
+            - name: AWS_DEFAULT_REGION
+              value: "us-east-1"
+            - name: DATABASE_NAME
+              value: "${DATABASE_NAME}" # This will be overridden by kubectl create command
+            - name: BACKUP_FILE
+              value: "${BACKUP_FILE}" # This will be overridden by kubectl create command
+          volumeMounts:
+            - name: postgresql-auth
+              mountPath: /etc/postgresql/auth
+              readOnly: true
+      volumes:
+        - name: postgresql-auth
+          secret:
+            secretName: postgresql-auth
+      restartPolicy: Never
