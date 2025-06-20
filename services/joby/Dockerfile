@@ -19,7 +19,7 @@ COPY services/joby services/joby/
 COPY packages packages/
 
 # Install dependencies
-RUN npm ci --omit=dev
+RUN npm ci --workspace=joby --omit=dev
 
 # Start the application
 CMD ["npm", "--prefix=services/joby", "run", "start"]

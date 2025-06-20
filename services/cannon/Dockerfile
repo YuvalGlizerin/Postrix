@@ -23,7 +23,7 @@ COPY services/cannon services/cannon/
 COPY packages packages/
 
 # Install dependencies
-RUN npm ci --omit=dev
+RUN npm ci --workspace=cannon --omit=dev
 
 # Start the application
 CMD ["npm", "--prefix=services/cannon", "run", "start"]

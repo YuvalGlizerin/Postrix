@@ -10,6 +10,7 @@
     "esbenp.prettier-vscode",
     "redhat.vscode-yaml",
     "dbaeumer.vscode-eslint",
-    "dbcode.dbcode"
+    "dbcode.dbcode",
+    "coderabbit.coderabbit-vscode"
   ]
 }

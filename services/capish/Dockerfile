@@ -19,7 +19,7 @@ COPY services/capish services/capish/
 COPY packages packages/
 
 # Install dependencies
-RUN npm ci --omit=dev
+RUN npm ci --workspace=capish --omit=dev
 
 # Start the application
 CMD ["npm", "--prefix=services/capish", "run", "start"]
