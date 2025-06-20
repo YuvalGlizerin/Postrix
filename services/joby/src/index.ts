@@ -2,17 +2,12 @@ import 'env-loader';
 import express, { type Request, type Response } from 'express';
 import whatsapp from 'whatsapp';
 import { Logger } from 'logger';
-import redis from 'redis';
 
 process.title = 'joby';
 const app = express();
 const PORT = process.env.PORT;
 const logger = new Logger('joby');
 logger.log('Joby service started', { count: 1, env: process.env.ENV });
-
-await redis.set('foo', 'bar23');
-const value = await redis.get('foo');
-logger.log(`Redis value: ${value}`, { env: process.env.ENV });
 
 // Health check endpoint
 app.get('/health', (req, res) => {
