@@ -1,5 +1,6 @@
 {
   "launches": {
+    "Service": "Service",
     "Joby": "Joby",
     "Capish": "Capish",
     "Cannon": "Cannon"

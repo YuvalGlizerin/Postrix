@@ -9,6 +9,7 @@
     "test": "jest --config ../../jest.config.mjs --rootDir ./"
   },
   "dependencies": {
-    "ioredis": "^5.6.1"
+    "ioredis": "^5.6.1",
+    "logger": "file:../logger"
   }
 }

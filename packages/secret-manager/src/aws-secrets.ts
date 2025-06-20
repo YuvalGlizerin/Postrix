@@ -1,14 +1,12 @@
+/* eslint-disable no-console */ // Cannot use logger yet because I need to get the secrets first to initialize it
 import { fromIni } from '@aws-sdk/credential-providers';
 import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
-import { Logger } from 'logger';
-
-const logger = new Logger('SecretManager');
 
 const secrets: Record<string, string> = {};
 
 const secretsClient = new SecretsManagerClient({
   region: 'us-east-1',
-  ...(process.env.ENV === 'local' ? { credentials: fromIni() } : {})
+  ...(process.env.IS_LOCAL_DEV === 'true' ? { credentials: fromIni() } : {})
 });
 
 // Create an array of promises for secret fetching
@@ -28,10 +26,10 @@ const secretPromises = Object.entries(process.env)
       if (response.SecretString) {
         const { [secretKey]: secretValue } = JSON.parse(response.SecretString);
         secrets[key] = secretValue;
-        logger.log(`Secret loaded for ${key}`);
+        console.log(`Secret loaded for ${key}`);
       }
     } catch (error) {
-      logger.error(`Failed to load secret for ${key}:`, { error });
+      console.error(`Failed to load secret for ${key}:`, error);
     }
   });
 

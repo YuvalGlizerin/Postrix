@@ -10,7 +10,7 @@ const logger = new Logger('FileSystem');
 
 const s3Client = new S3Client({
   region: 'us-east-1',
-  ...(process.env.ENV === 'local' ? { credentials: fromIni() } : {})
+  ...(process.env.IS_LOCAL_DEV === 'true' ? { credentials: fromIni() } : {})
 });
 
 /**

@@ -26,4 +26,4 @@ COPY packages packages/
 RUN npm ci --omit=dev
 
 # Start the application
-CMD ["npm", "--prefix=services/cannon", "run", "start:server"]
+CMD ["npm", "--prefix=services/cannon", "run", "start"]

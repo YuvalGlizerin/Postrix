@@ -10,5 +10,8 @@
   },
   "devDependencies": {
     "node-fetch": "^3.3.2"
+  },
+  "dependencies": {
+    "logger": "file:../logger"
   }
 }

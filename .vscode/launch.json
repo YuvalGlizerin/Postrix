@@ -4,29 +4,16 @@
     {
       "type": "node-terminal",
       "request": "launch",
-      "name": "Cannon",
+      "name": "Service",
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "command": "npm run start:local --prefix services/cannon"
-    },
-    {
-      "type": "node-terminal",
-      "request": "launch",
-      "name": "Joby",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "command": "npm run start:local --prefix services/joby"
-    },
-    {
-      "type": "node-terminal",
-      "request": "launch",
-      "name": "Capish",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "command": "npm run start:local --prefix services/capish"
+      "command": "npm run start --watch --prefix services/${input:serviceName}",
+      "env": {
+        "ENV": "${input:env}",
+        "NAMESPACE": "${input:env}",
+        "IS_LOCAL_DEV": "true" // This is used to determine if the service is running on your local machine
+      }
     },
     {
       "name": "GHA: Typescript",
@@ -36,6 +23,29 @@
       "env": {
         "INPUT_TITLE": "title" // Value of core.getInput('title')
       }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "serviceName",
+      "type": "pickString",
+      "description": "Select the service to run",
+      "options": [
+        "cannon",
+        "joby",
+        "capish"
+      ]
+    },
+    {
+      "id": "env",
+      "type": "pickString",
+      "description": "Select the environment",
+      "options": [
+        "local",
+        "dev",
+        "prod"
+      ],
+      "default": "local"
     }
   ]
 }

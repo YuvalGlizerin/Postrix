@@ -6,8 +6,7 @@
   "main": "src/index.ts",
   "scripts": {
     "type-check": "tsc --noEmit",
-    "start:local": "ENV=local node --watch src/index.ts",
-    "start:server": "node src/index.ts",
+    "start": "node src/index.ts",
     "test": "jest --config ../../jest.config.mjs --rootDir ./"
   },
   "dependencies": {

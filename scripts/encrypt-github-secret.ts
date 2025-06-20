@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 
 /*
 Step 1, Get the public key from the github repo settings:
@@ -18,11 +19,8 @@ Step 2, Encrypt the secret value:
 import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
-import { Logger } from 'logger';
 
 const sodium = require('tweetnacl-sealedbox-js');
-
-const logger = new Logger('EncryptGithubSecret');
 
 function encrypt(publicKey: string, secretValue: string): string {
   try {
@@ -38,7 +36,7 @@ function encrypt(publicKey: string, secretValue: string): string {
     // Return base64 encoded encrypted value
     return Buffer.from(encryptedBytes).toString('base64');
   } catch (error) {
-    logger.error('Encryption failed:', { error: error instanceof Error ? error.message : 'Unknown error' });
+    console.error('Encryption failed:', { error: error instanceof Error ? error.message : 'Unknown error' });
     process.exit(1);
   }
 }
@@ -48,8 +46,8 @@ const publicKey = process.argv[2];
 const secretValue = process.argv[3];
 
 if (!publicKey || !secretValue) {
-  logger.error('Usage: ts-node encrypt-github-secret.ts <public_key> <secret_value>');
+  console.error('Usage: ts-node encrypt-github-secret.ts <public_key> <secret_value>');
   process.exit(1);
 }
 
-logger.log(encrypt(publicKey, secretValue));
+console.log(encrypt(publicKey, secretValue));
