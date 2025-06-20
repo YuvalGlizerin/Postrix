@@ -1,3 +1,7 @@
+import { Logger } from 'logger';
+
+const logger = new Logger('Creatomate');
+
 /**
  * Downloads a video from the given URL returns a new URL of the edited video with captions on Creatomate.
  *
@@ -71,14 +75,14 @@ async function getCaptionsVideoUrlCreatomate(videoUrl: string, apiCreatomateKey:
       if (response.ok && response.headers.get('content-type')?.startsWith('video/')) {
         return captionsUrl;
       }
-      console.log(`Video not ready, attempt ${attempts + 1}/${maxAttempts}`);
+      logger.log(`Video not ready, attempt ${attempts + 1}/${maxAttempts}`);
       await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds
       attempts++;
     }
 
     throw new Error('Could not generate captions video URL within the time limit');
   } catch (error) {
-    console.error('Error in getCaptionsVideoUrlCreatomate:', error);
+    logger.error('Error in getCaptionsVideoUrlCreatomate:', { error });
     throw error;
   }
 }

@@ -18,7 +18,11 @@ Step 2, Encrypt the secret value:
 import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
+import { Logger } from 'logger';
+
 const sodium = require('tweetnacl-sealedbox-js');
+
+const logger = new Logger('EncryptGithubSecret');
 
 function encrypt(publicKey: string, secretValue: string): string {
   try {
@@ -34,7 +38,7 @@ function encrypt(publicKey: string, secretValue: string): string {
     // Return base64 encoded encrypted value
     return Buffer.from(encryptedBytes).toString('base64');
   } catch (error) {
-    console.error('Encryption failed:', error instanceof Error ? error.message : 'Unknown error');
+    logger.error('Encryption failed:', { error: error instanceof Error ? error.message : 'Unknown error' });
     process.exit(1);
   }
 }
@@ -44,8 +48,8 @@ const publicKey = process.argv[2];
 const secretValue = process.argv[3];
 
 if (!publicKey || !secretValue) {
-  console.error('Usage: ts-node encrypt-github-secret.ts <public_key> <secret_value>');
+  logger.error('Usage: ts-node encrypt-github-secret.ts <public_key> <secret_value>');
   process.exit(1);
 }
 
-console.log(encrypt(publicKey, secretValue));
+logger.log(encrypt(publicKey, secretValue));

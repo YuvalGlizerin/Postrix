@@ -1,7 +1,10 @@
 import fileSystem from 'file-system';
 import { type Request, type Response } from 'express';
+import { Logger } from 'logger';
 
 import type { WhatsAppMessagePayload, WhatsAppMediaJson } from './types.ts';
+
+const logger = new Logger('Whatsapp');
 
 /**
  * Verifies the whatsapp webhook verification token.
@@ -20,10 +23,10 @@ function verifyToken(req: Request, res: Response, verificationToken: string) {
   const challenge = req.query['hub.challenge'];
 
   if (mode === 'subscribe' && token === verificationToken) {
-    console.log('Webhook verified');
+    logger.log('Webhook verified');
     res.status(200).send(challenge);
   } else {
-    console.error('Failed to verify token');
+    logger.error('Failed to verify token');
     res.sendStatus(403);
   }
 }
@@ -65,7 +68,7 @@ async function getMedia(
  * @throws {Error} If the media type is not supported or if the download fails.
  */
 async function downloadMedia(media: WhatsAppMediaJson, accessToken: string, savePath?: string): Promise<string> {
-  console.log(`Attempting to download media from: ${media.url}`);
+  logger.log(`Attempting to download media from: ${media.url}`);
   const extension = media.mime_type.split('/').pop() || '';
 
   if (extension !== 'mp4' && extension !== 'mov') {
