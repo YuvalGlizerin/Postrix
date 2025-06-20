@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
+/* eslint-disable no-console */ // Local scripts do not use Logger
 
 /*
 Step 1, Get the public key from the github repo settings:

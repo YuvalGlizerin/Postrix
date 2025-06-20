@@ -1,9 +1,6 @@
 {
   "launches": {
-    "Service": "Service",
-    "Joby": "Joby",
-    "Capish": "Capish",
-    "Cannon": "Cannon"
+    "Service": "Service"
   },
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
