@@ -20,6 +20,7 @@
     "whatsapp": "file:../../packages/whatsapp"
   },
   "devDependencies": {
-    "@types/express": "^5.0.1"
+    "@types/express": "^5.0.1",
+    "supertest": "^7.1.1"
   }
 }

@@ -16,6 +16,7 @@
     "logger": "file:../../packages/logger"
   },
   "devDependencies": {
-    "@types/pg": "^8.11.11"
+    "@types/pg": "^8.11.11",
+    "supertest": "^7.1.1"
   }
 }

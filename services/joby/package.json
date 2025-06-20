@@ -18,5 +18,8 @@
     "redis": "file:../../packages/redis",
     "secret-manager": "file:../../packages/secret-manager",
     "whatsapp": "file:../../packages/whatsapp"
+  },
+  "devDependencies": {
+    "supertest": "^7.1.1"
   }
 }
