@@ -23,14 +23,14 @@ spec:
               # Install AWS CLI
               apt-get update && apt-get install -y awscli
 
-              # List of databases to backup
-              DATABASES=("postgres" "cannon")
-              
-              # Get password from secret and export it for pg_dump
+              # Get password from secret and export it for psql and pg_dump
               export PGPASSWORD=$(cat /etc/postgresql/auth/postgresql-password)
               
+              # Get list of all databases dynamically, excluding templates
+              DATABASES=$(psql -h postgresql -U postgres -t -c "SELECT datname FROM pg_database WHERE datistemplate = false;")
+              
               # Backup each database
-              for DB in "${DATABASES[@]}"; do
+              for DB in $DATABASES; do
                 # Set backup file name with timestamp
                 BACKUP_FILE="backup-${DB}-$(date +%Y%m%d-%H%M%S).sql"
                 
