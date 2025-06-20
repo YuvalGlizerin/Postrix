@@ -4,6 +4,9 @@ import path from 'path';
 
 import { S3Client } from '@aws-sdk/client-s3';
 import { fromIni } from '@aws-sdk/credential-providers';
+import { Logger } from 'logger';
+
+const logger = new Logger('FileSystem');
 
 const s3Client = new S3Client({
   region: 'us-east-1',
@@ -28,7 +31,7 @@ async function downloadMedia(
   userAgent?: string,
   savePath?: string
 ): Promise<string> {
-  console.log(`Attempting to download media from: ${mediaUrl}`);
+  logger.log(`Attempting to download media from: ${mediaUrl}`);
 
   try {
     const response = await fetch(mediaUrl, {
@@ -54,7 +57,7 @@ async function downloadMedia(
 
     return finalSavePath;
   } catch (error) {
-    console.error('Error in downloadMedia:', error);
+    logger.error('Error in downloadMedia:', { error });
     throw error;
   }
 }

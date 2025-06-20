@@ -7,6 +7,9 @@ import creatomate from 'creatomate';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import secrets from 'secret-manager';
 import fileSystem from 'file-system';
+import { Logger } from 'logger';
+
+const logger = new Logger('Capish');
 
 process.title = 'Capish';
 const app = express();
@@ -20,7 +23,7 @@ app.get('/health', (req, res) => {
 });
 
 app.get('/webhook', async (req: Request, res: Response) => {
-  console.log('Received GET webhook verification request:', req.query);
+  logger.log('Received GET webhook verification request:', req.query);
   whatsapp.verifyToken(req, res, 'VERIFY_TOKEN');
 });
 
@@ -34,7 +37,7 @@ app.post('/webhook', async (req: Request, res: Response) => {
     const apiVideoKey = secrets.CREATOMATE_API_KEY_TRIAL;
 
     // Log the incoming request body to understand its structure
-    console.log('Incoming webhook payload:', JSON.stringify(req.body, null, 2));
+    logger.log('Incoming webhook payload:', { debug: JSON.stringify(req.body, null, 2) });
 
     if (req.body?.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.type !== 'video') {
       const url = `https://graph.facebook.com/v22.0/${phoneId}/messages`;
@@ -97,10 +100,10 @@ app.post('/webhook', async (req: Request, res: Response) => {
 
       await fileSystem.s3Client.send(new PutObjectCommand(uploadParams));
       const s3VideoUrl = `https://${uploadParams.Bucket}.s3.amazonaws.com/${uploadParams.Key}`;
-      console.log('S3 Video URL:', s3VideoUrl);
+      logger.log('S3 Video URL:', { debug: { s3VideoUrl } });
 
       const captionsUrl = await creatomate.getCaptionsVideoUrlCreatomate(s3VideoUrl, apiVideoKey);
-      console.log(captionsUrl);
+      logger.log(captionsUrl);
 
       const url = `https://graph.facebook.com/v22.0/${phoneId}/messages`;
       const payload = {
@@ -128,7 +131,7 @@ app.post('/webhook', async (req: Request, res: Response) => {
       }
     }
   } catch (error) {
-    console.error('Error with webhook:', error);
+    logger.error('Error with webhook:', { error });
   }
 });
 
@@ -145,7 +148,7 @@ app.get('/proxy/vendor/*', async (req: Request, res: Response) => {
 
     res.send(Buffer.from(buffer));
   } catch (error) {
-    console.error('Proxy error:', error);
+    logger.error('Proxy error:', { error });
     res.status(500).send('Error fetching resource');
   }
 });
@@ -454,7 +457,7 @@ app.get('/privacy-policy', (req: Request, res: Response) => {
 });
 
 const server = app.listen(PORT, () => {
-  console.log(`Capish service is running on ${process.env.ENV}: http://localhost:${PORT}`);
+  logger.log(`Capish service is running on ${process.env.ENV}: http://localhost:${PORT}`);
 });
 
 export { server as default };

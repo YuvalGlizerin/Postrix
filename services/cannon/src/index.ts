@@ -4,8 +4,11 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 
+import { Logger } from 'logger';
 import express, { type Request, type Response } from 'express';
 import prisma from 'cannon-db';
+
+const logger = new Logger('Cannon');
 
 // Get current directory in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -35,7 +38,7 @@ app.get('/', (req: Request, res: Response) => {
     const htmlContent = fs.readFileSync(htmlPath, 'utf8');
     res.send(htmlContent);
   } catch (error) {
-    console.error('Error serving HTML file:', error);
+    logger.error('Error serving HTML file:', { error });
     res.send(`Cannon service running on ${process.env.ENV}.\n`);
   }
 });
@@ -50,7 +53,7 @@ app.get('/leaderboard', async (req: Request, res: Response) => {
     });
     res.status(200).json(leaderboardEntries);
   } catch (error) {
-    console.error('Error querying leaderboard:', error);
+    logger.error('Error querying leaderboard:', { error });
     res.status(500).json({ error: 'Failed to fetch leaderboard data' });
   }
 });
@@ -66,13 +69,13 @@ app.post('/leaderboard', async (req: Request, res: Response) => {
     });
     res.status(201).json(result);
   } catch (error) {
-    console.error('Error adding to leaderboard:', error);
+    logger.error('Error adding to leaderboard:', { error });
     res.status(500).json({ error: 'Failed to add to leaderboard' });
   }
 });
 
 const server = app.listen(PORT, () => {
-  console.log(`Cannon service is running on ${process.env.ENV}: http://localhost:${PORT}`);
+  logger.log(`Cannon service is running on ${process.env.ENV}: http://localhost:${PORT}`);
 });
 
 export { server as default };

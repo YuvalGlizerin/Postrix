@@ -1,5 +1,8 @@
 import { fromIni } from '@aws-sdk/credential-providers';
 import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
+import { Logger } from 'logger';
+
+const logger = new Logger('SecretManager');
 
 const secrets: Record<string, string> = {};
 
@@ -25,10 +28,10 @@ const secretPromises = Object.entries(process.env)
       if (response.SecretString) {
         const { [secretKey]: secretValue } = JSON.parse(response.SecretString);
         secrets[key] = secretValue;
-        console.log(`Secret loaded for ${key}`);
+        logger.log(`Secret loaded for ${key}`);
       }
     } catch (error) {
-      console.error(`Failed to load secret for ${key}:`, error);
+      logger.error(`Failed to load secret for ${key}:`, { error });
     }
   });
 

@@ -72,6 +72,7 @@ export default [
     rules: {
       ...eslint.configs['recommended'].rules,
       'import/order': ['warn', { 'newlines-between': 'always' }],
+      'no-console': 'warn',
       'no-debugger': 'error',
       'no-var': 'error',
       'prefer-const': 'error',
