@@ -18,7 +18,7 @@ COPY services/capish services/capish/
 # Copy all packages
 COPY packages packages/
 
-# Install dependencies
+# Install dependencies that are only used by the service or its dependencies
 RUN npm ci --workspace=capish --omit=dev
 
 # Start the application

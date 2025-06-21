@@ -22,7 +22,7 @@ COPY services/cannon services/cannon/
 # Copy all packages
 COPY packages packages/
 
-# Install dependencies
+# Install dependencies that are only used by the service or its dependencies
 RUN npm ci --workspace=cannon --omit=dev
 
 # Start the application
