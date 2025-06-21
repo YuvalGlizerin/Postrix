@@ -15,6 +15,7 @@
     "prisma": "^6.7.0"
   },
   "dependencies": {
-    "@prisma/client": "^6.7.0"
+    "@prisma/client": "^6.7.0",
+    "secret-manager": "file:../secret-manager"
   }
 }

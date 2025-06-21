@@ -1,4 +1,4 @@
-File system package
+Logger package
 ========================
 
-This package will have useful file system functionalities, such as, download file to tmp folder.
+This package provides a logging utility that sends logs to Elasticsearch.

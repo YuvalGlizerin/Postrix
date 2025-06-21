@@ -2,13 +2,14 @@
   "name": "logger",
   "version": "1.0.0",
   "type": "module",
-  "description": "A package that will contain file system helper functions",
+  "description": "A package for logging with Elasticsearch",
   "main": "src/index.ts",
   "scripts": {
     "type-check": "tsc --noEmit",
     "test": "jest --config ../../jest.config.mjs --rootDir ./"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "^8.10.0"
+    "@elastic/elasticsearch": "^8.10.0",
+    "secret-manager": "file:../secret-manager"
   }
 }
