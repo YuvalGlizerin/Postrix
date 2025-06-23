@@ -33,7 +33,7 @@ app.post('/webhook', async (req: Request, res: Response) => {
     res.status(200).send('Message sent successfully'); // no retries
 
     const accessToken = secrets.WHATSAPP_ACCESS_TOKEN;
-    const phoneId = secrets.WHATSAPP_PHONE_ID;
+    const phoneId = secrets.CAPISH_WHATSAPP_PHONE_ID;
     const apiVideoKey = secrets.CREATOMATE_API_KEY_TRIAL;
 
     // Log the incoming request body to understand its structure
