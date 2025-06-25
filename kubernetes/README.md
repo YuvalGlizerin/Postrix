@@ -19,13 +19,13 @@ Deploy services local(Will only work on local): `helmfile sync -f helmfile.yaml 
 Deploy services dev(Will not work on local): `helmfile sync -f helmfile.yaml --environment=dev -l group=app`
 Deploy services prod(Will not work on local): `helmfile sync -f helmfile.yaml --environment=prod -l group=app`
 
-You might also only want to sync a single service, for example: `helmfile sync -f helmfile.yaml --environment=local -l app=joby`
+You might also only want to sync a single service, for example: `helmfile sync -f helmfile.yaml --environment=local -l app=cannon`
 
 # View service locally on browser
 You might want to view you service locally on the browser
 
 View all services local(Defined ports): `minikube tunnel`
-View joby service local(Random port): `minikube service joby --namespace=local`
+View cannon service local(Random port): `minikube service cannon --namespace=local`
 
 # How to encrypt secrets
 We manage secrets using sealed-secrets, that allow you to store encrypted secrets in your git repo

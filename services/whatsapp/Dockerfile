@@ -1,6 +1,6 @@
-# Build: docker build -t yuvadius/capish:latest -f services/capish/Dockerfile .
-# docker push yuvadius/capish:latest
-# docker run -p 8081:8081 -e ENV=local yuvadius/capish:latest
+# Build: docker build -t yuvadius/whatsapp:latest -f services/whatsapp/Dockerfile .
+# docker push yuvadius/whatsapp:latest
+# docker run -p 8081:8081 -e ENV=local yuvadius/whatsapp:latest
 
 # Use the official lightweight Node.js image.
 # https://hub.docker.com/_/node
@@ -13,13 +13,13 @@ WORKDIR /usr/workspace
 COPY package.json package-lock.json ./
 
 # Copy the service
-COPY services/capish services/capish/
+COPY services/whatsapp services/whatsapp/
 
 # Copy all packages
 COPY packages packages/
 
 # Install dependencies that are only used by the service or its dependencies
-RUN npm ci --workspace=capish --omit=dev
+RUN npm ci --workspace=whatsapp --omit=dev
 
 # Start the application
-CMD ["npm", "--prefix=services/capish", "run", "start"]
+CMD ["npm", "--prefix=services/whatsapp", "run", "start"]
