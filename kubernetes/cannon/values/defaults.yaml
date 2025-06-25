@@ -9,7 +9,7 @@ serviceTargetPort: 8082
 resources:
   limits:
     cpu: 200m
-    memory: 512Mi
+    memory: 300Mi
   requests:
     cpu: 5m
-    memory: 256Mi
+    memory: 150Mi

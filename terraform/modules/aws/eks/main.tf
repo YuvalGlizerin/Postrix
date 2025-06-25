@@ -104,7 +104,7 @@ resource "aws_eks_node_group" "postrix_nodes" {
     max_size     = 2
   }
 
-  instance_types = ["t4g.large"]
+  instance_types = ["t4g.medium"]
   ami_type       = "AL2023_ARM_64_STANDARD"
   capacity_type  = "ON_DEMAND"
 
