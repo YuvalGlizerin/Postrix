@@ -1,15 +1,7 @@
 // Set this keybinding in the global keybindings.json file for it to work
 [
   {
-    "key": "ctrl+cmd+j",
-    "command": "launches.Joby"
-  }, 
-  {
-    "key": "ctrl+cmd+c",
-    "command": "launches.Capish"
-  }, 
-  {
-    "key": "ctrl+cmd+K",
-    "command": "launches.Cannon"
+    "key": "ctrl+x",
+    "command": "launches.Service"
   }
 ]

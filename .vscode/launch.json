@@ -32,8 +32,7 @@
       "description": "Select the service to run",
       "options": [
         "cannon",
-        "joby",
-        "capish"
+        "whatsapp"
       ]
     },
     {

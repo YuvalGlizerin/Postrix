@@ -27,7 +27,7 @@ const config = {
     [
       'jest-html-reporter',
       {
-        pageTitle: 'Capish Test Report',
+        pageTitle: 'Test Report',
         outputPath: '<rootDir>/coverage/test-report.html',
         includeFailureMsg: true,
         includeSuiteFailure: true,

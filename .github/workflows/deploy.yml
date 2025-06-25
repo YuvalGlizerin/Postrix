@@ -70,6 +70,5 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           title: "Service URLs"
           message: |
-            [Joby](https://${{ steps.repo_warm_up.outputs.namespace }}-joby.postrix.io)
-            [Capish](https://${{ steps.repo_warm_up.outputs.namespace }}-capish.postrix.io)
+            [Whatsapp](https://${{ steps.repo_warm_up.outputs.namespace }}-whatsapp.postrix.io)
             [Cannon](https://${{ steps.repo_warm_up.outputs.namespace }}-cannon.postrix.io)

@@ -88,6 +88,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "postgresql_backups" {
     id     = "expire_after_30_days"
     status = "Enabled"
 
+    filter {}
+
     expiration {
       days = 30
     }

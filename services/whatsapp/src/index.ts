@@ -1,13 +1,17 @@
 import 'env-loader';
+import fs from 'fs';
 
 import express, { type Request, type Response } from 'express';
-import whatsapp from 'whatsapp';
+import whatsapp from 'whatsapp-utils';
+import creatomate from 'creatomate';
+import { PutObjectCommand } from '@aws-sdk/client-s3';
 import secrets from 'secret-manager';
+import fileSystem from 'file-system';
 import { Logger } from 'logger';
 
-const logger = new Logger('Joby');
+const logger = new Logger('Whatsapp');
 
-process.title = 'Joby';
+process.title = 'Whatsapp';
 const app = express();
 const PORT = process.env.PORT;
 
@@ -29,7 +33,7 @@ app.post('/webhook', async (req: Request, res: Response) => {
     res.status(200).send('Message sent successfully'); // no retries
 
     const accessToken = secrets.WHATSAPP_ACCESS_TOKEN;
-    const phoneId = secrets.WHATSAPP_PHONE_ID;
+    const phoneId = secrets.CAPISH_WHATSAPP_PHONE_ID;
     const apiVideoKey = secrets.CREATOMATE_API_KEY_TRIAL;
 
     // Log the incoming request body to understand its structure
@@ -62,9 +66,72 @@ app.post('/webhook', async (req: Request, res: Response) => {
 
       return;
     }
+
+    await fetch(`https://graph.facebook.com/v22.0/${phoneId}/messages`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        messaging_product: 'whatsapp',
+        recipient_type: 'individual',
+        to: req.body.entry[0].changes[0].value.messages[0].from,
+        type: 'text',
+        text: {
+          body: `We are processing your video. It will be ready shortly with subtitles.`
+        }
+      })
+    });
+
+    const media = await whatsapp.getMedia(req.body, accessToken);
+    if (media) {
+      const videoPath = await whatsapp.downloadMedia(media, accessToken);
+
+      const fileContent = fs.readFileSync(videoPath);
+      const fileName = `video_${Date.now()}_${Math.floor(Math.random() * 1000)}.mp4`;
+
+      const uploadParams = {
+        Bucket: process.env.S3_BUCKET_NAME || 'capish-videos',
+        Key: fileName,
+        Body: fileContent,
+        ContentType: 'video/mp4'
+      };
+
+      await fileSystem.s3Client.send(new PutObjectCommand(uploadParams));
+      const s3VideoUrl = `https://${uploadParams.Bucket}.s3.amazonaws.com/${uploadParams.Key}`;
+      logger.log('S3 Video URL:', { debug: { s3VideoUrl } });
+
+      const captionsUrl = await creatomate.getCaptionsVideoUrlCreatomate(s3VideoUrl, apiVideoKey);
+      logger.log(captionsUrl);
+
+      const url = `https://graph.facebook.com/v22.0/${phoneId}/messages`;
+      const payload = {
+        messaging_product: 'whatsapp',
+        recipient_type: 'individual',
+        to: req.body.entry[0].changes[0].value.messages[0].from,
+        type: 'video',
+        video: {
+          link: captionsUrl,
+          caption: 'Here is your video with captions!'
+        }
+      };
+
+      const result = await fetch(url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!result.ok) {
+        throw new Error('Failed to send message');
+      }
+    }
   } catch (error) {
-    logger.error('Error:', { error });
-    res.status(500).send('Error');
+    logger.error('Error with webhook:', { error });
   }
 });
 
@@ -98,7 +165,7 @@ app.get('/', (req: Request, res: Response) => {
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>Joby</title>
+        <title>Capish</title>
 
         <!-- Bootstrap core CSS -->
         <link href="https://manpower.netlify.app/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -165,7 +232,7 @@ app.get('/', (req: Request, res: Response) => {
         <!-- Navigation -->
         <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
           <div class="container" style="direction: rtl;">
-            <a class="navbar-brand js-scroll-trigger" href="#page-top" style="margin-left: 1rem;margin-right: 0;">Joby</a>
+            <a class="navbar-brand js-scroll-trigger" href="#page-top" style="margin-left: 1rem;margin-right: 0;">Capish</a>
             <button class="navbar-toggler navbar-toggler-right collapsed" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
@@ -212,9 +279,9 @@ app.get('/', (req: Request, res: Response) => {
           <div class="container">
             <div class="row">
               <div class="col-lg-8 mx-auto text-center">
-                <h2 class="section-heading text-white">Joby קצת על</h2>
+                <h2 class="section-heading text-white">Capish קצת על</h2>
                 <hr class="light my-4">
-                <p style="direction: rtl" class="text-faded mb-4">Joby היא הפלטפורמה המתקדמת ביותר להוספת כתוביות לסרטונים בישראל. המערכת שלנו משלבת טכנולוגיית AI מתקדמת עם עריכה אנושית מקצועית, כדי להבטיח דיוק מרבי ואיכות ללא פשרות. בין אם מדובר בסרטוני תדמית, הדרכה, או תוכן שיווקי - אנחנו נדאג שהמסר שלכם יגיע לכולם.</p>
+                <p style="direction: rtl" class="text-faded mb-4">Capish היא הפלטפורמה המתקדמת ביותר להוספת כתוביות לסרטונים בישראל. המערכת שלנו משלבת טכנולוגיית AI מתקדמת עם עריכה אנושית מקצועית, כדי להבטיח דיוק מרבי ואיכות ללא פשרות. בין אם מדובר בסרטוני תדמית, הדרכה, או תוכן שיווקי - אנחנו נדאג שהמסר שלכם יגיע לכולם.</p>
                 <a class="btn btn-light btn-xl js-scroll-trigger" href="#contact">התחל עכשיו</a>
               </div>
             </div>
@@ -308,7 +375,7 @@ app.get('/privacy-policy', (req: Request, res: Response) => {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Privacy Policy - Joby</title>
+        <title>Privacy Policy - Capish</title>
         <style>
             body {
                 font-family: 'Arial', sans-serif;
@@ -365,13 +432,13 @@ app.get('/privacy-policy', (req: Request, res: Response) => {
             <p>For the purposes of this Privacy Policy:</p>
             <ul>
                 <li><strong>Account</strong> means a unique account created for You to access our Service or parts of our Service.</li>
-                <li><strong>Company</strong> (referred to as either "the Company", "We", "Us" or "Our" in this Agreement) refers to Joby.</li>
+                <li><strong>Company</strong> (referred to as either "the Company", "We", "Us" or "Our" in this Agreement) refers to Capish.</li>
                 <li><strong>Cookies</strong> are small files that are placed on Your computer, mobile device or any other device by a website, containing the details of Your browsing history on that website among its many uses.</li>
                 <li><strong>Country</strong> refers to: Israel</li>
                 <li><strong>Device</strong> means any device that can access the Service such as a computer, a cellphone or a digital tablet.</li>
                 <li><strong>Personal Data</strong> is any information that relates to an identified or identifiable individual.</li>
                 <li><strong>Service</strong> refers to the Website.</li>
-                <li><strong>Website</strong> refers to Joby, accessible from <a href="https://joby.postrix.io">https://joby.postrix.io</a></li>
+                <li><strong>Website</strong> refers to Capish, accessible from <a href="https://whatsapp.postrix.io">https://whatsapp.postrix.io</a></li>
                 <li><strong>You</strong> means the individual accessing or using the Service, or the company, or other legal entity on behalf of which such individual is accessing or using the Service, as applicable.</li>
             </ul>
 
@@ -390,7 +457,7 @@ app.get('/privacy-policy', (req: Request, res: Response) => {
 });
 
 const server = app.listen(PORT, () => {
-  logger.log(`Joby service is running on ${process.env.ENV}: http://localhost:${PORT}`);
+  logger.log(`Whatsapp service is running on ${process.env.ENV}: http://localhost:${PORT}`);
 });
 
 export { server as default };

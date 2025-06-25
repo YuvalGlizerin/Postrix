@@ -1,6 +1,6 @@
 replicas: 1
 postrixImage:
-  repository: yuvadius/capish
+  repository: yuvadius/whatsapp
   tag: latest
 containerPort: 8081
 ingressPort: 8081

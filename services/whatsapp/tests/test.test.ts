@@ -1,10 +1,10 @@
 import supertest from 'supertest';
-import whatsapp from 'whatsapp';
+import whatsapp from 'whatsapp-utils';
 
-import capish from '../src/index.js';
+import whatsappService from '../src/index.js';
 
 // Since myFunction is an Express app, we can use it directly with supertest
-const request = supertest(capish);
+const request = supertest(whatsappService);
 
 jest.mock('whatsapp', () => ({
   verifyToken: jest.fn()
@@ -50,6 +50,6 @@ describe('GET /webhook', () => {
 
 // Close the server after all tests
 afterAll(done => {
-  capish.close();
+  whatsappService.close();
   done();
 });

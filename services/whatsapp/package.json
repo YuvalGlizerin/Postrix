@@ -1,8 +1,8 @@
 {
-  "name": "capish",
+  "name": "whatsapp",
   "version": "1.0.0",
   "type": "module",
-  "description": "Capish core service",
+  "description": "Whatsapp core service",
   "main": "src/index.ts",
   "scripts": {
     "type-check": "tsc --noEmit",
@@ -17,7 +17,7 @@
     "file-system": "file:../../packages/file-system",
     "logger": "file:../../packages/logger",
     "secret-manager": "file:../../packages/secret-manager",
-    "whatsapp": "file:../../packages/whatsapp"
+    "whatsapp-utils": "file:../../packages/whatsapp-utils"
   },
   "devDependencies": {
     "@types/express": "^5.0.1",

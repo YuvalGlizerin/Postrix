@@ -1,16 +1,9 @@
 # The access token was created manually in Docker Hub, not managed by Terraform
 
-resource "docker_hub_repository" "joby" {
+resource "docker_hub_repository" "whatsapp" {
   namespace   = var.namespace
-  name        = "joby"
-  description = "Joby docker repository"
-  private     = false
-}
-
-resource "docker_hub_repository" "capish" {
-  namespace   = var.namespace
-  name        = "capish"
-  description = "Capish docker repository"
+  name        = "whatsapp"
+  description = "Whatsapp docker repository"
   private     = false
 }
 

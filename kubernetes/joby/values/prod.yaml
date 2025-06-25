@@ -1,4 +1,0 @@
-env: prod
-serviceType: ClusterIP
-ingress:
-  additionalHost: false

@@ -97,25 +97,15 @@ releases:
     values:
       - ./redis/values/defaults.yaml
 
-  - name: joby
+  - name: whatsapp
     namespace: "{{ default .Namespace .Environment.Name }}"
     chart: ./common
     labels:
-      app: joby
+      app: whatsapp
       group: app
     values:
-      - ./joby/values/defaults.yaml
-      - ./joby/values/{{ .Environment.Name }}.yaml
-
-  - name: capish
-    namespace: "{{ default .Namespace .Environment.Name }}"
-    chart: ./common
-    labels:
-      app: capish
-      group: app
-    values:
-      - ./capish/values/defaults.yaml
-      - ./capish/values/{{ .Environment.Name }}.yaml
+      - ./whatsapp/values/defaults.yaml
+      - ./whatsapp/values/{{ .Environment.Name }}.yaml
 
   - name: cannon
     namespace: "{{ default .Namespace .Environment.Name }}"
