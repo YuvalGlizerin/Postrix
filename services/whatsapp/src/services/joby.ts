@@ -1,8 +1,13 @@
 import { type Request, type Response } from 'express';
 import secrets from 'secret-manager';
 import { Logger } from 'logger';
+import OpenAI from 'openai';
 
 const logger = new Logger('Whatsapp');
+
+const openai = new OpenAI({
+  apiKey: secrets.OPENAI_TOKEN
+});
 
 // Add work in progress auto response
 async function jobyWebhook(req: Request, res: Response) {
@@ -15,6 +20,12 @@ async function jobyWebhook(req: Request, res: Response) {
     // Log the incoming request body to understand its structure
     logger.log('Incoming webhook payload:', { debug: JSON.stringify(req.body, null, 2) });
 
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      store: true,
+      messages: [{ role: 'user', content: 'write a haiku about ai' }]
+    });
+
     const url = `https://graph.facebook.com/v22.0/${phoneId}/messages`;
     const payload = {
       messaging_product: 'whatsapp',
@@ -22,7 +33,7 @@ async function jobyWebhook(req: Request, res: Response) {
       to: req.body.entry[0].changes[0].value.messages[0].from,
       type: 'text',
       text: {
-        body: `Work in progress`
+        body: `Work in progress: ${completion.choices[0].message.content}`
       }
     };
 
