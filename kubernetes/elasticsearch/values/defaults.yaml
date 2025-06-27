@@ -15,6 +15,9 @@ elasticsearch:
       enabled: true
       storageClass: gp3-elasticsearch
       size: 2Gi
+    extraEnvVars:
+      - name: ELASTICSEARCH_HEAP_SIZE # Should make elastic faster
+        value: "512m"
     
   # Disable additional nodes for minimal setup
   data:

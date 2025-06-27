@@ -45,6 +45,7 @@ interface Message {
   type: string;
   text?: Text;
   video?: Video;
+  audio?: Audio;
 }
 
 interface Text {
@@ -57,6 +58,13 @@ interface Video {
   id: string;
 }
 
+interface Audio {
+  mime_type: string;
+  sha256: string;
+  id: string;
+  voice: boolean;
+}
+
 export interface WhatsAppMediaJson {
   file_size: number;
   id: string;
@@ -64,4 +72,15 @@ export interface WhatsAppMediaJson {
   mime_type: string;
   sha256: string;
   url: string;
+}
+
+export interface WhatsAppMessageResult {
+  messaging_product: string;
+  contacts: {
+    input: string;
+    wa_id: string;
+  }[];
+  messages: {
+    id: string;
+  }[];
 }

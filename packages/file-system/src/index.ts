@@ -14,19 +14,19 @@ const s3Client = new S3Client({
 });
 
 /**
- * Downloads a video from the given URL and saves it to the specified path.
+ * Downloads a media from the given URL and saves it to the specified path.
  *
- * @param {string} mediaUrl - The URL of the video to download.
- * @param {'mp4' | 'mov'} extension The file extension to use for the saved video (e.g., 'mp4', 'mov').
+ * @param {string} mediaUrl - The URL of the media to download.
+ * @param {string} extension The file extension to use for the saved media (e.g., 'mp4', 'mov', 'ogg', ...).
  * @param {string} authorization The authorization header (optional).
  * @param {string} userAgent The user agent header (optional).
- * @param {string} savePath - The path to save the downloaded video, defaults to tmp directory.
+ * @param {string} savePath - The path to save the downloaded media, defaults to tmp directory.
  * @returns {Promise<string>} The path where the media was saved
  * @throws {Error} If the media download fails.
  */
 async function downloadMedia(
   mediaUrl: string,
-  extension: 'mp4' | 'mov',
+  extension: string,
   authorization?: string,
   userAgent?: string,
   savePath?: string

@@ -67,7 +67,7 @@ async function capishWebhook(req: Request, res: Response) {
       })
     });
 
-    const media = await whatsapp.getMedia(req.body, accessToken);
+    const media = await whatsapp.getMedia(req.body.entry[0].changes[0].value.messages[0].video?.id, accessToken);
     if (media) {
       const videoPath = await whatsapp.downloadMedia(media, accessToken);
 

@@ -16,7 +16,6 @@
     "express": "^4.18.2",
     "file-system": "file:../../packages/file-system",
     "logger": "file:../../packages/logger",
-    "openai": "^5.7.0",
     "secret-manager": "file:../../packages/secret-manager",
     "whatsapp-utils": "file:../../packages/whatsapp-utils"
   },

@@ -1,10 +1,15 @@
 import fileSystem from 'file-system';
 import { type Request, type Response } from 'express';
 import { Logger } from 'logger';
+import OpenAI from 'openai';
+import secrets from 'secret-manager';
 
-import type { WhatsAppMessagePayload, WhatsAppMediaJson } from './types.ts';
+import type { WhatsAppMessagePayload, WhatsAppMediaJson, WhatsAppMessageResult } from './types.ts';
 
 const logger = new Logger('Whatsapp');
+const openai = new OpenAI({
+  apiKey: secrets.OPENAI_TOKEN
+});
 
 /**
  * Verifies the whatsapp webhook verification token.
@@ -31,22 +36,83 @@ function verifyToken(req: Request, res: Response, verificationToken: string) {
   }
 }
 
+async function getMessage(
+  whatsappPayload: WhatsAppMessagePayload,
+  accessToken: string,
+  transcribeAudio: boolean = true
+): Promise<string> {
+  const messageObj = whatsappPayload.entry[0].changes[0].value.messages[0];
+  if (messageObj.type === 'audio' && transcribeAudio && messageObj.audio) {
+    const media: WhatsAppMediaJson = await getMedia(messageObj.audio?.id, accessToken);
+
+    // Save to temp directory
+    const tempPath = `/tmp/${media.id}.${media.mime_type.split('/').pop()}`;
+    await downloadMedia(media, accessToken, tempPath);
+    // Transcribe using OpenAI
+    const fs = await import('fs');
+    const audioStream = fs.createReadStream(tempPath);
+    const transcription = await openai.audio.transcriptions.create({
+      file: audioStream,
+      model: 'whisper-1',
+      response_format: 'text',
+      language: 'en'
+    });
+    return transcription;
+  }
+  // Default to text message
+  return messageObj.text?.body || '';
+}
+
+/**
+ * Responds to a whatsapp message.
+ * @param {WhatsAppMessagePayload} whatsappPayload The WhatsApp payload.
+ * @param {string} message The message to send.
+ * @param {string} accessToken The Facebook access token.
+ *
+ * @returns {Promise<any>} The response from the WhatsApp API.
+ */
+async function respond(
+  whatsappPayload: WhatsAppMessagePayload,
+  message: string,
+  accessToken: string
+): Promise<WhatsAppMessageResult> {
+  const payload = {
+    messaging_product: 'whatsapp',
+    recipient_type: 'individual',
+    to: whatsappPayload.entry[0].changes[0].value.messages[0].from,
+    type: 'text',
+    text: {
+      body: message
+    }
+  };
+  const phoneId = whatsappPayload.entry[0].changes[0].value.metadata.phone_number_id;
+  const url = `https://graph.facebook.com/v22.0/${phoneId}/messages`;
+
+  const result = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!result.ok) {
+    throw new Error(`Failed to send message: ${result.statusText}`);
+  }
+
+  const json: WhatsAppMessageResult = await result.json();
+  return json;
+}
+
 /**
  * Get the media URL from the WhatsApp payload.
- * @param {WhatsAppMessagePayload} whatsappPayload The WhatsApp payload.
+ * @param {string} mediaId The WhatsApp payload.
  * @param {string} accessToken The Facebook access token.
  * @returns {Promise<WhatsAppMediaJson | null>} The media object, or null if failed to download media.
  */
-async function getMedia(
-  whatsappPayload: WhatsAppMessagePayload,
-  accessToken: string
-): Promise<WhatsAppMediaJson | null> {
-  const message = whatsappPayload.entry[0].changes[0].value.messages[0];
-  if (message.type !== 'video') {
-    return null;
-  }
-
-  const response = await fetch(`https://graph.facebook.com/v22.0/${message.video?.id}`, {
+async function getMedia(mediaId: string, accessToken: string): Promise<WhatsAppMediaJson> {
+  const response = await fetch(`https://graph.facebook.com/v22.0/${mediaId}`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -71,10 +137,6 @@ async function downloadMedia(media: WhatsAppMediaJson, accessToken: string, save
   logger.log(`Attempting to download media from: ${media.url}`);
   const extension = media.mime_type.split('/').pop() || '';
 
-  if (extension !== 'mp4' && extension !== 'mov') {
-    throw new Error(`Unsupported media type: ${extension}. Only mp4 and mov are supported.`);
-  }
-
   return fileSystem.downloadMedia(
     media.url,
     extension,
@@ -87,5 +149,7 @@ async function downloadMedia(media: WhatsAppMediaJson, accessToken: string, save
 export default {
   verifyToken,
   getMedia,
-  downloadMedia
+  downloadMedia,
+  respond,
+  getMessage
 };

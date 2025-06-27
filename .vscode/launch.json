@@ -8,7 +8,7 @@
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "command": "npm run start --watch --prefix services/${input:serviceName}",
+      "command": "npm run start --prefix services/${input:serviceName}",
       "env": {
         "ENV": "${input:env}",
         "NAMESPACE": "${input:env}",

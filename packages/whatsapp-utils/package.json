@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "file-system": "file:../file-system",
-    "logger": "file:../logger"
+    "logger": "file:../logger",
+    "openai": "^5.8.1",
+    "secret-manager": "file:../secret-manager"
   },
   "devDependencies": {
     "@types/express": "^5.0.1"
