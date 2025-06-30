@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        db: [whatsapp, cannon]
+        db: [joby, cannon]
 
     uses: ./.github/workflows/db-migrate.yml
     with:

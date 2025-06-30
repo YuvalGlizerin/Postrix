@@ -19,7 +19,7 @@ jobs:
     strategy:
       matrix:
         environment: [dev, prod]
-        db: [whatsapp, cannon]
+        db: [joby, cannon]
 
     uses: ./.github/workflows/db-migrate.yml
     with:
