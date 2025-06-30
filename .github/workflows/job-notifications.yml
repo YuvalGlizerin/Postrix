@@ -22,5 +22,11 @@ jobs:
       - name: Configure AWS credentials
         uses: ./.github/actions/aws-warm-up
 
-      - name: Run job-notifications action
-        uses: ./.github/actions/job-notifications
+      - name: Build Docker image
+        run: docker build -t yuvadius/job-notifications:latest -f .github/actions/job-notifications/Dockerfile .
+
+      - name: Run container
+        run: docker run yuvadius/job-notifications:latest
+
+      # - name: Run job-notifications action
+      #   uses: ./.github/actions/job-notifications

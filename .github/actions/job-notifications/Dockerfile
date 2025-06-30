@@ -10,7 +10,7 @@ FROM --platform=linux/arm64 node:24.0.1-slim
 WORKDIR /usr/workspace
 
 # Copy the root package.json and package-lock.json
-COPY ../../../package.json ../../../package-lock.json ./
+COPY package.json package-lock.json ./
 
 # Copy the service
 COPY .github/actions/job-notifications .github/actions/job-notifications/
