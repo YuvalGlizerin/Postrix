@@ -4,6 +4,7 @@ import * as k8s from '@kubernetes/client-node';
 const secrets: Record<string, string> = {};
 const isLocal = process.env.IS_LOCAL_DEV !== 'true'; // TODO: Revert this
 const clusterName = process.env.CLUSTER_NAME as string;
+const githubActionContext = 'loaded-context';
 let k8sApi: k8s.CoreV1Api | null = null;
 
 try {
@@ -16,7 +17,13 @@ try {
     // Find and set context to specified cluster
     const targetContext = kc
       .getContexts()
-      .find(context => context.name.includes(clusterName) || context.cluster.includes(clusterName));
+      .find(
+        context =>
+          context.name.includes(clusterName) ||
+          context.cluster.includes(clusterName) ||
+          context.name.includes(githubActionContext) ||
+          context.cluster.includes(githubActionContext)
+      );
 
     if (targetContext) {
       kc.setCurrentContext(targetContext.name);
