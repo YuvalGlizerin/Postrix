@@ -10,6 +10,7 @@ const accessToken = secrets.WHATSAPP_ACCESS_TOKEN;
 const myPhoneNumber = '972544686188';
 const url =
   'https://linkedin-data-api.p.rapidapi.com/search-jobs-v2?keywords=Backend%20Developer%20Nodejs&locationId=101570771&datePosted=past24Hours&jobType=fullTime&sort=mostRelevant';
+
 const options = {
   method: 'GET',
   headers: {
