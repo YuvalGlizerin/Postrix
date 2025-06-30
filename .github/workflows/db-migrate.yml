@@ -33,5 +33,5 @@ jobs:
         uses: ./.github/actions/aws-warm-up
 
       - name: DB Migrate
-        working-directory: packages/cannon-db
+        working-directory: packages/${{ inputs.db }}-db
         run: DATABASE_URL='${{ secrets.DATABASE_INSTANCE_URL }}/${{ inputs.db }}?schema=${{ steps.repo_warm_up.outputs.namespace }}' npm run migrate:deploy

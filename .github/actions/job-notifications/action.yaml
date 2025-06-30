@@ -1,0 +1,6 @@
+name: 'Job Notifications'
+description: 'Sends notifications to all users that have a job alert'
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'

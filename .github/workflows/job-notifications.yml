@@ -1,0 +1,12 @@
+name: Job Notifications
+
+on:
+  workflow_dispatch:
+
+jobs:
+  notify:
+    runs-on: ubuntu-24.04-arm
+    
+    steps:
+      - name: Run job-notifications action
+        uses: ./.github/actions/job-notifications

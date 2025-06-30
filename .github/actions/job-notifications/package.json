@@ -1,0 +1,17 @@
+{
+  "name": "job-notifications",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Sends notifications to all users that have a job alert",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "node src/index.ts",
+    "test": "jest --config ../../../jest.config.mjs --rootDir ./"
+  },
+  "dependencies": {
+    "env-loader": "file:../../../packages/env-loader",
+    "logger": "file:../../../packages/logger",
+    "secret-manager": "file:../../../packages/secret-manager",
+    "whatsapp-utils": "file:../../../packages/whatsapp-utils"
+  }
+}

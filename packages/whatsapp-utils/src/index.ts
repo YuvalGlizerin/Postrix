@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 import fileSystem from 'file-system';
 import { type Request, type Response } from 'express';
 import { Logger } from 'logger';
@@ -36,6 +38,13 @@ function verifyToken(req: Request, res: Response, verificationToken: string) {
   }
 }
 
+/**
+ * Get the message from the WhatsApp payload.
+ * @param {WhatsAppMessagePayload} whatsappPayload The WhatsApp payload.
+ * @param {string} accessToken The Facebook access token.
+ * @param {boolean} transcribeAudio Whether to transcribe the audio message.
+ * @returns {Promise<string>} The message.
+ */
 async function getMessage(
   whatsappPayload: WhatsAppMessagePayload,
   accessToken: string,
@@ -44,12 +53,9 @@ async function getMessage(
   const messageObj = whatsappPayload.entry[0].changes[0].value.messages[0];
   if (messageObj.type === 'audio' && transcribeAudio && messageObj.audio) {
     const media: WhatsAppMediaJson = await getMedia(messageObj.audio?.id, accessToken);
+    const tempPath = await downloadMedia(media, accessToken);
 
-    // Save to temp directory
-    const tempPath = `/tmp/${media.id}.${media.mime_type.split('/').pop()}`;
-    await downloadMedia(media, accessToken, tempPath);
     // Transcribe using OpenAI
-    const fs = await import('fs');
     const audioStream = fs.createReadStream(tempPath);
     const transcription = await openai.audio.transcriptions.create({
       file: audioStream,
@@ -76,17 +82,35 @@ async function respond(
   message: string,
   accessToken: string
 ): Promise<WhatsAppMessageResult> {
+  const fromPhoneId = whatsappPayload.entry[0].changes[0].value.messages[0].from;
+  const toPhoneId = whatsappPayload.entry[0].changes[0].value.metadata.phone_number_id;
+  return sendMessage(fromPhoneId, toPhoneId, message, accessToken);
+}
+
+/**
+ * Sends a message to a whatsapp user.
+ * @param {string} toPhoneId The WhatsApp phone number ID of the recipient.
+ * @param {string} fromPhoneId The WhatsApp phone number ID of the sender.
+ * @param {string} message The message to send.
+ * @param {string} accessToken The Facebook access token.
+ * @returns {Promise<WhatsAppMessageResult>} The response from the WhatsApp API.
+ */
+async function sendMessage(
+  toPhoneId: string,
+  fromPhoneId: string,
+  message: string,
+  accessToken: string
+): Promise<WhatsAppMessageResult> {
   const payload = {
     messaging_product: 'whatsapp',
     recipient_type: 'individual',
-    to: whatsappPayload.entry[0].changes[0].value.messages[0].from,
+    to: toPhoneId,
     type: 'text',
     text: {
       body: message
     }
   };
-  const phoneId = whatsappPayload.entry[0].changes[0].value.metadata.phone_number_id;
-  const url = `https://graph.facebook.com/v22.0/${phoneId}/messages`;
+  const url = `https://graph.facebook.com/v22.0/${fromPhoneId}/messages`;
 
   const result = await fetch(url, {
     method: 'POST',
@@ -151,5 +175,6 @@ export default {
   getMedia,
   downloadMedia,
   respond,
-  getMessage
+  getMessage,
+  sendMessage
 };

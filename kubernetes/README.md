@@ -32,14 +32,14 @@ We manage secrets using sealed-secrets, that allow you to store encrypted secret
 Example on how to create a secret:
 
 ```bash
-kubectl create secret generic elasticsearch-auth \
-  --namespace elastic \
+kubectl create secret generic rapid-linkedin-auth \
+  --namespace secrets \
   --dry-run=client \
-  --from-literal=elasticsearch-password='my-password' \
+  --from-literal=linkedin-api-key='my-secret-key' \
   -o yaml | \
 kubeseal --format yaml \
   --controller-name=sealed-secrets-controller \
-  --controller-namespace=sealed-secrets > elasticsearch/templates/secret.yaml
+  --controller-namespace=sealed-secrets > secrets/templates/rapid-linkedin-secret.yaml
 ```
 
 Note: This does not create a secret in your cluster, it only creates the file
