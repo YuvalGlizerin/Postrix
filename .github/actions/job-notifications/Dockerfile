@@ -22,4 +22,4 @@ COPY packages packages/
 RUN npm ci --workspace=job-notifications --omit=dev
 
 # Start the application
-CMD ["npm", "--prefix=job-notifications", "run", "start"]
+CMD ["npm", "--prefix=.github/actions/job-notifications", "run", "start"]
