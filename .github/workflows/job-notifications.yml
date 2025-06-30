@@ -6,7 +6,17 @@ on:
 jobs:
   notify:
     runs-on: ubuntu-24.04-arm
-    
+
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Repo Warm Up
+        id: repo_warm_up
+        uses: ./.github/actions/repo-warm-up
+
+      - name: Configure AWS credentials
+        uses: ./.github/actions/aws-warm-up
+
       - name: Run job-notifications action
         uses: ./.github/actions/job-notifications
