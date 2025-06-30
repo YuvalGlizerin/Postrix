@@ -85,3 +85,15 @@ resource "github_actions_secret" "database_instance_password" {
   secret_name     = "DATABASE_INSTANCE_PASSWORD"
   encrypted_value = "vZ1D2EQe5APae0oQb1UGygB/Pc9gA77hXTrPF9NXJztnMVAduH4VVFahp/8Oy3GNpnfOh0Xo33kGpg=="
 }
+
+resource "github_actions_secret" "aws_access_key_id" {
+  repository      = github_repository.repo.name
+  secret_name     = "AWS_ACCESS_KEY_ID"
+  encrypted_value = "3YUXE5WuoGWn5PYzWvyT4kSshYgfwPAadnzVnm7O/SPrJxS4jIbwaiPgS5xK7dyOZRfcy+m6+uAo8rv7XAVlV8X+H6k="
+}
+
+resource "github_actions_secret" "aws_secret_access_key" {
+  repository      = github_repository.repo.name
+  secret_name     = "AWS_SECRET_ACCESS_KEY"
+  encrypted_value = "kGWgjInJ3EafZdbQol7QmPodZYOlFRw58X1yFD37OC9+3wpTF4UWgrLK8DoIRAEXKa+O+9GNBm5LYrAyvr5n16AfJVcvMh19S+Oj0n9GDRcM0iqnawtMxg=="
+}

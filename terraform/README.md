@@ -9,13 +9,8 @@ We don't want to store secrets in our repo, so we set them in the UI and then im
 Run this command to encrypt your github secret using the repo public token:
 
 ```
+npm install tweetnacl-sealedbox-js --no-save --silent &&
 node -e 'const s=require("tweetnacl-sealedbox-js"),p=process.argv[1],v=process.argv[2];if(p&&v)console.log(Buffer.from(s.seal(Buffer.from(v),Buffer.from(p,"base64"))).toString("base64"));' 'TFntFYu2dknn/I1Oh2WY+9dosJRUh6omguYzq/Sg+zA=' 'my_secret'
-```
-
-You need to one time install the package "tweetnacl-sealedbox-js" globally:
-
-```
-npm install -g "tweetnacl-sealedbox-js"
 ```
 
 # Github Projects
