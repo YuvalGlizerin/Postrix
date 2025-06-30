@@ -26,7 +26,7 @@ jobs:
         run: docker build -t yuvadius/job-notifications:latest -f .github/actions/job-notifications/Dockerfile .
 
       - name: Run container
-        run: docker run yuvadius/job-notifications:latest
+        run: docker run -e KUBECONFIG=/kubeconfig -v ~/.kube/config:/kubeconfig yuvadius/job-notifications:latest
 
       # - name: Run job-notifications action
       #   uses: ./.github/actions/job-notifications
