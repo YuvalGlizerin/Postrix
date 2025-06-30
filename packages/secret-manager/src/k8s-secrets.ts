@@ -2,7 +2,7 @@
 import * as k8s from '@kubernetes/client-node';
 
 const secrets: Record<string, string> = {};
-const isLocal = process.env.IS_LOCAL_DEV === 'true';
+const isLocal = process.env.IS_LOCAL_DEV !== 'true'; // TODO: Revert this
 const clusterName = process.env.CLUSTER_NAME as string;
 let k8sApi: k8s.CoreV1Api | null = null;
 
