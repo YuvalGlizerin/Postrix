@@ -15,6 +15,12 @@ runs:
         aws eks update-kubeconfig --name postrix --region us-east-1
       shell: bash
 
+    # TODO: Remove this
+    - name: Show kubeconfig server endpoint
+      run: |
+        grep 'server:' ~/.kube/config
+      shell: bash
+
     - name: Download Helmfile
       run: |
         wget -q https://github.com/helmfile/helmfile/releases/download/v0.168.0/helmfile_0.168.0_linux_arm64.tar.gz
