@@ -21,6 +21,7 @@ const options = {
 
 async function run() {
   try {
+    logger.log('Fetching LinkedIn jobs');
     const response = await fetch(url, options);
     const result = await response.json();
     const whatsappMessage = `Hi Yuval, I found a job that you might be interested in: \n\nJob Title: ${result.data[0].title}\nJob Url: ${result.data[0].url}`;
@@ -28,7 +29,9 @@ async function run() {
     logger.log(result);
   } catch (error) {
     logger.error('Error fetching LinkedIn jobs', { error });
+    process.exit(1);
   }
+  process.exit(0);
 }
 
 run();
