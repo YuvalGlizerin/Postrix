@@ -47,5 +47,12 @@ runs:
 
     - name: Build TypeScript Actions
       run: |
-        npm run build --workspace=.github/actions
+        for dir in .github/actions/*/; do
+          if [ -f "$dir/package.json" ] && jq -e '.scripts.build' "$dir/package.json" > /dev/null; then
+            echo "Building $dir"
+            npm run build --workspace="$dir"
+          else
+            echo "No build script in $dir, skipping."
+          fi
+        done
       shell: bash
