@@ -27,7 +27,7 @@ export * as $Enums from './enums.ts'
  * ```
  * const prisma = new PrismaClient()
  * // Fetch zero or more Users
- * const users = await prisma.user.findMany()
+ * const users = await prisma.users.findMany()
  * ```
  * 
  * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
@@ -54,9 +54,14 @@ path.join(__dirname, "libquery_engine-linux-arm64-openssl-3.0.x.so.node")
 path.join(process.cwd(), "src/generated/prisma/libquery_engine-linux-arm64-openssl-3.0.x.so.node")
 
 /**
- * Model user
+ * Model users
  * 
  */
-export type user = Prisma.userModel
+export type users = Prisma.usersModel
+/**
+ * Model job_preferences
+ * 
+ */
+export type job_preferences = Prisma.job_preferencesModel
 
 

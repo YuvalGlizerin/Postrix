@@ -7,5 +7,6 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/user.ts'
+export type * from './models/users.ts'
+export type * from './models/job_preferences.ts'
 export type * from './commonInputTypes.ts'
