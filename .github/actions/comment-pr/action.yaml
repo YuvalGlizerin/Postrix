@@ -16,5 +16,5 @@ inputs:
     required: true
 
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
+  using: 'node20' # Node 22 is not supported yet by GitHub Actions
+  main: 'dist/index.js'

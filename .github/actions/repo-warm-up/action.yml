@@ -44,3 +44,8 @@ runs:
       run: |
         npm ci
       shell: bash
+
+    - name: Build TypeScript Actions
+      run: |
+        npm run build --workspace=.github/actions
+      shell: bash
