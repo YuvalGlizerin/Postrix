@@ -178,3 +178,5 @@ export default {
   getMessage,
   sendMessage
 };
+
+export type { WhatsAppMessagePayload };
