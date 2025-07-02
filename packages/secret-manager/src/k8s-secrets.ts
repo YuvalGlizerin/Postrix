@@ -1,15 +1,16 @@
 /* eslint-disable no-console */ // Cannot use logger yet because I need to get the secrets first to initialize it
+import * as fs from 'fs';
+
 import * as k8s from '@kubernetes/client-node';
 
 const secrets: Record<string, string> = {};
-const isLocal = process.env.IS_LOCAL_DEV !== 'true'; // TODO: Revert this
 const clusterName = process.env.CLUSTER_NAME as string;
 let k8sApi: k8s.CoreV1Api | null = null;
+const kc = new k8s.KubeConfig();
+const inCluster = fs.existsSync('/var/run/secrets/kubernetes.io/serviceaccount/token');
 
 try {
-  const kc = new k8s.KubeConfig();
-
-  if (isLocal) {
+  if (!inCluster) {
     // Local mode: use kubeconfig and set context to cluster
     kc.loadFromDefault();
 
@@ -38,7 +39,7 @@ try {
 
   k8sApi = kc.makeApiClient(k8s.CoreV1Api);
 } catch (error) {
-  if (isLocal) {
+  if (!inCluster) {
     console.error(
       `Failed to load Kubernetes config. Make sure kubectl is configured and you have access to the ${clusterName} cluster:`,
       { error }
