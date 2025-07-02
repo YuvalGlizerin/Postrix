@@ -9,6 +9,15 @@ FROM --platform=linux/arm64 node:24.0.1-slim
 # Set up the workspace directory and cd into it
 WORKDIR /usr/workspace
 
+
+# Install AWS CLI v2
+RUN apt-get update && \
+    apt-get install -y unzip curl && \
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    ./aws/install && \
+    rm -rf awscliv2.zip aws
+
 # Copy the root package.json and package-lock.json
 COPY package.json package-lock.json ./
 
@@ -22,4 +31,4 @@ COPY packages packages/
 RUN npm ci --workspace=job-notifications --omit=dev
 
 # Start the application
-CMD ["npm", "--prefix=job-notifications", "run", "start"]
+CMD ["npm", "--prefix=.github/actions/job-notifications", "run", "start"]

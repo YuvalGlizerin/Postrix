@@ -16,10 +16,19 @@
       }
     },
     {
+      "name": "Job Notifications",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run start --prefix .github/actions/job-notifications",
+      "env": {
+        "ENV": "local"
+      }
+    },
+    {
       "name": "GHA: Typescript",
       "type": "node-terminal",
       "request": "launch",
-      "command": "ts-node ${file}",
+      "command": "node ${file}",
       "env": {
         "INPUT_TITLE": "title" // Value of core.getInput('title')
       }

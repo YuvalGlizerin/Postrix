@@ -11,6 +11,7 @@
   "dependencies": {
     "env-loader": "file:../../../packages/env-loader",
     "logger": "file:../../../packages/logger",
+    "openai": "^5.8.2",
     "secret-manager": "file:../../../packages/secret-manager",
     "whatsapp-utils": "file:../../../packages/whatsapp-utils"
   }

@@ -1,7 +1,7 @@
 import fs from 'fs';
 
 import fileSystem from 'file-system';
-import { type Request, type Response } from 'express';
+import type { Request, Response } from 'express';
 import { Logger } from 'logger';
 import OpenAI from 'openai';
 import secrets from 'secret-manager';
