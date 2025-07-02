@@ -30,7 +30,7 @@ async function jobyWebhook(req: Request, res: Response) {
 }
 
 async function setupFirstTimeUser(whatsAppPayload: WhatsAppMessagePayload, accessToken: string): Promise<User> {
-  const phoneNumber = whatsAppPayload.entry[0].changes[0].value.metadata.display_phone_number;
+  const phoneNumber = whatsAppPayload.entry[0].changes[0].value.messages[0].from;
   const user = await prisma.users.findUnique({
     where: {
       phone_number: phoneNumber
