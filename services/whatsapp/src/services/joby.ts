@@ -25,7 +25,7 @@ async function jobyWebhook(req: Request, res: Response) {
 
     return;
   } catch (error) {
-    logger.error('Error with webhook:', { error });
+    logger.error('Error with webhook:', { error: error });
   }
 }
 
