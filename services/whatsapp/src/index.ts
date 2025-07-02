@@ -284,7 +284,7 @@ app.get('/privacy-policy', (req: Request, res: Response) => {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Privacy Policy - Capish</title>
+        <title>Privacy Policy - Joby</title>
         <style>
             body {
                 font-family: 'Arial', sans-serif;
@@ -341,13 +341,13 @@ app.get('/privacy-policy', (req: Request, res: Response) => {
             <p>For the purposes of this Privacy Policy:</p>
             <ul>
                 <li><strong>Account</strong> means a unique account created for You to access our Service or parts of our Service.</li>
-                <li><strong>Company</strong> (referred to as either "the Company", "We", "Us" or "Our" in this Agreement) refers to Capish.</li>
+                <li><strong>Company</strong> (referred to as either "the Company", "We", "Us" or "Our" in this Agreement) refers to Joby.</li>
                 <li><strong>Cookies</strong> are small files that are placed on Your computer, mobile device or any other device by a website, containing the details of Your browsing history on that website among its many uses.</li>
                 <li><strong>Country</strong> refers to: Israel</li>
                 <li><strong>Device</strong> means any device that can access the Service such as a computer, a cellphone or a digital tablet.</li>
                 <li><strong>Personal Data</strong> is any information that relates to an identified or identifiable individual.</li>
                 <li><strong>Service</strong> refers to the Website.</li>
-                <li><strong>Website</strong> refers to Capish, accessible from <a href="https://whatsapp.postrix.io">https://whatsapp.postrix.io</a></li>
+                <li><strong>Website</strong> refers to Joby, accessible from <a href="https://whatsapp.postrix.io">https://whatsapp.postrix.io</a></li>
                 <li><strong>You</strong> means the individual accessing or using the Service, or the company, or other legal entity on behalf of which such individual is accessing or using the Service, as applicable.</li>
             </ul>
 
@@ -356,7 +356,7 @@ app.get('/privacy-policy', (req: Request, res: Response) => {
             <h2>Contact Us</h2>
             <p>If you have any questions about this Privacy Policy, You can contact us:</p>
             <ul>
-                <li>By email: mayrondadush@gmail.com</li>
+                <li>By email: yuval.glizerin@gmail.com</li>
             </ul>
         </div>
     </body>
