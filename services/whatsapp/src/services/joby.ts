@@ -52,9 +52,10 @@ async function setupFirstTimeUser(whatsAppPayload: WhatsAppMessagePayload, acces
 
   await whatsapp.respond(
     whatsAppPayload,
-    "You're messaging Joby, an AI assistant.\n\n" +
-      'By continuing, you agree to our terms and have read our privacy policy at https://whatsapp.postrix.io/privacy-policy.\n\n' +
-      'Conversations may be reviewed for safety.',
+    "You're messaging Joby, an AI job finder assistant.\n" +
+      'By continuing, you agree to our terms and have read our privacy policy at https://whatsapp.postrix.io/privacy-policy.\n' +
+      'Conversations may be reviewed for safety.\n\n' +
+      'To get started, send a message like "I want to find a job as a [job title] in [location]"',
     accessToken
   );
   return newUser;
