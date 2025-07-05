@@ -9,6 +9,7 @@
     "test": "jest --config ../../jest.config.mjs --rootDir ./",
     "migrate:dev": "prisma migrate dev --skip-generate",
     "migrate:deploy": "prisma migrate deploy",
+    "migrate:reset": "prisma migrate reset",
     "generate": "prisma generate"
   },
   "devDependencies": {

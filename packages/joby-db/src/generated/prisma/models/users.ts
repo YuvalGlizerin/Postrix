@@ -38,6 +38,7 @@ export type UsersMinAggregateOutputType = {
   phone_number: string | null
   created_at: Date | null
   updated_at: Date | null
+  last_response_id: string | null
 }
 
 export type UsersMaxAggregateOutputType = {
@@ -45,6 +46,7 @@ export type UsersMaxAggregateOutputType = {
   phone_number: string | null
   created_at: Date | null
   updated_at: Date | null
+  last_response_id: string | null
 }
 
 export type UsersCountAggregateOutputType = {
@@ -52,6 +54,7 @@ export type UsersCountAggregateOutputType = {
   phone_number: number
   created_at: number
   updated_at: number
+  last_response_id: number
   _all: number
 }
 
@@ -69,6 +72,7 @@ export type UsersMinAggregateInputType = {
   phone_number?: true
   created_at?: true
   updated_at?: true
+  last_response_id?: true
 }
 
 export type UsersMaxAggregateInputType = {
@@ -76,6 +80,7 @@ export type UsersMaxAggregateInputType = {
   phone_number?: true
   created_at?: true
   updated_at?: true
+  last_response_id?: true
 }
 
 export type UsersCountAggregateInputType = {
@@ -83,6 +88,7 @@ export type UsersCountAggregateInputType = {
   phone_number?: true
   created_at?: true
   updated_at?: true
+  last_response_id?: true
   _all?: true
 }
 
@@ -177,6 +183,7 @@ export type UsersGroupByOutputType = {
   phone_number: string | null
   created_at: Date | null
   updated_at: Date | null
+  last_response_id: string | null
   _count: UsersCountAggregateOutputType | null
   _avg: UsersAvgAggregateOutputType | null
   _sum: UsersSumAggregateOutputType | null
@@ -207,7 +214,8 @@ export type usersWhereInput = {
   phone_number?: Prisma.StringNullableFilter<"users"> | string | null
   created_at?: Prisma.DateTimeNullableFilter<"users"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"users"> | Date | string | null
-  job_preferences?: Prisma.Job_preferencesListRelationFilter
+  last_response_id?: Prisma.StringNullableFilter<"users"> | string | null
+  job_preferences?: Prisma.XOR<Prisma.Job_preferencesNullableScalarRelationFilter, Prisma.job_preferencesWhereInput> | null
 }
 
 export type usersOrderByWithRelationInput = {
@@ -215,7 +223,8 @@ export type usersOrderByWithRelationInput = {
   phone_number?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
-  job_preferences?: Prisma.job_preferencesOrderByRelationAggregateInput
+  last_response_id?: Prisma.SortOrderInput | Prisma.SortOrder
+  job_preferences?: Prisma.job_preferencesOrderByWithRelationInput
 }
 
 export type usersWhereUniqueInput = Prisma.AtLeast<{
@@ -226,7 +235,8 @@ export type usersWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.usersWhereInput | Prisma.usersWhereInput[]
   created_at?: Prisma.DateTimeNullableFilter<"users"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"users"> | Date | string | null
-  job_preferences?: Prisma.Job_preferencesListRelationFilter
+  last_response_id?: Prisma.StringNullableFilter<"users"> | string | null
+  job_preferences?: Prisma.XOR<Prisma.Job_preferencesNullableScalarRelationFilter, Prisma.job_preferencesWhereInput> | null
 }, "id" | "phone_number">
 
 export type usersOrderByWithAggregationInput = {
@@ -234,6 +244,7 @@ export type usersOrderByWithAggregationInput = {
   phone_number?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
+  last_response_id?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.usersCountOrderByAggregateInput
   _avg?: Prisma.usersAvgOrderByAggregateInput
   _max?: Prisma.usersMaxOrderByAggregateInput
@@ -249,13 +260,15 @@ export type usersScalarWhereWithAggregatesInput = {
   phone_number?: Prisma.StringNullableWithAggregatesFilter<"users"> | string | null
   created_at?: Prisma.DateTimeNullableWithAggregatesFilter<"users"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableWithAggregatesFilter<"users"> | Date | string | null
+  last_response_id?: Prisma.StringNullableWithAggregatesFilter<"users"> | string | null
 }
 
 export type usersCreateInput = {
   phone_number?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
-  job_preferences?: Prisma.job_preferencesCreateNestedManyWithoutUserInput
+  last_response_id?: string | null
+  job_preferences?: Prisma.job_preferencesCreateNestedOneWithoutUserInput
 }
 
 export type usersUncheckedCreateInput = {
@@ -263,14 +276,16 @@ export type usersUncheckedCreateInput = {
   phone_number?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
-  job_preferences?: Prisma.job_preferencesUncheckedCreateNestedManyWithoutUserInput
+  last_response_id?: string | null
+  job_preferences?: Prisma.job_preferencesUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type usersUpdateInput = {
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  job_preferences?: Prisma.job_preferencesUpdateManyWithoutUserNestedInput
+  last_response_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  job_preferences?: Prisma.job_preferencesUpdateOneWithoutUserNestedInput
 }
 
 export type usersUncheckedUpdateInput = {
@@ -278,7 +293,8 @@ export type usersUncheckedUpdateInput = {
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  job_preferences?: Prisma.job_preferencesUncheckedUpdateManyWithoutUserNestedInput
+  last_response_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  job_preferences?: Prisma.job_preferencesUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type usersCreateManyInput = {
@@ -286,12 +302,14 @@ export type usersCreateManyInput = {
   phone_number?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  last_response_id?: string | null
 }
 
 export type usersUpdateManyMutationInput = {
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_response_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type usersUncheckedUpdateManyInput = {
@@ -299,6 +317,7 @@ export type usersUncheckedUpdateManyInput = {
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_response_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type usersCountOrderByAggregateInput = {
@@ -306,6 +325,7 @@ export type usersCountOrderByAggregateInput = {
   phone_number?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+  last_response_id?: Prisma.SortOrder
 }
 
 export type usersAvgOrderByAggregateInput = {
@@ -317,6 +337,7 @@ export type usersMaxOrderByAggregateInput = {
   phone_number?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+  last_response_id?: Prisma.SortOrder
 }
 
 export type usersMinOrderByAggregateInput = {
@@ -324,6 +345,7 @@ export type usersMinOrderByAggregateInput = {
   phone_number?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+  last_response_id?: Prisma.SortOrder
 }
 
 export type usersSumOrderByAggregateInput = {
@@ -369,6 +391,7 @@ export type usersCreateWithoutJob_preferencesInput = {
   phone_number?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  last_response_id?: string | null
 }
 
 export type usersUncheckedCreateWithoutJob_preferencesInput = {
@@ -376,6 +399,7 @@ export type usersUncheckedCreateWithoutJob_preferencesInput = {
   phone_number?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  last_response_id?: string | null
 }
 
 export type usersCreateOrConnectWithoutJob_preferencesInput = {
@@ -398,6 +422,7 @@ export type usersUpdateWithoutJob_preferencesInput = {
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_response_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type usersUncheckedUpdateWithoutJob_preferencesInput = {
@@ -405,37 +430,9 @@ export type usersUncheckedUpdateWithoutJob_preferencesInput = {
   phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_response_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
-
-/**
- * Count Type UsersCountOutputType
- */
-
-export type UsersCountOutputType = {
-  job_preferences: number
-}
-
-export type UsersCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  job_preferences?: boolean | UsersCountOutputTypeCountJob_preferencesArgs
-}
-
-/**
- * UsersCountOutputType without action
- */
-export type UsersCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the UsersCountOutputType
-   */
-  select?: Prisma.UsersCountOutputTypeSelect<ExtArgs> | null
-}
-
-/**
- * UsersCountOutputType without action
- */
-export type UsersCountOutputTypeCountJob_preferencesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.job_preferencesWhereInput
-}
 
 
 export type usersSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -443,8 +440,8 @@ export type usersSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   phone_number?: boolean
   created_at?: boolean
   updated_at?: boolean
+  last_response_id?: boolean
   job_preferences?: boolean | Prisma.users$job_preferencesArgs<ExtArgs>
-  _count?: boolean | Prisma.UsersCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["users"]>
 
 export type usersSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -452,6 +449,7 @@ export type usersSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   phone_number?: boolean
   created_at?: boolean
   updated_at?: boolean
+  last_response_id?: boolean
 }, ExtArgs["result"]["users"]>
 
 export type usersSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -459,6 +457,7 @@ export type usersSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   phone_number?: boolean
   created_at?: boolean
   updated_at?: boolean
+  last_response_id?: boolean
 }, ExtArgs["result"]["users"]>
 
 export type usersSelectScalar = {
@@ -466,12 +465,12 @@ export type usersSelectScalar = {
   phone_number?: boolean
   created_at?: boolean
   updated_at?: boolean
+  last_response_id?: boolean
 }
 
-export type usersOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "phone_number" | "created_at" | "updated_at", ExtArgs["result"]["users"]>
+export type usersOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "phone_number" | "created_at" | "updated_at" | "last_response_id", ExtArgs["result"]["users"]>
 export type usersInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   job_preferences?: boolean | Prisma.users$job_preferencesArgs<ExtArgs>
-  _count?: boolean | Prisma.UsersCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type usersIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 export type usersIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -479,13 +478,14 @@ export type usersIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
 export type $usersPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "users"
   objects: {
-    job_preferences: Prisma.$job_preferencesPayload<ExtArgs>[]
+    job_preferences: Prisma.$job_preferencesPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     phone_number: string | null
     created_at: Date | null
     updated_at: Date | null
+    last_response_id: string | null
   }, ExtArgs["result"]["users"]>
   composites: {}
 }
@@ -880,7 +880,7 @@ readonly fields: usersFieldRefs;
  */
 export interface Prisma__usersClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  job_preferences<T extends Prisma.users$job_preferencesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.users$job_preferencesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$job_preferencesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  job_preferences<T extends Prisma.users$job_preferencesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.users$job_preferencesArgs<ExtArgs>>): Prisma.Prisma__job_preferencesClient<runtime.Types.Result.GetResult<Prisma.$job_preferencesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -914,6 +914,7 @@ export interface usersFieldRefs {
   readonly phone_number: Prisma.FieldRef<"users", 'String'>
   readonly created_at: Prisma.FieldRef<"users", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"users", 'DateTime'>
+  readonly last_response_id: Prisma.FieldRef<"users", 'String'>
 }
     
 
@@ -1318,11 +1319,6 @@ export type users$job_preferencesArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   include?: Prisma.job_preferencesInclude<ExtArgs> | null
   where?: Prisma.job_preferencesWhereInput
-  orderBy?: Prisma.job_preferencesOrderByWithRelationInput | Prisma.job_preferencesOrderByWithRelationInput[]
-  cursor?: Prisma.job_preferencesWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.Job_preferencesScalarFieldEnum | Prisma.Job_preferencesScalarFieldEnum[]
 }
 
 /**

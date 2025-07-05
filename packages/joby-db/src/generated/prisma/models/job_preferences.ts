@@ -233,15 +233,15 @@ export type job_preferencesOrderByWithRelationInput = {
 
 export type job_preferencesWhereUniqueInput = Prisma.AtLeast<{
   id?: number
+  user_id?: number
   AND?: Prisma.job_preferencesWhereInput | Prisma.job_preferencesWhereInput[]
   OR?: Prisma.job_preferencesWhereInput[]
   NOT?: Prisma.job_preferencesWhereInput | Prisma.job_preferencesWhereInput[]
-  user_id?: Prisma.IntFilter<"job_preferences"> | number
   job_preference?: Prisma.StringNullableFilter<"job_preferences"> | string | null
   created_at?: Prisma.DateTimeNullableFilter<"job_preferences"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"job_preferences"> | Date | string | null
   user?: Prisma.XOR<Prisma.UsersScalarRelationFilter, Prisma.usersWhereInput>
-}, "id">
+}, "id" | "user_id">
 
 export type job_preferencesOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -319,14 +319,9 @@ export type job_preferencesUncheckedUpdateManyInput = {
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
-export type Job_preferencesListRelationFilter = {
-  every?: Prisma.job_preferencesWhereInput
-  some?: Prisma.job_preferencesWhereInput
-  none?: Prisma.job_preferencesWhereInput
-}
-
-export type job_preferencesOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder
+export type Job_preferencesNullableScalarRelationFilter = {
+  is?: Prisma.job_preferencesWhereInput | null
+  isNot?: Prisma.job_preferencesWhereInput | null
 }
 
 export type job_preferencesCountOrderByAggregateInput = {
@@ -363,46 +358,36 @@ export type job_preferencesSumOrderByAggregateInput = {
   user_id?: Prisma.SortOrder
 }
 
-export type job_preferencesCreateNestedManyWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.job_preferencesCreateWithoutUserInput, Prisma.job_preferencesUncheckedCreateWithoutUserInput> | Prisma.job_preferencesCreateWithoutUserInput[] | Prisma.job_preferencesUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.job_preferencesCreateOrConnectWithoutUserInput | Prisma.job_preferencesCreateOrConnectWithoutUserInput[]
-  createMany?: Prisma.job_preferencesCreateManyUserInputEnvelope
-  connect?: Prisma.job_preferencesWhereUniqueInput | Prisma.job_preferencesWhereUniqueInput[]
+export type job_preferencesCreateNestedOneWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.job_preferencesCreateWithoutUserInput, Prisma.job_preferencesUncheckedCreateWithoutUserInput>
+  connectOrCreate?: Prisma.job_preferencesCreateOrConnectWithoutUserInput
+  connect?: Prisma.job_preferencesWhereUniqueInput
 }
 
-export type job_preferencesUncheckedCreateNestedManyWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.job_preferencesCreateWithoutUserInput, Prisma.job_preferencesUncheckedCreateWithoutUserInput> | Prisma.job_preferencesCreateWithoutUserInput[] | Prisma.job_preferencesUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.job_preferencesCreateOrConnectWithoutUserInput | Prisma.job_preferencesCreateOrConnectWithoutUserInput[]
-  createMany?: Prisma.job_preferencesCreateManyUserInputEnvelope
-  connect?: Prisma.job_preferencesWhereUniqueInput | Prisma.job_preferencesWhereUniqueInput[]
+export type job_preferencesUncheckedCreateNestedOneWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.job_preferencesCreateWithoutUserInput, Prisma.job_preferencesUncheckedCreateWithoutUserInput>
+  connectOrCreate?: Prisma.job_preferencesCreateOrConnectWithoutUserInput
+  connect?: Prisma.job_preferencesWhereUniqueInput
 }
 
-export type job_preferencesUpdateManyWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.job_preferencesCreateWithoutUserInput, Prisma.job_preferencesUncheckedCreateWithoutUserInput> | Prisma.job_preferencesCreateWithoutUserInput[] | Prisma.job_preferencesUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.job_preferencesCreateOrConnectWithoutUserInput | Prisma.job_preferencesCreateOrConnectWithoutUserInput[]
-  upsert?: Prisma.job_preferencesUpsertWithWhereUniqueWithoutUserInput | Prisma.job_preferencesUpsertWithWhereUniqueWithoutUserInput[]
-  createMany?: Prisma.job_preferencesCreateManyUserInputEnvelope
-  set?: Prisma.job_preferencesWhereUniqueInput | Prisma.job_preferencesWhereUniqueInput[]
-  disconnect?: Prisma.job_preferencesWhereUniqueInput | Prisma.job_preferencesWhereUniqueInput[]
-  delete?: Prisma.job_preferencesWhereUniqueInput | Prisma.job_preferencesWhereUniqueInput[]
-  connect?: Prisma.job_preferencesWhereUniqueInput | Prisma.job_preferencesWhereUniqueInput[]
-  update?: Prisma.job_preferencesUpdateWithWhereUniqueWithoutUserInput | Prisma.job_preferencesUpdateWithWhereUniqueWithoutUserInput[]
-  updateMany?: Prisma.job_preferencesUpdateManyWithWhereWithoutUserInput | Prisma.job_preferencesUpdateManyWithWhereWithoutUserInput[]
-  deleteMany?: Prisma.job_preferencesScalarWhereInput | Prisma.job_preferencesScalarWhereInput[]
+export type job_preferencesUpdateOneWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.job_preferencesCreateWithoutUserInput, Prisma.job_preferencesUncheckedCreateWithoutUserInput>
+  connectOrCreate?: Prisma.job_preferencesCreateOrConnectWithoutUserInput
+  upsert?: Prisma.job_preferencesUpsertWithoutUserInput
+  disconnect?: Prisma.job_preferencesWhereInput | boolean
+  delete?: Prisma.job_preferencesWhereInput | boolean
+  connect?: Prisma.job_preferencesWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.job_preferencesUpdateToOneWithWhereWithoutUserInput, Prisma.job_preferencesUpdateWithoutUserInput>, Prisma.job_preferencesUncheckedUpdateWithoutUserInput>
 }
 
-export type job_preferencesUncheckedUpdateManyWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.job_preferencesCreateWithoutUserInput, Prisma.job_preferencesUncheckedCreateWithoutUserInput> | Prisma.job_preferencesCreateWithoutUserInput[] | Prisma.job_preferencesUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.job_preferencesCreateOrConnectWithoutUserInput | Prisma.job_preferencesCreateOrConnectWithoutUserInput[]
-  upsert?: Prisma.job_preferencesUpsertWithWhereUniqueWithoutUserInput | Prisma.job_preferencesUpsertWithWhereUniqueWithoutUserInput[]
-  createMany?: Prisma.job_preferencesCreateManyUserInputEnvelope
-  set?: Prisma.job_preferencesWhereUniqueInput | Prisma.job_preferencesWhereUniqueInput[]
-  disconnect?: Prisma.job_preferencesWhereUniqueInput | Prisma.job_preferencesWhereUniqueInput[]
-  delete?: Prisma.job_preferencesWhereUniqueInput | Prisma.job_preferencesWhereUniqueInput[]
-  connect?: Prisma.job_preferencesWhereUniqueInput | Prisma.job_preferencesWhereUniqueInput[]
-  update?: Prisma.job_preferencesUpdateWithWhereUniqueWithoutUserInput | Prisma.job_preferencesUpdateWithWhereUniqueWithoutUserInput[]
-  updateMany?: Prisma.job_preferencesUpdateManyWithWhereWithoutUserInput | Prisma.job_preferencesUpdateManyWithWhereWithoutUserInput[]
-  deleteMany?: Prisma.job_preferencesScalarWhereInput | Prisma.job_preferencesScalarWhereInput[]
+export type job_preferencesUncheckedUpdateOneWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.job_preferencesCreateWithoutUserInput, Prisma.job_preferencesUncheckedCreateWithoutUserInput>
+  connectOrCreate?: Prisma.job_preferencesCreateOrConnectWithoutUserInput
+  upsert?: Prisma.job_preferencesUpsertWithoutUserInput
+  disconnect?: Prisma.job_preferencesWhereInput | boolean
+  delete?: Prisma.job_preferencesWhereInput | boolean
+  connect?: Prisma.job_preferencesWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.job_preferencesUpdateToOneWithWhereWithoutUserInput, Prisma.job_preferencesUpdateWithoutUserInput>, Prisma.job_preferencesUncheckedUpdateWithoutUserInput>
 }
 
 export type job_preferencesCreateWithoutUserInput = {
@@ -423,43 +408,15 @@ export type job_preferencesCreateOrConnectWithoutUserInput = {
   create: Prisma.XOR<Prisma.job_preferencesCreateWithoutUserInput, Prisma.job_preferencesUncheckedCreateWithoutUserInput>
 }
 
-export type job_preferencesCreateManyUserInputEnvelope = {
-  data: Prisma.job_preferencesCreateManyUserInput | Prisma.job_preferencesCreateManyUserInput[]
-  skipDuplicates?: boolean
-}
-
-export type job_preferencesUpsertWithWhereUniqueWithoutUserInput = {
-  where: Prisma.job_preferencesWhereUniqueInput
+export type job_preferencesUpsertWithoutUserInput = {
   update: Prisma.XOR<Prisma.job_preferencesUpdateWithoutUserInput, Prisma.job_preferencesUncheckedUpdateWithoutUserInput>
   create: Prisma.XOR<Prisma.job_preferencesCreateWithoutUserInput, Prisma.job_preferencesUncheckedCreateWithoutUserInput>
+  where?: Prisma.job_preferencesWhereInput
 }
 
-export type job_preferencesUpdateWithWhereUniqueWithoutUserInput = {
-  where: Prisma.job_preferencesWhereUniqueInput
+export type job_preferencesUpdateToOneWithWhereWithoutUserInput = {
+  where?: Prisma.job_preferencesWhereInput
   data: Prisma.XOR<Prisma.job_preferencesUpdateWithoutUserInput, Prisma.job_preferencesUncheckedUpdateWithoutUserInput>
-}
-
-export type job_preferencesUpdateManyWithWhereWithoutUserInput = {
-  where: Prisma.job_preferencesScalarWhereInput
-  data: Prisma.XOR<Prisma.job_preferencesUpdateManyMutationInput, Prisma.job_preferencesUncheckedUpdateManyWithoutUserInput>
-}
-
-export type job_preferencesScalarWhereInput = {
-  AND?: Prisma.job_preferencesScalarWhereInput | Prisma.job_preferencesScalarWhereInput[]
-  OR?: Prisma.job_preferencesScalarWhereInput[]
-  NOT?: Prisma.job_preferencesScalarWhereInput | Prisma.job_preferencesScalarWhereInput[]
-  id?: Prisma.IntFilter<"job_preferences"> | number
-  user_id?: Prisma.IntFilter<"job_preferences"> | number
-  job_preference?: Prisma.StringNullableFilter<"job_preferences"> | string | null
-  created_at?: Prisma.DateTimeNullableFilter<"job_preferences"> | Date | string | null
-  updated_at?: Prisma.DateTimeNullableFilter<"job_preferences"> | Date | string | null
-}
-
-export type job_preferencesCreateManyUserInput = {
-  id?: number
-  job_preference?: string | null
-  created_at?: Date | string | null
-  updated_at?: Date | string | null
 }
 
 export type job_preferencesUpdateWithoutUserInput = {
@@ -469,13 +426,6 @@ export type job_preferencesUpdateWithoutUserInput = {
 }
 
 export type job_preferencesUncheckedUpdateWithoutUserInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  job_preference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-}
-
-export type job_preferencesUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   job_preference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null

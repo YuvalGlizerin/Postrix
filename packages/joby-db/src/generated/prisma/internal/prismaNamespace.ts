@@ -606,7 +606,8 @@ export const UsersScalarFieldEnum = {
   id: 'id',
   phone_number: 'phone_number',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  last_response_id: 'last_response_id'
 } as const
 
 export type UsersScalarFieldEnum = (typeof UsersScalarFieldEnum)[keyof typeof UsersScalarFieldEnum]
