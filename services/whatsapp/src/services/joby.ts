@@ -185,10 +185,9 @@ async function jobyWebhook(req: Request, res: Response) {
 
             // If there's no content but we successfully saved preferences, generate a response
             if (!aiResponse.trim()) {
-              aiResponse =
-                "✅ I've saved your job preference! Tell me more about what you're looking for or ask me anything about your job search.";
+              aiResponse = `✅ I've saved your job preference:\n\n"${jobPreference}"\n\nTell me more about what you're looking for or ask me anything about your job search.`;
             } else if (!aiResponse.includes('saved') && !aiResponse.includes('recorded')) {
-              aiResponse += "\n\n✅ I've saved your job preference!";
+              aiResponse += `\n\n✅ I've saved your job preference: "${jobPreference}"`;
             }
           } catch (error) {
             logger.error('Error saving job preference:', { error });
