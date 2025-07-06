@@ -103,6 +103,9 @@ export class Logger {
   }
 
   async error(message: string, metadata: Metadata = {}) {
+    if (metadata.error instanceof Error) {
+      metadata.error = metadata.error.message;
+    }
     return this.logger('error', message, metadata);
   }
 
