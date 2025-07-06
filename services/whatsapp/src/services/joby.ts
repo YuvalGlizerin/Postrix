@@ -22,7 +22,9 @@ async function jobyWebhook(req: Request, res: Response) {
     const whatsAppPayload: WhatsAppMessagePayload = req.body;
 
     // Log the incoming request body to understand its structure
-    logger.log('Incoming webhook payload:', { debug: JSON.stringify(whatsAppPayload, null, 2) });
+    logger.log('Incoming webhook payload:', {
+      debug: { headers: JSON.stringify(req.rawHeaders, null, 2), body: JSON.stringify(whatsAppPayload, null, 2) }
+    });
 
     const message = await whatsapp.getMessage(whatsAppPayload, accessToken);
 
