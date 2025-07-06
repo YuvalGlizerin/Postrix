@@ -22,6 +22,7 @@ model job_preferences {
   id             Int       @id @default(autoincrement())
   user_id        Int       @unique // Make user_id unique for one-to-one relationship
   job_preference String?   @db.Text
+  alert_schedule String?   @db.VarChar(100) // Cron job syntax (e.g., "0 9 * * 1" for weekly at 9 AM on Monday)
   created_at     DateTime? @default(now()) @db.Timestamp(6)
   updated_at     DateTime? @default(now()) @db.Timestamp(6)
 

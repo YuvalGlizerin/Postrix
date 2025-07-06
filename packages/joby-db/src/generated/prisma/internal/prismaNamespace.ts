@@ -617,6 +617,7 @@ export const Job_preferencesScalarFieldEnum = {
   id: 'id',
   user_id: 'user_id',
   job_preference: 'job_preference',
+  alert_schedule: 'alert_schedule',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const

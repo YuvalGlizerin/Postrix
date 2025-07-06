@@ -14,24 +14,6 @@ const openai = new OpenAI({
   apiKey: secrets.OPENAI_TOKEN
 });
 
-// Define the function for saving job preferences
-const saveJobPreferenceFunction = {
-  name: 'save_job_preference',
-  description:
-    "Save a user's job preference to the database. Call this when a user expresses a job preference, requirement, or search criteria.",
-  parameters: {
-    type: 'object',
-    properties: {
-      job_preference: {
-        type: 'string',
-        description:
-          'The detailed job preference including job title, location, salary range, industry, company size, remote/hybrid preferences, or any other job-related criteria the user has mentioned.'
-      }
-    },
-    required: ['job_preference']
-  }
-};
-
 async function jobyWebhook(req: Request, res: Response) {
   try {
     res.status(200).send('Message sent successfully'); // no retries
@@ -98,7 +80,55 @@ async function jobyWebhook(req: Request, res: Response) {
         return;
       }
 
-      const responseMessage = `📋 Here are your saved job preferences:\n\n${user.job_preferences.job_preference}\n\nTo update your preferences, just tell me what you're looking for!`;
+      let responseMessage = `📋 **Your Job Search Settings:**\n\n`;
+
+      // Add job preferences
+      if (user.job_preferences.job_preference) {
+        responseMessage += `**Job Preferences:**\n"${user.job_preferences.job_preference}"\n\n`;
+      }
+
+      // Add alert schedule
+      if (user.job_preferences.alert_schedule) {
+        const schedule = user.job_preferences.alert_schedule;
+        let scheduleDescription = '';
+
+        // Parse cron to human-readable format
+        const cronParts = schedule.split(' ');
+        if (cronParts.length >= 5) {
+          const hour = parseInt(cronParts[1]);
+          const dayOfWeek = cronParts[4];
+          const dayOfMonth = cronParts[2];
+
+          let timeStr = '';
+          if (hour === 9) {
+            timeStr = '9 AM (morning)';
+          } else if (hour === 14) {
+            timeStr = '2 PM (afternoon)';
+          } else if (hour === 18) {
+            timeStr = '6 PM (evening)';
+          } else {
+            timeStr = `${hour}:00`;
+          }
+
+          if (dayOfWeek === '*' && dayOfMonth === '*') {
+            scheduleDescription = `Daily at ${timeStr}`;
+          } else if (dayOfWeek !== '*') {
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const dayName = days[parseInt(dayOfWeek)] || 'Monday';
+            scheduleDescription = `Weekly on ${dayName} at ${timeStr}`;
+          } else if (dayOfMonth === '1') {
+            scheduleDescription = `Monthly on the 1st at ${timeStr}`;
+          } else {
+            scheduleDescription = `Custom schedule: ${schedule}`;
+          }
+        }
+
+        responseMessage += `**Alert Schedule:**\n${scheduleDescription}\n\n`;
+      } else {
+        responseMessage += `**Alert Schedule:**\nNot set up yet. Tell me when you'd like to receive job alerts!\n\n`;
+      }
+
+      responseMessage += `To update your preferences or schedule, just tell me what you're looking for!`;
 
       await whatsapp.respond(whatsAppPayload, responseMessage, accessToken);
       return;
@@ -106,52 +136,83 @@ async function jobyWebhook(req: Request, res: Response) {
 
     const user = await setupFirstTimeUser(whatsAppPayload, accessToken);
 
-    // Build conversation history
-    const conversationHistory = await buildConversationHistory(user);
+    // Build initial context for new conversations or get previous response ID
+    const { instructions, previousResponseId } = await buildResponseContext(user);
 
-    // Send message to OpenAI and get response with conversation context and function calling
-    const response = await openai.chat.completions.create({
+    // Send message to OpenAI using Responses API
+    const response = await openai.responses.create({
       model: 'gpt-4o',
-      messages: [
-        {
-          role: 'system',
-          content: jobyModelSettings
-        },
-        ...conversationHistory,
-        {
-          role: 'user',
-          content: message
-        }
-      ],
+      instructions: instructions,
+      previous_response_id: previousResponseId,
+      input: message,
       tools: [
         {
           type: 'function',
-          function: saveJobPreferenceFunction
+          name: 'save_job_preference',
+          description:
+            "Save a user's job preference to the database. Call this when a user expresses a job preference, requirement, or search criteria.",
+          parameters: {
+            type: 'object',
+            properties: {
+              job_preference: {
+                type: 'string',
+                description:
+                  'The detailed job preference including job title, location, salary range, industry, company size, remote/hybrid preferences, or any other job-related criteria the user has mentioned.'
+              }
+            },
+            required: ['job_preference'],
+            additionalProperties: false
+          },
+          strict: true
+        },
+        {
+          type: 'function',
+          name: 'save_alert_schedule',
+          description: 'Save when the user wants to receive job alerts. Convert their preferences to cron syntax.',
+          parameters: {
+            type: 'object',
+            properties: {
+              cron_expression: {
+                type: 'string',
+                description:
+                  'The generated cron expression (e.g., "0 9 * * 1" for weekly Monday at 9 AM, "0 14 * * *" for daily at 2 PM, "0 18 1 * *" for monthly on 1st at 6 PM)'
+              },
+              description: {
+                type: 'string',
+                description:
+                  'Human-readable description of the schedule (e.g., "Weekly on Monday at 9 AM", "Daily at 2 PM", "Monthly on 1st at 6 PM")'
+              }
+            },
+            required: ['cron_expression', 'description'],
+            additionalProperties: false
+          },
+          strict: true
+        },
+        {
+          type: 'web_search_preview'
         }
       ],
-      tool_choice: 'auto',
       temperature: 0.7,
-      max_tokens: 2048,
       user: user.phone_number || `user_${user.id}` // Add user identifier for OpenAI
     });
 
-    const assistantMessage = response.choices[0].message;
-    let aiResponse = assistantMessage.content || '';
+    let aiResponse = response.output_text || '';
 
     // Log the response for debugging
-    logger.log('OpenAI response details', {
-      hasContent: !!assistantMessage.content,
-      content: assistantMessage.content,
-      hasToolCalls: !!assistantMessage.tool_calls,
-      toolCallsCount: assistantMessage.tool_calls?.length || 0
+    logger.log('OpenAI Responses API details', {
+      responseId: response.id,
+      status: response.status,
+      hasOutput: !!response.output_text,
+      outputLength: response.output?.length || 0
     });
 
-    // Handle function calls if any
-    if (assistantMessage.tool_calls) {
-      for (const toolCall of assistantMessage.tool_calls) {
-        if (toolCall.function.name === 'save_job_preference') {
+    // Handle function calls if any - need to provide tool outputs
+    const functionOutputs = [];
+    if (response.output) {
+      for (const output of response.output) {
+        if (output.type === 'function_call' && output.name === 'save_job_preference') {
           try {
-            const functionArgs = JSON.parse(toolCall.function.arguments);
+            const functionArgs = JSON.parse(output.arguments);
             const jobPreference = functionArgs.job_preference;
 
             // Upsert the job preference (create or update the single record)
@@ -183,20 +244,126 @@ async function jobyWebhook(req: Request, res: Response) {
               preference: jobPreference
             });
 
-            // If there's no content but we successfully saved preferences, generate a response
-            if (!aiResponse.trim()) {
-              aiResponse = `✅ I've saved your job preference:\n\n"${jobPreference}"\n\nTell me more about what you're looking for or ask me anything about your job search.`;
-            } else if (!aiResponse.includes('saved') && !aiResponse.includes('recorded')) {
-              aiResponse += `\n\n✅ I've saved your job preference: "${jobPreference}"`;
-            }
+            // Add function output for the API
+            functionOutputs.push({
+              type: 'function_call_output' as const,
+              call_id: output.call_id,
+              output: JSON.stringify({
+                success: true,
+                message: `Use this exact format with line breaks: ✅ I've saved your job preference:\n\n"${jobPreference}"\n\n[Add encouraging follow-up message]`
+              })
+            });
           } catch (error) {
             logger.error('Error saving job preference:', { error });
-            if (!aiResponse.trim()) {
-              aiResponse = 'I understood your job preference but had trouble saving it. Could you try again?';
+
+            // Add error output for the API
+            functionOutputs.push({
+              type: 'function_call_output' as const,
+              call_id: output.call_id,
+              output: JSON.stringify({
+                success: false,
+                message: 'Error saving job preference. Please try again.'
+              })
+            });
+          }
+        }
+
+        if (output.type === 'function_call' && output.name === 'save_alert_schedule') {
+          try {
+            const functionArgs = JSON.parse(output.arguments);
+            const cronExpression = functionArgs.cron_expression;
+            const scheduleDescription = functionArgs.description;
+
+            // Upsert the alert schedule (create or update the single record)
+            const existingPreference = await prisma.job_preferences.findUnique({
+              where: { user_id: user.id }
+            });
+
+            if (existingPreference) {
+              await prisma.job_preferences.update({
+                where: { user_id: user.id },
+                data: {
+                  alert_schedule: cronExpression,
+                  updated_at: new Date()
+                }
+              });
+            } else {
+              await prisma.job_preferences.create({
+                data: {
+                  user_id: user.id,
+                  alert_schedule: cronExpression,
+                  created_at: new Date(),
+                  updated_at: new Date()
+                }
+              });
             }
+
+            logger.log('Alert schedule saved/updated', {
+              userId: user.id,
+              schedule: cronExpression,
+              description: scheduleDescription
+            });
+
+            // Add function output for the API
+            functionOutputs.push({
+              type: 'function_call_output' as const,
+              call_id: output.call_id,
+              output: JSON.stringify({
+                success: true,
+                message: `✅ Perfect! I've scheduled ${scheduleDescription.toLowerCase()} job alerts for you.\n\nYou'll receive job updates based on your preferences. You can always change this schedule by telling me your new preference!`
+              })
+            });
+          } catch (error) {
+            logger.error('Error saving alert schedule:', { error });
+
+            // Add error output for the API
+            functionOutputs.push({
+              type: 'function_call_output' as const,
+              call_id: output.call_id,
+              output: JSON.stringify({
+                success: false,
+                message: 'Error saving alert schedule. Please try again.'
+              })
+            });
           }
         }
       }
+    }
+
+    // If we have function outputs, make a follow-up call to provide them
+    if (functionOutputs.length > 0) {
+      const followUpResponse = await openai.responses.create({
+        model: 'gpt-4o',
+        previous_response_id: response.id,
+        input: functionOutputs,
+        temperature: 0.7,
+        user: user.phone_number || `user_${user.id}`
+      });
+
+      aiResponse = followUpResponse.output_text || '';
+
+      // Update the response ID to the latest one
+      await prisma.users.update({
+        where: { id: user.id },
+        data: {
+          last_response_id: followUpResponse.id,
+          updated_at: new Date()
+        }
+      });
+
+      logger.log('Follow-up response after function call', {
+        followUpResponseId: followUpResponse.id,
+        finalResponse: aiResponse
+      });
+    } else {
+      // Update user's last response ID for conversation continuity
+      await prisma.users.update({
+        where: { id: user.id },
+        data: {
+          last_response_id: response.id,
+          updated_at: new Date()
+        }
+      });
     }
 
     // Final fallback if still no response
@@ -206,47 +373,31 @@ async function jobyWebhook(req: Request, res: Response) {
 
     await whatsapp.respond(whatsAppPayload, aiResponse, accessToken);
 
-    // Update user's last response ID and activity for conversation threading
-    await prisma.users.update({
-      where: { id: user.id },
-      data: {
-        last_response_id: response.id,
-        updated_at: new Date()
-      }
-    });
-
     return;
   } catch (error) {
     logger.error('Error with webhook:', { error });
   }
 }
 
-async function buildConversationHistory(user: User) {
-  const messages: Array<{ role: 'user' | 'assistant' | 'system'; content: string }> = [];
-
-  // Get user's job preferences for context
+async function buildResponseContext(user: User) {
+  // Get user with preferences
   const userWithPreferences = await prisma.users.findUnique({
     where: { id: user.id },
     include: { job_preferences: true }
   });
 
-  // Add job preferences context if they exist
+  // Build instructions with job preferences context
+  let instructions = jobyModelSettings;
+
   if (userWithPreferences?.job_preferences?.job_preference) {
-    messages.push({
-      role: 'system',
-      content: `User's current job preferences: ${userWithPreferences.job_preferences.job_preference}`
-    });
+    instructions += `\n\nUSER'S CURRENT JOB PREFERENCES: ${userWithPreferences.job_preferences.job_preference}`;
   }
 
-  // Add conversation continuity context if this is a returning user
-  if (user.last_response_id) {
-    messages.push({
-      role: 'system',
-      content: `This is a continuing conversation. Previous OpenAI response ID: ${user.last_response_id}. Maintain conversation context and remember what was discussed previously.`
-    });
-  }
-
-  return messages;
+  // Return previous response ID for conversation continuity
+  return {
+    instructions,
+    previousResponseId: user.last_response_id || undefined
+  };
 }
 
 async function setupFirstTimeUser(whatsAppPayload: WhatsAppMessagePayload, accessToken: string): Promise<User> {
@@ -256,6 +407,7 @@ async function setupFirstTimeUser(whatsAppPayload: WhatsAppMessagePayload, acces
       phone_number: phoneNumber
     }
   });
+
   if (user) {
     logger.log('User already exists', { user });
     return user;
@@ -274,7 +426,6 @@ async function setupFirstTimeUser(whatsAppPayload: WhatsAppMessagePayload, acces
     whatsAppPayload,
     "You're messaging Joby, an AI job finder assistant.\n" +
       'By continuing, you agree to our terms and have read our privacy policy at https://whatsapp.postrix.io/privacy-policy.\n' +
-      'Conversations may be reviewed for safety.\n\n' +
       'To get started, send a message like "I want to find a job as a [job title] in [location]"\n\n' +
       'Available commands:\n' +
       '• /preferences - View your saved job preferences\n' +
