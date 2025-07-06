@@ -39,6 +39,7 @@ export type Job_preferencesMinAggregateOutputType = {
   id: number | null
   user_id: number | null
   job_preference: string | null
+  alert_schedule: string | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -47,6 +48,7 @@ export type Job_preferencesMaxAggregateOutputType = {
   id: number | null
   user_id: number | null
   job_preference: string | null
+  alert_schedule: string | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -55,6 +57,7 @@ export type Job_preferencesCountAggregateOutputType = {
   id: number
   user_id: number
   job_preference: number
+  alert_schedule: number
   created_at: number
   updated_at: number
   _all: number
@@ -75,6 +78,7 @@ export type Job_preferencesMinAggregateInputType = {
   id?: true
   user_id?: true
   job_preference?: true
+  alert_schedule?: true
   created_at?: true
   updated_at?: true
 }
@@ -83,6 +87,7 @@ export type Job_preferencesMaxAggregateInputType = {
   id?: true
   user_id?: true
   job_preference?: true
+  alert_schedule?: true
   created_at?: true
   updated_at?: true
 }
@@ -91,6 +96,7 @@ export type Job_preferencesCountAggregateInputType = {
   id?: true
   user_id?: true
   job_preference?: true
+  alert_schedule?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -186,6 +192,7 @@ export type Job_preferencesGroupByOutputType = {
   id: number
   user_id: number
   job_preference: string | null
+  alert_schedule: string | null
   created_at: Date | null
   updated_at: Date | null
   _count: Job_preferencesCountAggregateOutputType | null
@@ -217,6 +224,7 @@ export type job_preferencesWhereInput = {
   id?: Prisma.IntFilter<"job_preferences"> | number
   user_id?: Prisma.IntFilter<"job_preferences"> | number
   job_preference?: Prisma.StringNullableFilter<"job_preferences"> | string | null
+  alert_schedule?: Prisma.StringNullableFilter<"job_preferences"> | string | null
   created_at?: Prisma.DateTimeNullableFilter<"job_preferences"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"job_preferences"> | Date | string | null
   user?: Prisma.XOR<Prisma.UsersScalarRelationFilter, Prisma.usersWhereInput>
@@ -226,6 +234,7 @@ export type job_preferencesOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   user_id?: Prisma.SortOrder
   job_preference?: Prisma.SortOrderInput | Prisma.SortOrder
+  alert_schedule?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   user?: Prisma.usersOrderByWithRelationInput
@@ -238,6 +247,7 @@ export type job_preferencesWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.job_preferencesWhereInput[]
   NOT?: Prisma.job_preferencesWhereInput | Prisma.job_preferencesWhereInput[]
   job_preference?: Prisma.StringNullableFilter<"job_preferences"> | string | null
+  alert_schedule?: Prisma.StringNullableFilter<"job_preferences"> | string | null
   created_at?: Prisma.DateTimeNullableFilter<"job_preferences"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"job_preferences"> | Date | string | null
   user?: Prisma.XOR<Prisma.UsersScalarRelationFilter, Prisma.usersWhereInput>
@@ -247,6 +257,7 @@ export type job_preferencesOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   user_id?: Prisma.SortOrder
   job_preference?: Prisma.SortOrderInput | Prisma.SortOrder
+  alert_schedule?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.job_preferencesCountOrderByAggregateInput
@@ -263,12 +274,14 @@ export type job_preferencesScalarWhereWithAggregatesInput = {
   id?: Prisma.IntWithAggregatesFilter<"job_preferences"> | number
   user_id?: Prisma.IntWithAggregatesFilter<"job_preferences"> | number
   job_preference?: Prisma.StringNullableWithAggregatesFilter<"job_preferences"> | string | null
+  alert_schedule?: Prisma.StringNullableWithAggregatesFilter<"job_preferences"> | string | null
   created_at?: Prisma.DateTimeNullableWithAggregatesFilter<"job_preferences"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableWithAggregatesFilter<"job_preferences"> | Date | string | null
 }
 
 export type job_preferencesCreateInput = {
   job_preference?: string | null
+  alert_schedule?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   user: Prisma.usersCreateNestedOneWithoutJob_preferencesInput
@@ -278,12 +291,14 @@ export type job_preferencesUncheckedCreateInput = {
   id?: number
   user_id: number
   job_preference?: string | null
+  alert_schedule?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
 
 export type job_preferencesUpdateInput = {
   job_preference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  alert_schedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.usersUpdateOneRequiredWithoutJob_preferencesNestedInput
@@ -293,6 +308,7 @@ export type job_preferencesUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   user_id?: Prisma.IntFieldUpdateOperationsInput | number
   job_preference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  alert_schedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -301,12 +317,14 @@ export type job_preferencesCreateManyInput = {
   id?: number
   user_id: number
   job_preference?: string | null
+  alert_schedule?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
 
 export type job_preferencesUpdateManyMutationInput = {
   job_preference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  alert_schedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -315,6 +333,7 @@ export type job_preferencesUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   user_id?: Prisma.IntFieldUpdateOperationsInput | number
   job_preference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  alert_schedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -328,6 +347,7 @@ export type job_preferencesCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   user_id?: Prisma.SortOrder
   job_preference?: Prisma.SortOrder
+  alert_schedule?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -341,6 +361,7 @@ export type job_preferencesMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   user_id?: Prisma.SortOrder
   job_preference?: Prisma.SortOrder
+  alert_schedule?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -349,6 +370,7 @@ export type job_preferencesMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   user_id?: Prisma.SortOrder
   job_preference?: Prisma.SortOrder
+  alert_schedule?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -392,6 +414,7 @@ export type job_preferencesUncheckedUpdateOneWithoutUserNestedInput = {
 
 export type job_preferencesCreateWithoutUserInput = {
   job_preference?: string | null
+  alert_schedule?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -399,6 +422,7 @@ export type job_preferencesCreateWithoutUserInput = {
 export type job_preferencesUncheckedCreateWithoutUserInput = {
   id?: number
   job_preference?: string | null
+  alert_schedule?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -421,6 +445,7 @@ export type job_preferencesUpdateToOneWithWhereWithoutUserInput = {
 
 export type job_preferencesUpdateWithoutUserInput = {
   job_preference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  alert_schedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -428,6 +453,7 @@ export type job_preferencesUpdateWithoutUserInput = {
 export type job_preferencesUncheckedUpdateWithoutUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   job_preference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  alert_schedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -438,6 +464,7 @@ export type job_preferencesSelect<ExtArgs extends runtime.Types.Extensions.Inter
   id?: boolean
   user_id?: boolean
   job_preference?: boolean
+  alert_schedule?: boolean
   created_at?: boolean
   updated_at?: boolean
   user?: boolean | Prisma.usersDefaultArgs<ExtArgs>
@@ -447,6 +474,7 @@ export type job_preferencesSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   id?: boolean
   user_id?: boolean
   job_preference?: boolean
+  alert_schedule?: boolean
   created_at?: boolean
   updated_at?: boolean
   user?: boolean | Prisma.usersDefaultArgs<ExtArgs>
@@ -456,6 +484,7 @@ export type job_preferencesSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   id?: boolean
   user_id?: boolean
   job_preference?: boolean
+  alert_schedule?: boolean
   created_at?: boolean
   updated_at?: boolean
   user?: boolean | Prisma.usersDefaultArgs<ExtArgs>
@@ -465,11 +494,12 @@ export type job_preferencesSelectScalar = {
   id?: boolean
   user_id?: boolean
   job_preference?: boolean
+  alert_schedule?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type job_preferencesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "user_id" | "job_preference" | "created_at" | "updated_at", ExtArgs["result"]["job_preferences"]>
+export type job_preferencesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "user_id" | "job_preference" | "alert_schedule" | "created_at" | "updated_at", ExtArgs["result"]["job_preferences"]>
 export type job_preferencesInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.usersDefaultArgs<ExtArgs>
 }
@@ -489,6 +519,7 @@ export type $job_preferencesPayload<ExtArgs extends runtime.Types.Extensions.Int
     id: number
     user_id: number
     job_preference: string | null
+    alert_schedule: string | null
     created_at: Date | null
     updated_at: Date | null
   }, ExtArgs["result"]["job_preferences"]>
@@ -918,6 +949,7 @@ export interface job_preferencesFieldRefs {
   readonly id: Prisma.FieldRef<"job_preferences", 'Int'>
   readonly user_id: Prisma.FieldRef<"job_preferences", 'Int'>
   readonly job_preference: Prisma.FieldRef<"job_preferences", 'String'>
+  readonly alert_schedule: Prisma.FieldRef<"job_preferences", 'String'>
   readonly created_at: Prisma.FieldRef<"job_preferences", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"job_preferences", 'DateTime'>
 }
