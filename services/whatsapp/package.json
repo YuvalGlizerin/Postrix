@@ -17,7 +17,7 @@
     "file-system": "file:../../packages/file-system",
     "joby-db": "file:../../packages/joby-db",
     "logger": "file:../../packages/logger",
-    "openai": "^5.18.0",
+    "openai": "^5.8.2",
     "secret-manager": "file:../../packages/secret-manager",
     "whatsapp-utils": "file:../../packages/whatsapp-utils"
   },
