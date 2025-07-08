@@ -84,3 +84,24 @@ export interface WhatsAppMessageResult {
     id: string;
   }[];
 }
+
+export interface WhatsAppTemplateParameter {
+  type: 'text' | 'url';
+  text?: string;
+  parameter_name?: string;
+}
+
+export interface WhatsAppTemplateComponent {
+  type: 'body' | 'button';
+  parameters: WhatsAppTemplateParameter[];
+  sub_type?: 'url';
+  index?: string;
+}
+
+export interface WhatsAppTemplate {
+  name: string;
+  language: {
+    code: string;
+  };
+  components: WhatsAppTemplateComponent[];
+}

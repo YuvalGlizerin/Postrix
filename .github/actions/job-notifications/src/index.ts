@@ -1,6 +1,6 @@
 import 'env-loader';
 
-import whatsapp from 'whatsapp-utils';
+import whatsapp, { type WhatsAppTemplate } from 'whatsapp-utils';
 import secrets from 'secret-manager';
 import { Logger } from 'logger';
 import OpenAI from 'openai';
@@ -40,21 +40,58 @@ async function run() {
         { role: 'system', content: 'You are a helpful assistant that summarizes job descriptions.' },
         {
           role: 'user',
-          content: `Summarize the following job description in at most two sentences:\n${jobDescription}`
+          content: `Summarize the following job description in at most one sentence:\n${jobDescription}`
         }
       ]
     });
     const summary = summaryResponse.choices[0].message.content;
 
-    const whatsappMessage =
-      `Hi Yuval, I found a job that you might be interested in: \n\n` +
-      `*Job Title:* ${result.data[0].title}\n` +
-      `*Company:* ${result.data[0].company.name}\n` +
-      `*Location:* ${result.data[0].location}\n` +
-      `*Job Url:* ${result.data[0].url}\n` +
-      `*Job Description:* ${summary}`;
+    const template: WhatsAppTemplate = {
+      name: 'one_job',
+      language: {
+        code: 'en'
+      },
+      components: [
+        {
+          type: 'body',
+          parameters: [
+            {
+              type: 'text',
+              parameter_name: 'job_title',
+              text: result.data[0].title
+            },
+            {
+              type: 'text',
+              parameter_name: 'company',
+              text: result.data[0].company.name
+            },
+            {
+              type: 'text',
+              parameter_name: 'location',
+              text: result.data[0].location
+            },
+            {
+              type: 'text',
+              parameter_name: 'description',
+              text: summary || 'No description available'
+            }
+          ]
+        },
+        {
+          type: 'button',
+          sub_type: 'url',
+          index: '0',
+          parameters: [
+            {
+              type: 'text',
+              text: result.data[0].id
+            }
+          ]
+        }
+      ]
+    };
 
-    await whatsapp.sendMessage(myPhoneNumber, jobyPhoneId, whatsappMessage, accessToken);
+    await whatsapp.sendTemplate(myPhoneNumber, jobyPhoneId, template, accessToken);
     logger.log(result);
   } catch (error) {
     logger.error('Error fetching LinkedIn jobs', { error });

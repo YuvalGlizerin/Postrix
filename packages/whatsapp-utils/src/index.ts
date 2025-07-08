@@ -6,7 +6,7 @@ import { Logger } from 'logger';
 import OpenAI from 'openai';
 import secrets from 'secret-manager';
 
-import type { WhatsAppMessagePayload, WhatsAppMediaJson, WhatsAppMessageResult } from './types.ts';
+import type { WhatsAppMessagePayload, WhatsAppMediaJson, WhatsAppMessageResult, WhatsAppTemplate } from './types.ts';
 
 const logger = new Logger('Whatsapp');
 const openai = new OpenAI({
@@ -170,13 +170,58 @@ async function downloadMedia(media: WhatsAppMediaJson, accessToken: string, save
   );
 }
 
+/**
+ * Sends a template message to a whatsapp user.
+ * @param {string} toPhoneId The WhatsApp phone number ID of the recipient.
+ * @param {string} fromPhoneId The WhatsApp phone number ID of the sender.
+ * @param {WhatsAppTemplate} template The template to send.
+ * @param {string} accessToken The Facebook access token.
+ * @returns {Promise<WhatsAppMessageResult>} The response from the WhatsApp API.
+ */
+async function sendTemplate(
+  toPhoneId: string,
+  fromPhoneId: string,
+  template: WhatsAppTemplate,
+  accessToken: string
+): Promise<WhatsAppMessageResult> {
+  const payload = {
+    messaging_product: 'whatsapp',
+    recipient_type: 'individual',
+    to: toPhoneId,
+    type: 'template',
+    template: template
+  };
+  const url = `https://graph.facebook.com/v22.0/${fromPhoneId}/messages`;
+
+  logger.log('Sending template payload:', { payload: JSON.stringify(payload, null, 2) });
+
+  const result = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!result.ok) {
+    const errorText = await result.text();
+    logger.error(`Failed to send template: ${result.status} ${result.statusText}`, { errorText });
+    throw new Error(`Failed to send template: ${result.statusText} - ${errorText}`);
+  }
+
+  const json: WhatsAppMessageResult = await result.json();
+  return json;
+}
+
 export default {
   verifyToken,
   getMedia,
   downloadMedia,
   respond,
   getMessage,
-  sendMessage
+  sendMessage,
+  sendTemplate
 };
 
-export type { WhatsAppMessagePayload };
+export type { WhatsAppMessagePayload, WhatsAppTemplate };
