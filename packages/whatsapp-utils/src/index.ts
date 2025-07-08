@@ -193,6 +193,8 @@ async function sendTemplate(
   };
   const url = `https://graph.facebook.com/v22.0/${fromPhoneId}/messages`;
 
+  logger.log('Sending template payload:', { payload: JSON.stringify(payload, null, 2) });
+
   const result = await fetch(url, {
     method: 'POST',
     headers: {
@@ -203,7 +205,9 @@ async function sendTemplate(
   });
 
   if (!result.ok) {
-    throw new Error(`Failed to send template: ${result.statusText}`);
+    const errorText = await result.text();
+    logger.error(`Failed to send template: ${result.status} ${result.statusText}`, { errorText });
+    throw new Error(`Failed to send template: ${result.statusText} - ${errorText}`);
   }
 
   const json: WhatsAppMessageResult = await result.json();

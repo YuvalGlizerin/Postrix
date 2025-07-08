@@ -40,7 +40,7 @@ async function run() {
         { role: 'system', content: 'You are a helpful assistant that summarizes job descriptions.' },
         {
           role: 'user',
-          content: `Summarize the following job description in at most two sentences:\n${jobDescription}`
+          content: `Summarize the following job description in at most one sentence:\n${jobDescription}`
         }
       ]
     });
@@ -57,19 +57,34 @@ async function run() {
           parameters: [
             {
               type: 'text',
+              parameter_name: 'job_title',
               text: result.data[0].title
             },
             {
               type: 'text',
+              parameter_name: 'company',
               text: result.data[0].company.name
             },
             {
               type: 'text',
+              parameter_name: 'location',
               text: result.data[0].location
             },
             {
               type: 'text',
+              parameter_name: 'description',
               text: summary || 'No description available'
+            }
+          ]
+        },
+        {
+          type: 'button',
+          sub_type: 'url',
+          index: '0',
+          parameters: [
+            {
+              type: 'text',
+              text: result.data[0].id
             }
           ]
         }

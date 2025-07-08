@@ -86,13 +86,16 @@ export interface WhatsAppMessageResult {
 }
 
 export interface WhatsAppTemplateParameter {
-  type: 'text';
-  text: string;
+  type: 'text' | 'url';
+  text?: string;
+  parameter_name?: string;
 }
 
 export interface WhatsAppTemplateComponent {
-  type: 'body';
+  type: 'body' | 'button';
   parameters: WhatsAppTemplateParameter[];
+  sub_type?: 'url';
+  index?: string;
 }
 
 export interface WhatsAppTemplate {
