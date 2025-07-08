@@ -1,6 +1,6 @@
 import 'env-loader';
 
-import whatsapp from 'whatsapp-utils';
+import whatsapp, { type WhatsAppTemplate } from 'whatsapp-utils';
 import secrets from 'secret-manager';
 import { Logger } from 'logger';
 import OpenAI from 'openai';
@@ -46,15 +46,37 @@ async function run() {
     });
     const summary = summaryResponse.choices[0].message.content;
 
-    const whatsappMessage =
-      `Hi Yuval, I found a job that you might be interested in: \n\n` +
-      `*Job Title:* ${result.data[0].title}\n` +
-      `*Company:* ${result.data[0].company.name}\n` +
-      `*Location:* ${result.data[0].location}\n` +
-      `*Job Url:* ${result.data[0].url}\n` +
-      `*Job Description:* ${summary}`;
+    const template: WhatsAppTemplate = {
+      name: 'one_job',
+      language: {
+        code: 'en'
+      },
+      components: [
+        {
+          type: 'body',
+          parameters: [
+            {
+              type: 'text',
+              text: result.data[0].title
+            },
+            {
+              type: 'text',
+              text: result.data[0].company.name
+            },
+            {
+              type: 'text',
+              text: result.data[0].location
+            },
+            {
+              type: 'text',
+              text: summary || 'No description available'
+            }
+          ]
+        }
+      ]
+    };
 
-    await whatsapp.sendMessage(myPhoneNumber, jobyPhoneId, whatsappMessage, accessToken);
+    await whatsapp.sendTemplate(myPhoneNumber, jobyPhoneId, template, accessToken);
     logger.log(result);
   } catch (error) {
     logger.error('Error fetching LinkedIn jobs', { error });

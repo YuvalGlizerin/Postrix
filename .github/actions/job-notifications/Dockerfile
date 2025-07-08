@@ -6,9 +6,12 @@
 # https://hub.docker.com/_/node
 FROM --platform=linux/arm64 node:24.0.1-slim
 
+# TODO: Examine this when prisma 7 is released
+# Install OpenSSL (required by Prisma)
+RUN apt-get update -y && apt-get install -y openssl
+
 # Set up the workspace directory and cd into it
 WORKDIR /usr/workspace
-
 
 # Install AWS CLI v2
 RUN apt-get update && \
