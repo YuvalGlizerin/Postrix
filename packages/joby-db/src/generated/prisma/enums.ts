@@ -7,7 +7,30 @@
 *
 * 🟢 You can import this file directly.
 */
+export const DatePosted = {
+  anyTime: 'anyTime',
+  pastMonth: 'pastMonth',
+  pastWeek: 'pastWeek',
+  past24Hours: 'past24Hours'
+} as const
+
+export type DatePosted = (typeof DatePosted)[keyof typeof DatePosted]
 
 
-// This file is empty because there are no enums in the schema.
-export {}
+export const JobType = {
+  fullTime: 'fullTime',
+  partTime: 'partTime',
+  contract: 'contract',
+  internship: 'internship'
+} as const
+
+export type JobType = (typeof JobType)[keyof typeof JobType]
+
+
+export const OnsiteRemote = {
+  onsite: 'onsite',
+  remote: 'remote',
+  hybrid: 'hybrid'
+} as const
+
+export type OnsiteRemote = (typeof OnsiteRemote)[keyof typeof OnsiteRemote]

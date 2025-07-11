@@ -64,4 +64,11 @@ export type users = Prisma.usersModel
  */
 export type job_preferences = Prisma.job_preferencesModel
 
+export type DatePosted = $Enums.DatePosted
+export const DatePosted = $Enums.DatePosted
 
+export type JobType = $Enums.JobType
+export const JobType = $Enums.JobType
+
+export type OnsiteRemote = $Enums.OnsiteRemote
+export const OnsiteRemote = $Enums.OnsiteRemote

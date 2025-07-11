@@ -18,11 +18,38 @@ model users {
   job_preferences job_preferences?
 }
 
+enum DatePosted {
+  anyTime
+  pastMonth
+  pastWeek
+  past24Hours
+}
+
+enum JobType {
+  fullTime
+  partTime
+  contract
+  internship
+}
+
+enum OnsiteRemote {
+  onsite
+  remote
+  hybrid
+}
+
 model job_preferences {
   id             Int       @id @default(autoincrement())
   user_id        Int       @unique // Make user_id unique for one-to-one relationship
-  job_preference String?   @db.Text
-  alert_schedule String?   @db.VarChar(100) // Cron job syntax (e.g., "0 9 * * 1" for weekly at 9 AM on Monday)
+  keywords       String    @db.VarChar(255) // Keywords(space separated) for job search, should be short and concise
+  job_preference String    @db.Text // Job preference, a description of the job you are looking for with all the details
+  alert_schedule String    @db.VarChar(100) // Cron job syntax (e.g., "0 9 * * 1" for weekly at 9 AM on Monday)
+  location       String?   @db.VarChar(255)
+  time_zone      String?   @db.VarChar(255)
+  companies      String[]  @default([]) @db.VarChar(255)
+  datePosted     DatePosted? 
+  jobType        JobType?
+  onsiteRemote   OnsiteRemote?
   created_at     DateTime? @default(now()) @db.Timestamp(6)
   updated_at     DateTime? @default(now()) @db.Timestamp(6)
 

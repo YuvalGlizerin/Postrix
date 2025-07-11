@@ -103,6 +103,90 @@ export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
 }
 
+export type StringFilter<$PrismaModel = never> = {
+  equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  lt?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  lte?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  gt?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  gte?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  contains?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  startsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  mode?: Prisma.QueryMode
+  not?: Prisma.NestedStringFilter<$PrismaModel> | string
+}
+
+export type EnumDatePostedNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.DatePosted | Prisma.EnumDatePostedFieldRefInput<$PrismaModel> | null
+  in?: $Enums.DatePosted[] | Prisma.ListEnumDatePostedFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.DatePosted[] | Prisma.ListEnumDatePostedFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumDatePostedNullableFilter<$PrismaModel> | $Enums.DatePosted | null
+}
+
+export type EnumJobTypeNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.JobType | Prisma.EnumJobTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.JobType[] | Prisma.ListEnumJobTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.JobType[] | Prisma.ListEnumJobTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumJobTypeNullableFilter<$PrismaModel> | $Enums.JobType | null
+}
+
+export type EnumOnsiteRemoteNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.OnsiteRemote | Prisma.EnumOnsiteRemoteFieldRefInput<$PrismaModel> | null
+  in?: $Enums.OnsiteRemote[] | Prisma.ListEnumOnsiteRemoteFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.OnsiteRemote[] | Prisma.ListEnumOnsiteRemoteFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumOnsiteRemoteNullableFilter<$PrismaModel> | $Enums.OnsiteRemote | null
+}
+
+export type StringWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  lt?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  lte?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  gt?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  gte?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  contains?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  startsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  mode?: Prisma.QueryMode
+  not?: Prisma.NestedStringWithAggregatesFilter<$PrismaModel> | string
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedStringFilter<$PrismaModel>
+  _max?: Prisma.NestedStringFilter<$PrismaModel>
+}
+
+export type EnumDatePostedNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DatePosted | Prisma.EnumDatePostedFieldRefInput<$PrismaModel> | null
+  in?: $Enums.DatePosted[] | Prisma.ListEnumDatePostedFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.DatePosted[] | Prisma.ListEnumDatePostedFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumDatePostedNullableWithAggregatesFilter<$PrismaModel> | $Enums.DatePosted | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDatePostedNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDatePostedNullableFilter<$PrismaModel>
+}
+
+export type EnumJobTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.JobType | Prisma.EnumJobTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.JobType[] | Prisma.ListEnumJobTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.JobType[] | Prisma.ListEnumJobTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumJobTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.JobType | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumJobTypeNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumJobTypeNullableFilter<$PrismaModel>
+}
+
+export type EnumOnsiteRemoteNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OnsiteRemote | Prisma.EnumOnsiteRemoteFieldRefInput<$PrismaModel> | null
+  in?: $Enums.OnsiteRemote[] | Prisma.ListEnumOnsiteRemoteFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.OnsiteRemote[] | Prisma.ListEnumOnsiteRemoteFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumOnsiteRemoteNullableWithAggregatesFilter<$PrismaModel> | $Enums.OnsiteRemote | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOnsiteRemoteNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOnsiteRemoteNullableFilter<$PrismaModel>
+}
+
 export type NestedIntFilter<$PrismaModel = never> = {
   equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
   in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
@@ -206,6 +290,88 @@ export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
+}
+
+export type NestedStringFilter<$PrismaModel = never> = {
+  equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  lt?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  lte?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  gt?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  gte?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  contains?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  startsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedStringFilter<$PrismaModel> | string
+}
+
+export type NestedEnumDatePostedNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.DatePosted | Prisma.EnumDatePostedFieldRefInput<$PrismaModel> | null
+  in?: $Enums.DatePosted[] | Prisma.ListEnumDatePostedFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.DatePosted[] | Prisma.ListEnumDatePostedFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumDatePostedNullableFilter<$PrismaModel> | $Enums.DatePosted | null
+}
+
+export type NestedEnumJobTypeNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.JobType | Prisma.EnumJobTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.JobType[] | Prisma.ListEnumJobTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.JobType[] | Prisma.ListEnumJobTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumJobTypeNullableFilter<$PrismaModel> | $Enums.JobType | null
+}
+
+export type NestedEnumOnsiteRemoteNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.OnsiteRemote | Prisma.EnumOnsiteRemoteFieldRefInput<$PrismaModel> | null
+  in?: $Enums.OnsiteRemote[] | Prisma.ListEnumOnsiteRemoteFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.OnsiteRemote[] | Prisma.ListEnumOnsiteRemoteFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumOnsiteRemoteNullableFilter<$PrismaModel> | $Enums.OnsiteRemote | null
+}
+
+export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  notIn?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  lt?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  lte?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  gt?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  gte?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  contains?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  startsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedStringWithAggregatesFilter<$PrismaModel> | string
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedStringFilter<$PrismaModel>
+  _max?: Prisma.NestedStringFilter<$PrismaModel>
+}
+
+export type NestedEnumDatePostedNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DatePosted | Prisma.EnumDatePostedFieldRefInput<$PrismaModel> | null
+  in?: $Enums.DatePosted[] | Prisma.ListEnumDatePostedFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.DatePosted[] | Prisma.ListEnumDatePostedFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumDatePostedNullableWithAggregatesFilter<$PrismaModel> | $Enums.DatePosted | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDatePostedNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDatePostedNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumJobTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.JobType | Prisma.EnumJobTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.JobType[] | Prisma.ListEnumJobTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.JobType[] | Prisma.ListEnumJobTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumJobTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.JobType | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumJobTypeNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumJobTypeNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumOnsiteRemoteNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OnsiteRemote | Prisma.EnumOnsiteRemoteFieldRefInput<$PrismaModel> | null
+  in?: $Enums.OnsiteRemote[] | Prisma.ListEnumOnsiteRemoteFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.OnsiteRemote[] | Prisma.ListEnumOnsiteRemoteFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumOnsiteRemoteNullableWithAggregatesFilter<$PrismaModel> | $Enums.OnsiteRemote | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOnsiteRemoteNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOnsiteRemoteNullableFilter<$PrismaModel>
 }
 
 

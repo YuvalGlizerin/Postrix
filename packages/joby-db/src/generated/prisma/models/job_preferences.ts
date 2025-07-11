@@ -38,8 +38,14 @@ export type Job_preferencesSumAggregateOutputType = {
 export type Job_preferencesMinAggregateOutputType = {
   id: number | null
   user_id: number | null
+  keywords: string | null
   job_preference: string | null
   alert_schedule: string | null
+  location: string | null
+  time_zone: string | null
+  datePosted: $Enums.DatePosted | null
+  jobType: $Enums.JobType | null
+  onsiteRemote: $Enums.OnsiteRemote | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -47,8 +53,14 @@ export type Job_preferencesMinAggregateOutputType = {
 export type Job_preferencesMaxAggregateOutputType = {
   id: number | null
   user_id: number | null
+  keywords: string | null
   job_preference: string | null
   alert_schedule: string | null
+  location: string | null
+  time_zone: string | null
+  datePosted: $Enums.DatePosted | null
+  jobType: $Enums.JobType | null
+  onsiteRemote: $Enums.OnsiteRemote | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -56,8 +68,15 @@ export type Job_preferencesMaxAggregateOutputType = {
 export type Job_preferencesCountAggregateOutputType = {
   id: number
   user_id: number
+  keywords: number
   job_preference: number
   alert_schedule: number
+  location: number
+  time_zone: number
+  companies: number
+  datePosted: number
+  jobType: number
+  onsiteRemote: number
   created_at: number
   updated_at: number
   _all: number
@@ -77,8 +96,14 @@ export type Job_preferencesSumAggregateInputType = {
 export type Job_preferencesMinAggregateInputType = {
   id?: true
   user_id?: true
+  keywords?: true
   job_preference?: true
   alert_schedule?: true
+  location?: true
+  time_zone?: true
+  datePosted?: true
+  jobType?: true
+  onsiteRemote?: true
   created_at?: true
   updated_at?: true
 }
@@ -86,8 +111,14 @@ export type Job_preferencesMinAggregateInputType = {
 export type Job_preferencesMaxAggregateInputType = {
   id?: true
   user_id?: true
+  keywords?: true
   job_preference?: true
   alert_schedule?: true
+  location?: true
+  time_zone?: true
+  datePosted?: true
+  jobType?: true
+  onsiteRemote?: true
   created_at?: true
   updated_at?: true
 }
@@ -95,8 +126,15 @@ export type Job_preferencesMaxAggregateInputType = {
 export type Job_preferencesCountAggregateInputType = {
   id?: true
   user_id?: true
+  keywords?: true
   job_preference?: true
   alert_schedule?: true
+  location?: true
+  time_zone?: true
+  companies?: true
+  datePosted?: true
+  jobType?: true
+  onsiteRemote?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -191,8 +229,15 @@ export type job_preferencesGroupByArgs<ExtArgs extends runtime.Types.Extensions.
 export type Job_preferencesGroupByOutputType = {
   id: number
   user_id: number
-  job_preference: string | null
-  alert_schedule: string | null
+  keywords: string
+  job_preference: string
+  alert_schedule: string
+  location: string | null
+  time_zone: string | null
+  companies: string[]
+  datePosted: $Enums.DatePosted | null
+  jobType: $Enums.JobType | null
+  onsiteRemote: $Enums.OnsiteRemote | null
   created_at: Date | null
   updated_at: Date | null
   _count: Job_preferencesCountAggregateOutputType | null
@@ -223,8 +268,15 @@ export type job_preferencesWhereInput = {
   NOT?: Prisma.job_preferencesWhereInput | Prisma.job_preferencesWhereInput[]
   id?: Prisma.IntFilter<"job_preferences"> | number
   user_id?: Prisma.IntFilter<"job_preferences"> | number
-  job_preference?: Prisma.StringNullableFilter<"job_preferences"> | string | null
-  alert_schedule?: Prisma.StringNullableFilter<"job_preferences"> | string | null
+  keywords?: Prisma.StringFilter<"job_preferences"> | string
+  job_preference?: Prisma.StringFilter<"job_preferences"> | string
+  alert_schedule?: Prisma.StringFilter<"job_preferences"> | string
+  location?: Prisma.StringNullableFilter<"job_preferences"> | string | null
+  time_zone?: Prisma.StringNullableFilter<"job_preferences"> | string | null
+  companies?: Prisma.StringNullableListFilter<"job_preferences">
+  datePosted?: Prisma.EnumDatePostedNullableFilter<"job_preferences"> | $Enums.DatePosted | null
+  jobType?: Prisma.EnumJobTypeNullableFilter<"job_preferences"> | $Enums.JobType | null
+  onsiteRemote?: Prisma.EnumOnsiteRemoteNullableFilter<"job_preferences"> | $Enums.OnsiteRemote | null
   created_at?: Prisma.DateTimeNullableFilter<"job_preferences"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"job_preferences"> | Date | string | null
   user?: Prisma.XOR<Prisma.UsersScalarRelationFilter, Prisma.usersWhereInput>
@@ -233,8 +285,15 @@ export type job_preferencesWhereInput = {
 export type job_preferencesOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   user_id?: Prisma.SortOrder
-  job_preference?: Prisma.SortOrderInput | Prisma.SortOrder
-  alert_schedule?: Prisma.SortOrderInput | Prisma.SortOrder
+  keywords?: Prisma.SortOrder
+  job_preference?: Prisma.SortOrder
+  alert_schedule?: Prisma.SortOrder
+  location?: Prisma.SortOrderInput | Prisma.SortOrder
+  time_zone?: Prisma.SortOrderInput | Prisma.SortOrder
+  companies?: Prisma.SortOrder
+  datePosted?: Prisma.SortOrderInput | Prisma.SortOrder
+  jobType?: Prisma.SortOrderInput | Prisma.SortOrder
+  onsiteRemote?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   user?: Prisma.usersOrderByWithRelationInput
@@ -246,8 +305,15 @@ export type job_preferencesWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.job_preferencesWhereInput | Prisma.job_preferencesWhereInput[]
   OR?: Prisma.job_preferencesWhereInput[]
   NOT?: Prisma.job_preferencesWhereInput | Prisma.job_preferencesWhereInput[]
-  job_preference?: Prisma.StringNullableFilter<"job_preferences"> | string | null
-  alert_schedule?: Prisma.StringNullableFilter<"job_preferences"> | string | null
+  keywords?: Prisma.StringFilter<"job_preferences"> | string
+  job_preference?: Prisma.StringFilter<"job_preferences"> | string
+  alert_schedule?: Prisma.StringFilter<"job_preferences"> | string
+  location?: Prisma.StringNullableFilter<"job_preferences"> | string | null
+  time_zone?: Prisma.StringNullableFilter<"job_preferences"> | string | null
+  companies?: Prisma.StringNullableListFilter<"job_preferences">
+  datePosted?: Prisma.EnumDatePostedNullableFilter<"job_preferences"> | $Enums.DatePosted | null
+  jobType?: Prisma.EnumJobTypeNullableFilter<"job_preferences"> | $Enums.JobType | null
+  onsiteRemote?: Prisma.EnumOnsiteRemoteNullableFilter<"job_preferences"> | $Enums.OnsiteRemote | null
   created_at?: Prisma.DateTimeNullableFilter<"job_preferences"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"job_preferences"> | Date | string | null
   user?: Prisma.XOR<Prisma.UsersScalarRelationFilter, Prisma.usersWhereInput>
@@ -256,8 +322,15 @@ export type job_preferencesWhereUniqueInput = Prisma.AtLeast<{
 export type job_preferencesOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   user_id?: Prisma.SortOrder
-  job_preference?: Prisma.SortOrderInput | Prisma.SortOrder
-  alert_schedule?: Prisma.SortOrderInput | Prisma.SortOrder
+  keywords?: Prisma.SortOrder
+  job_preference?: Prisma.SortOrder
+  alert_schedule?: Prisma.SortOrder
+  location?: Prisma.SortOrderInput | Prisma.SortOrder
+  time_zone?: Prisma.SortOrderInput | Prisma.SortOrder
+  companies?: Prisma.SortOrder
+  datePosted?: Prisma.SortOrderInput | Prisma.SortOrder
+  jobType?: Prisma.SortOrderInput | Prisma.SortOrder
+  onsiteRemote?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.job_preferencesCountOrderByAggregateInput
@@ -273,15 +346,29 @@ export type job_preferencesScalarWhereWithAggregatesInput = {
   NOT?: Prisma.job_preferencesScalarWhereWithAggregatesInput | Prisma.job_preferencesScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"job_preferences"> | number
   user_id?: Prisma.IntWithAggregatesFilter<"job_preferences"> | number
-  job_preference?: Prisma.StringNullableWithAggregatesFilter<"job_preferences"> | string | null
-  alert_schedule?: Prisma.StringNullableWithAggregatesFilter<"job_preferences"> | string | null
+  keywords?: Prisma.StringWithAggregatesFilter<"job_preferences"> | string
+  job_preference?: Prisma.StringWithAggregatesFilter<"job_preferences"> | string
+  alert_schedule?: Prisma.StringWithAggregatesFilter<"job_preferences"> | string
+  location?: Prisma.StringNullableWithAggregatesFilter<"job_preferences"> | string | null
+  time_zone?: Prisma.StringNullableWithAggregatesFilter<"job_preferences"> | string | null
+  companies?: Prisma.StringNullableListFilter<"job_preferences">
+  datePosted?: Prisma.EnumDatePostedNullableWithAggregatesFilter<"job_preferences"> | $Enums.DatePosted | null
+  jobType?: Prisma.EnumJobTypeNullableWithAggregatesFilter<"job_preferences"> | $Enums.JobType | null
+  onsiteRemote?: Prisma.EnumOnsiteRemoteNullableWithAggregatesFilter<"job_preferences"> | $Enums.OnsiteRemote | null
   created_at?: Prisma.DateTimeNullableWithAggregatesFilter<"job_preferences"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableWithAggregatesFilter<"job_preferences"> | Date | string | null
 }
 
 export type job_preferencesCreateInput = {
-  job_preference?: string | null
-  alert_schedule?: string | null
+  keywords: string
+  job_preference: string
+  alert_schedule: string
+  location?: string | null
+  time_zone?: string | null
+  companies?: Prisma.job_preferencesCreatecompaniesInput | string[]
+  datePosted?: $Enums.DatePosted | null
+  jobType?: $Enums.JobType | null
+  onsiteRemote?: $Enums.OnsiteRemote | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   user: Prisma.usersCreateNestedOneWithoutJob_preferencesInput
@@ -290,15 +377,29 @@ export type job_preferencesCreateInput = {
 export type job_preferencesUncheckedCreateInput = {
   id?: number
   user_id: number
-  job_preference?: string | null
-  alert_schedule?: string | null
+  keywords: string
+  job_preference: string
+  alert_schedule: string
+  location?: string | null
+  time_zone?: string | null
+  companies?: Prisma.job_preferencesCreatecompaniesInput | string[]
+  datePosted?: $Enums.DatePosted | null
+  jobType?: $Enums.JobType | null
+  onsiteRemote?: $Enums.OnsiteRemote | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
 
 export type job_preferencesUpdateInput = {
-  job_preference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  alert_schedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keywords?: Prisma.StringFieldUpdateOperationsInput | string
+  job_preference?: Prisma.StringFieldUpdateOperationsInput | string
+  alert_schedule?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  time_zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companies?: Prisma.job_preferencesUpdatecompaniesInput | string[]
+  datePosted?: Prisma.NullableEnumDatePostedFieldUpdateOperationsInput | $Enums.DatePosted | null
+  jobType?: Prisma.NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
+  onsiteRemote?: Prisma.NullableEnumOnsiteRemoteFieldUpdateOperationsInput | $Enums.OnsiteRemote | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.usersUpdateOneRequiredWithoutJob_preferencesNestedInput
@@ -307,8 +408,15 @@ export type job_preferencesUpdateInput = {
 export type job_preferencesUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   user_id?: Prisma.IntFieldUpdateOperationsInput | number
-  job_preference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  alert_schedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keywords?: Prisma.StringFieldUpdateOperationsInput | string
+  job_preference?: Prisma.StringFieldUpdateOperationsInput | string
+  alert_schedule?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  time_zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companies?: Prisma.job_preferencesUpdatecompaniesInput | string[]
+  datePosted?: Prisma.NullableEnumDatePostedFieldUpdateOperationsInput | $Enums.DatePosted | null
+  jobType?: Prisma.NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
+  onsiteRemote?: Prisma.NullableEnumOnsiteRemoteFieldUpdateOperationsInput | $Enums.OnsiteRemote | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -316,15 +424,29 @@ export type job_preferencesUncheckedUpdateInput = {
 export type job_preferencesCreateManyInput = {
   id?: number
   user_id: number
-  job_preference?: string | null
-  alert_schedule?: string | null
+  keywords: string
+  job_preference: string
+  alert_schedule: string
+  location?: string | null
+  time_zone?: string | null
+  companies?: Prisma.job_preferencesCreatecompaniesInput | string[]
+  datePosted?: $Enums.DatePosted | null
+  jobType?: $Enums.JobType | null
+  onsiteRemote?: $Enums.OnsiteRemote | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
 
 export type job_preferencesUpdateManyMutationInput = {
-  job_preference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  alert_schedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keywords?: Prisma.StringFieldUpdateOperationsInput | string
+  job_preference?: Prisma.StringFieldUpdateOperationsInput | string
+  alert_schedule?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  time_zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companies?: Prisma.job_preferencesUpdatecompaniesInput | string[]
+  datePosted?: Prisma.NullableEnumDatePostedFieldUpdateOperationsInput | $Enums.DatePosted | null
+  jobType?: Prisma.NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
+  onsiteRemote?: Prisma.NullableEnumOnsiteRemoteFieldUpdateOperationsInput | $Enums.OnsiteRemote | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -332,8 +454,15 @@ export type job_preferencesUpdateManyMutationInput = {
 export type job_preferencesUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   user_id?: Prisma.IntFieldUpdateOperationsInput | number
-  job_preference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  alert_schedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keywords?: Prisma.StringFieldUpdateOperationsInput | string
+  job_preference?: Prisma.StringFieldUpdateOperationsInput | string
+  alert_schedule?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  time_zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companies?: Prisma.job_preferencesUpdatecompaniesInput | string[]
+  datePosted?: Prisma.NullableEnumDatePostedFieldUpdateOperationsInput | $Enums.DatePosted | null
+  jobType?: Prisma.NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
+  onsiteRemote?: Prisma.NullableEnumOnsiteRemoteFieldUpdateOperationsInput | $Enums.OnsiteRemote | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -343,11 +472,26 @@ export type Job_preferencesNullableScalarRelationFilter = {
   isNot?: Prisma.job_preferencesWhereInput | null
 }
 
+export type StringNullableListFilter<$PrismaModel = never> = {
+  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
+}
+
 export type job_preferencesCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   user_id?: Prisma.SortOrder
+  keywords?: Prisma.SortOrder
   job_preference?: Prisma.SortOrder
   alert_schedule?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  time_zone?: Prisma.SortOrder
+  companies?: Prisma.SortOrder
+  datePosted?: Prisma.SortOrder
+  jobType?: Prisma.SortOrder
+  onsiteRemote?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -360,8 +504,14 @@ export type job_preferencesAvgOrderByAggregateInput = {
 export type job_preferencesMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   user_id?: Prisma.SortOrder
+  keywords?: Prisma.SortOrder
   job_preference?: Prisma.SortOrder
   alert_schedule?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  time_zone?: Prisma.SortOrder
+  datePosted?: Prisma.SortOrder
+  jobType?: Prisma.SortOrder
+  onsiteRemote?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -369,8 +519,14 @@ export type job_preferencesMaxOrderByAggregateInput = {
 export type job_preferencesMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   user_id?: Prisma.SortOrder
+  keywords?: Prisma.SortOrder
   job_preference?: Prisma.SortOrder
   alert_schedule?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  time_zone?: Prisma.SortOrder
+  datePosted?: Prisma.SortOrder
+  jobType?: Prisma.SortOrder
+  onsiteRemote?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -412,17 +568,56 @@ export type job_preferencesUncheckedUpdateOneWithoutUserNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.job_preferencesUpdateToOneWithWhereWithoutUserInput, Prisma.job_preferencesUpdateWithoutUserInput>, Prisma.job_preferencesUncheckedUpdateWithoutUserInput>
 }
 
+export type job_preferencesCreatecompaniesInput = {
+  set: string[]
+}
+
+export type StringFieldUpdateOperationsInput = {
+  set?: string
+}
+
+export type job_preferencesUpdatecompaniesInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type NullableEnumDatePostedFieldUpdateOperationsInput = {
+  set?: $Enums.DatePosted | null
+}
+
+export type NullableEnumJobTypeFieldUpdateOperationsInput = {
+  set?: $Enums.JobType | null
+}
+
+export type NullableEnumOnsiteRemoteFieldUpdateOperationsInput = {
+  set?: $Enums.OnsiteRemote | null
+}
+
 export type job_preferencesCreateWithoutUserInput = {
-  job_preference?: string | null
-  alert_schedule?: string | null
+  keywords: string
+  job_preference: string
+  alert_schedule: string
+  location?: string | null
+  time_zone?: string | null
+  companies?: Prisma.job_preferencesCreatecompaniesInput | string[]
+  datePosted?: $Enums.DatePosted | null
+  jobType?: $Enums.JobType | null
+  onsiteRemote?: $Enums.OnsiteRemote | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
 
 export type job_preferencesUncheckedCreateWithoutUserInput = {
   id?: number
-  job_preference?: string | null
-  alert_schedule?: string | null
+  keywords: string
+  job_preference: string
+  alert_schedule: string
+  location?: string | null
+  time_zone?: string | null
+  companies?: Prisma.job_preferencesCreatecompaniesInput | string[]
+  datePosted?: $Enums.DatePosted | null
+  jobType?: $Enums.JobType | null
+  onsiteRemote?: $Enums.OnsiteRemote | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -444,16 +639,30 @@ export type job_preferencesUpdateToOneWithWhereWithoutUserInput = {
 }
 
 export type job_preferencesUpdateWithoutUserInput = {
-  job_preference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  alert_schedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keywords?: Prisma.StringFieldUpdateOperationsInput | string
+  job_preference?: Prisma.StringFieldUpdateOperationsInput | string
+  alert_schedule?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  time_zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companies?: Prisma.job_preferencesUpdatecompaniesInput | string[]
+  datePosted?: Prisma.NullableEnumDatePostedFieldUpdateOperationsInput | $Enums.DatePosted | null
+  jobType?: Prisma.NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
+  onsiteRemote?: Prisma.NullableEnumOnsiteRemoteFieldUpdateOperationsInput | $Enums.OnsiteRemote | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type job_preferencesUncheckedUpdateWithoutUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  job_preference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  alert_schedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keywords?: Prisma.StringFieldUpdateOperationsInput | string
+  job_preference?: Prisma.StringFieldUpdateOperationsInput | string
+  alert_schedule?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  time_zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companies?: Prisma.job_preferencesUpdatecompaniesInput | string[]
+  datePosted?: Prisma.NullableEnumDatePostedFieldUpdateOperationsInput | $Enums.DatePosted | null
+  jobType?: Prisma.NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
+  onsiteRemote?: Prisma.NullableEnumOnsiteRemoteFieldUpdateOperationsInput | $Enums.OnsiteRemote | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -463,8 +672,15 @@ export type job_preferencesUncheckedUpdateWithoutUserInput = {
 export type job_preferencesSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   user_id?: boolean
+  keywords?: boolean
   job_preference?: boolean
   alert_schedule?: boolean
+  location?: boolean
+  time_zone?: boolean
+  companies?: boolean
+  datePosted?: boolean
+  jobType?: boolean
+  onsiteRemote?: boolean
   created_at?: boolean
   updated_at?: boolean
   user?: boolean | Prisma.usersDefaultArgs<ExtArgs>
@@ -473,8 +689,15 @@ export type job_preferencesSelect<ExtArgs extends runtime.Types.Extensions.Inter
 export type job_preferencesSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   user_id?: boolean
+  keywords?: boolean
   job_preference?: boolean
   alert_schedule?: boolean
+  location?: boolean
+  time_zone?: boolean
+  companies?: boolean
+  datePosted?: boolean
+  jobType?: boolean
+  onsiteRemote?: boolean
   created_at?: boolean
   updated_at?: boolean
   user?: boolean | Prisma.usersDefaultArgs<ExtArgs>
@@ -483,8 +706,15 @@ export type job_preferencesSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
 export type job_preferencesSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   user_id?: boolean
+  keywords?: boolean
   job_preference?: boolean
   alert_schedule?: boolean
+  location?: boolean
+  time_zone?: boolean
+  companies?: boolean
+  datePosted?: boolean
+  jobType?: boolean
+  onsiteRemote?: boolean
   created_at?: boolean
   updated_at?: boolean
   user?: boolean | Prisma.usersDefaultArgs<ExtArgs>
@@ -493,13 +723,20 @@ export type job_preferencesSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
 export type job_preferencesSelectScalar = {
   id?: boolean
   user_id?: boolean
+  keywords?: boolean
   job_preference?: boolean
   alert_schedule?: boolean
+  location?: boolean
+  time_zone?: boolean
+  companies?: boolean
+  datePosted?: boolean
+  jobType?: boolean
+  onsiteRemote?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type job_preferencesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "user_id" | "job_preference" | "alert_schedule" | "created_at" | "updated_at", ExtArgs["result"]["job_preferences"]>
+export type job_preferencesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "user_id" | "keywords" | "job_preference" | "alert_schedule" | "location" | "time_zone" | "companies" | "datePosted" | "jobType" | "onsiteRemote" | "created_at" | "updated_at", ExtArgs["result"]["job_preferences"]>
 export type job_preferencesInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.usersDefaultArgs<ExtArgs>
 }
@@ -518,8 +755,15 @@ export type $job_preferencesPayload<ExtArgs extends runtime.Types.Extensions.Int
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     user_id: number
-    job_preference: string | null
-    alert_schedule: string | null
+    keywords: string
+    job_preference: string
+    alert_schedule: string
+    location: string | null
+    time_zone: string | null
+    companies: string[]
+    datePosted: $Enums.DatePosted | null
+    jobType: $Enums.JobType | null
+    onsiteRemote: $Enums.OnsiteRemote | null
     created_at: Date | null
     updated_at: Date | null
   }, ExtArgs["result"]["job_preferences"]>
@@ -948,8 +1192,15 @@ export interface Prisma__job_preferencesClient<T, Null = never, ExtArgs extends 
 export interface job_preferencesFieldRefs {
   readonly id: Prisma.FieldRef<"job_preferences", 'Int'>
   readonly user_id: Prisma.FieldRef<"job_preferences", 'Int'>
+  readonly keywords: Prisma.FieldRef<"job_preferences", 'String'>
   readonly job_preference: Prisma.FieldRef<"job_preferences", 'String'>
   readonly alert_schedule: Prisma.FieldRef<"job_preferences", 'String'>
+  readonly location: Prisma.FieldRef<"job_preferences", 'String'>
+  readonly time_zone: Prisma.FieldRef<"job_preferences", 'String'>
+  readonly companies: Prisma.FieldRef<"job_preferences", 'String[]'>
+  readonly datePosted: Prisma.FieldRef<"job_preferences", 'DatePosted'>
+  readonly jobType: Prisma.FieldRef<"job_preferences", 'JobType'>
+  readonly onsiteRemote: Prisma.FieldRef<"job_preferences", 'OnsiteRemote'>
   readonly created_at: Prisma.FieldRef<"job_preferences", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"job_preferences", 'DateTime'>
 }
