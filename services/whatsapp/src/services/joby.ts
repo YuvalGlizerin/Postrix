@@ -4,6 +4,7 @@ import { Logger } from 'logger';
 import whatsapp, { type WhatsAppMessagePayload } from 'whatsapp-utils';
 import prisma from 'joby-db';
 import type { usersModel as User } from 'joby-db';
+import { Prisma } from 'joby-db/src/generated/prisma/client.ts';
 import OpenAI from 'openai';
 
 import { jobyModelSettings } from './joby/joby-model-settings.ts';
@@ -89,6 +90,41 @@ async function jobyWebhook(req: Request, res: Response) {
         responseMessage += `**Job Preferences:**\n"${user.job_preferences.job_preference}"\n\n`;
       }
 
+      // Add keywords if available
+      if (user.job_preferences.keywords) {
+        responseMessage += `**Keywords:**\n${user.job_preferences.keywords}\n\n`;
+      }
+
+      // Add location if available
+      if (user.job_preferences.location) {
+        responseMessage += `**Location:**\n${user.job_preferences.location}\n\n`;
+      }
+
+      // Add companies if available
+      if (user.job_preferences.companies && user.job_preferences.companies.length > 0) {
+        responseMessage += `**Target Companies:**\n${user.job_preferences.companies.join(', ')}\n\n`;
+      }
+
+      // Add job type if available
+      if (user.job_preferences.jobType) {
+        responseMessage += `**Job Type:**\n${user.job_preferences.jobType}\n\n`;
+      }
+
+      // Add remote preference if available
+      if (user.job_preferences.onsiteRemote) {
+        responseMessage += `**Work Style:**\n${user.job_preferences.onsiteRemote}\n\n`;
+      }
+
+      // Add date posted preference if available
+      if (user.job_preferences.datePosted) {
+        responseMessage += `**Job Posting Age:**\n${user.job_preferences.datePosted}\n\n`;
+      }
+
+      // Add timezone if available
+      if (user.job_preferences.time_zone) {
+        responseMessage += `**Timezone:**\n${user.job_preferences.time_zone}\n\n`;
+      }
+
       // Add alert schedule
       if (user.job_preferences.alert_schedule) {
         const schedule = user.job_preferences.alert_schedule;
@@ -150,45 +186,67 @@ async function jobyWebhook(req: Request, res: Response) {
       tools: [
         {
           type: 'function',
-          name: 'save_job_preference',
-          description:
-            "Save a user's job preference to the database. Call this when a user expresses a job preference, requirement, or search criteria.",
+          name: 'update_job_preferences',
+          description: `Update user's job preferences in the database. Call this when a user expresses job preferences, requirements, search criteria, or wants to change their alert schedule. User's phone number: ${user.phone_number}`,
           parameters: {
             type: 'object',
             properties: {
               job_preference: {
                 type: 'string',
                 description:
-                  'The detailed job preference including job title, location, salary range, industry, company size, remote/hybrid preferences, or any other job-related criteria the user has mentioned.'
-              }
-            },
-            required: ['job_preference'],
-            additionalProperties: false
-          },
-          strict: true
-        },
-        {
-          type: 'function',
-          name: 'save_alert_schedule',
-          description: 'Save when the user wants to receive job alerts. Convert their preferences to cron syntax.',
-          parameters: {
-            type: 'object',
-            properties: {
-              cron_expression: {
-                type: 'string',
-                description:
-                  'The generated cron expression (e.g., "0 9 * * 1" for weekly Monday at 9 AM, "0 14 * * *" for daily at 2 PM, "0 18 1 * *" for monthly on 1st at 6 PM)'
+                  'The detailed job preference including job title, salary range, industry, company size, or any other job-related criteria the user has mentioned.'
               },
-              description: {
+              keywords: {
                 type: 'string',
                 description:
-                  'Human-readable description of the schedule (e.g., "Weekly on Monday at 9 AM", "Daily at 2 PM", "Monthly on 1st at 6 PM")'
+                  'Space-separated keywords for job search, extracted from the job preference (e.g., "python developer remote" or "marketing manager healthcare")'
+              },
+              location: {
+                type: 'string',
+                description:
+                  'The job location preference (e.g., "New York", "San Francisco", "Remote", "London"). If not specified, omit this field.'
+              },
+              companies: {
+                type: 'array',
+                items: { type: 'string' },
+                description:
+                  'Array of target company names the user mentioned (e.g., ["Google", "Microsoft", "Apple"]). If none specified, omit this field.'
+              },
+              datePosted: {
+                type: 'string',
+                enum: ['anyTime', 'pastMonth', 'pastWeek', 'past24Hours'],
+                description: 'How recent the job postings should be. If not specified, omit this field.'
+              },
+              jobType: {
+                type: 'string',
+                enum: ['fullTime', 'partTime', 'contract', 'internship'],
+                description: 'The type of employment. If not specified, omit this field.'
+              },
+              onsiteRemote: {
+                type: 'string',
+                enum: ['onsite', 'remote', 'hybrid'],
+                description: 'Work arrangement preference. If not specified, omit this field.'
+              },
+              alert_schedule: {
+                type: 'string',
+                description:
+                  'Cron expression for when to send job alerts (e.g., "0 9 * * 1" for weekly Monday at 9 AM, "0 14 * * *" for daily at 2 PM). If not specified, omit this field.'
+              },
+              schedule_description: {
+                type: 'string',
+                description:
+                  'Human-readable description of the alert schedule (e.g., "Weekly on Monday at 9 AM", "Daily at 2 PM"). If not specified, omit this field.'
+              },
+              timezone: {
+                type: 'string',
+                description:
+                  'The timezone to use for scheduling alerts. If user specified a job location, use that location\'s timezone (e.g., "Asia/Jerusalem" for Tel Aviv, "America/New_York" for NYC). If no location or location is "remote", determine timezone from phone number (e.g., phone starting with 972 = "Asia/Jerusalem", 1 = "America/New_York"). Use IANA timezone format.'
               }
             },
-            required: ['cron_expression', 'description'],
+            required: ['job_preference', 'keywords'],
             additionalProperties: false
           },
-          strict: true
+          strict: false
         },
         {
           type: 'web_search_preview'
@@ -212,12 +270,42 @@ async function jobyWebhook(req: Request, res: Response) {
     const functionOutputs = [];
     if (response.output) {
       for (const output of response.output) {
-        if (output.type === 'function_call' && output.name === 'save_job_preference') {
+        if (output.type === 'function_call' && output.name === 'update_job_preferences') {
           try {
             const functionArgs = JSON.parse(output.arguments);
-            const jobPreference = functionArgs.job_preference;
 
-            // Upsert the job preference (create or update the single record)
+            // Use AI-determined timezone or default
+            const timeZone = functionArgs.timezone || 'America/New_York';
+
+            // Prepare the data for upsert
+            const updateData: Partial<Prisma.job_preferencesUpdateInput> = {
+              job_preference: functionArgs.job_preference,
+              keywords: functionArgs.keywords,
+              time_zone: timeZone,
+              updated_at: new Date()
+            };
+
+            // Add optional fields only if they were provided
+            if (functionArgs.location) {
+              updateData.location = functionArgs.location;
+            }
+            if (functionArgs.companies && functionArgs.companies.length > 0) {
+              updateData.companies = functionArgs.companies;
+            }
+            if (functionArgs.datePosted) {
+              updateData.datePosted = functionArgs.datePosted;
+            }
+            if (functionArgs.jobType) {
+              updateData.jobType = functionArgs.jobType;
+            }
+            if (functionArgs.onsiteRemote) {
+              updateData.onsiteRemote = functionArgs.onsiteRemote;
+            }
+            if (functionArgs.alert_schedule) {
+              updateData.alert_schedule = functionArgs.alert_schedule;
+            }
+
+            // Upsert the job preferences (create or update the single record)
             const existingPreference = await prisma.job_preferences.findUnique({
               where: { user_id: user.id }
             });
@@ -225,25 +313,35 @@ async function jobyWebhook(req: Request, res: Response) {
             if (existingPreference) {
               await prisma.job_preferences.update({
                 where: { user_id: user.id },
-                data: {
-                  job_preference: jobPreference,
-                  updated_at: new Date()
-                }
+                data: updateData
               });
             } else {
+              // For create, we need all required fields
+              const createData: Prisma.job_preferencesCreateInput = {
+                user: { connect: { id: user.id } },
+                job_preference: functionArgs.job_preference,
+                keywords: functionArgs.keywords,
+                time_zone: timeZone,
+                alert_schedule: functionArgs.alert_schedule || 'not_set', // Default value for required field
+                created_at: new Date(),
+                updated_at: new Date(),
+                // Add optional fields if provided
+                ...(functionArgs.location && { location: functionArgs.location }),
+                ...(functionArgs.companies &&
+                  functionArgs.companies.length > 0 && { companies: functionArgs.companies }),
+                ...(functionArgs.datePosted && { datePosted: functionArgs.datePosted }),
+                ...(functionArgs.jobType && { jobType: functionArgs.jobType }),
+                ...(functionArgs.onsiteRemote && { onsiteRemote: functionArgs.onsiteRemote })
+              };
+
               await prisma.job_preferences.create({
-                data: {
-                  user_id: user.id,
-                  job_preference: jobPreference,
-                  created_at: new Date(),
-                  updated_at: new Date()
-                }
+                data: createData
               });
             }
 
-            logger.log('Job preference saved/updated', {
+            logger.log('Job preferences updated', {
               userId: user.id,
-              preference: jobPreference
+              preferences: functionArgs
             });
 
             // Add function output for the API
@@ -252,11 +350,13 @@ async function jobyWebhook(req: Request, res: Response) {
               call_id: output.call_id,
               output: JSON.stringify({
                 success: true,
-                message: `Use this exact format with line breaks: ✅ I've saved your job preference:\n\n"${jobPreference}"\n\n[Add encouraging follow-up message]`
+                message: 'Job preferences have been successfully updated in the database.',
+                updated_fields: Object.keys(functionArgs),
+                user_id: user.id
               })
             });
           } catch (error) {
-            logger.error('Error saving job preference:', { error });
+            logger.error('Error updating job preferences:', { error });
 
             // Add error output for the API
             functionOutputs.push({
@@ -264,67 +364,7 @@ async function jobyWebhook(req: Request, res: Response) {
               call_id: output.call_id,
               output: JSON.stringify({
                 success: false,
-                message: 'Error saving job preference. Please try again.'
-              })
-            });
-          }
-        }
-
-        if (output.type === 'function_call' && output.name === 'save_alert_schedule') {
-          try {
-            const functionArgs = JSON.parse(output.arguments);
-            const cronExpression = functionArgs.cron_expression;
-            const scheduleDescription = functionArgs.description;
-
-            // Upsert the alert schedule (create or update the single record)
-            const existingPreference = await prisma.job_preferences.findUnique({
-              where: { user_id: user.id }
-            });
-
-            if (existingPreference) {
-              await prisma.job_preferences.update({
-                where: { user_id: user.id },
-                data: {
-                  alert_schedule: cronExpression,
-                  updated_at: new Date()
-                }
-              });
-            } else {
-              await prisma.job_preferences.create({
-                data: {
-                  user_id: user.id,
-                  alert_schedule: cronExpression,
-                  created_at: new Date(),
-                  updated_at: new Date()
-                }
-              });
-            }
-
-            logger.log('Alert schedule saved/updated', {
-              userId: user.id,
-              schedule: cronExpression,
-              description: scheduleDescription
-            });
-
-            // Add function output for the API
-            functionOutputs.push({
-              type: 'function_call_output' as const,
-              call_id: output.call_id,
-              output: JSON.stringify({
-                success: true,
-                message: `✅ Perfect! I've scheduled ${scheduleDescription.toLowerCase()} job alerts for you.\n\nYou'll receive job updates based on your preferences. You can always change this schedule by telling me your new preference!`
-              })
-            });
-          } catch (error) {
-            logger.error('Error saving alert schedule:', { error });
-
-            // Add error output for the API
-            functionOutputs.push({
-              type: 'function_call_output' as const,
-              call_id: output.call_id,
-              output: JSON.stringify({
-                success: false,
-                message: 'Error saving alert schedule. Please try again.'
+                message: 'Error updating job preferences. Please try again.'
               })
             });
           }
@@ -373,6 +413,29 @@ async function jobyWebhook(req: Request, res: Response) {
       aiResponse = "I'm here to help you with your job search! Tell me about what kind of job you're looking for.";
     }
 
+    // Check if we need to add guidance for missing mandatory fields
+    const userWithPrefs = await prisma.users.findUnique({
+      where: { id: user.id },
+      include: { job_preferences: true }
+    });
+
+    const prefs = userWithPrefs?.job_preferences;
+    const missingFields = [];
+
+    if (!prefs?.job_preference) {
+      missingFields.push('job preferences');
+    }
+    if (!prefs?.alert_schedule || prefs.alert_schedule === 'not_set') {
+      missingFields.push('alert schedule');
+    }
+
+    // Add guidance message to the AI response
+    if (missingFields.length > 0) {
+      aiResponse += `\n\n⚠️ **Missing Required Fields:**\nPlease provide your ${missingFields.join(' and ')} to complete your profile.`;
+    } else if (prefs?.job_preference && prefs?.alert_schedule && prefs.alert_schedule !== 'not_set') {
+      aiResponse += `\n\n✅ **Profile Complete!**\nYou can update any preferences by just telling me what you'd like to change.`;
+    }
+
     await whatsapp.respond(whatsAppPayload, aiResponse, accessToken);
 
     return;
@@ -391,8 +454,52 @@ async function buildResponseContext(user: User) {
   // Build instructions with job preferences context
   let instructions = jobyModelSettings;
 
-  if (userWithPreferences?.job_preferences?.job_preference) {
-    instructions += `\n\nUSER'S CURRENT JOB PREFERENCES: ${userWithPreferences.job_preferences.job_preference}`;
+  if (userWithPreferences?.job_preferences) {
+    const prefs = userWithPreferences.job_preferences;
+    instructions += `\n\nUSER'S CURRENT PROFILE:\n`;
+
+    if (prefs.job_preference) {
+      instructions += `- Job Preference: ${prefs.job_preference}\n`;
+    }
+    if (prefs.keywords) {
+      instructions += `- Keywords: ${prefs.keywords}\n`;
+    }
+    if (prefs.location) {
+      instructions += `- Location: ${prefs.location}\n`;
+    }
+    if (prefs.companies && prefs.companies.length > 0) {
+      instructions += `- Target Companies: ${prefs.companies.join(', ')}\n`;
+    }
+    if (prefs.jobType) {
+      instructions += `- Job Type: ${prefs.jobType}\n`;
+    }
+    if (prefs.onsiteRemote) {
+      instructions += `- Work Style: ${prefs.onsiteRemote}\n`;
+    }
+    if (prefs.datePosted) {
+      instructions += `- Job Posting Age: ${prefs.datePosted}\n`;
+    }
+    if (prefs.time_zone) {
+      instructions += `- Timezone: ${prefs.time_zone}\n`;
+    }
+    if (prefs.alert_schedule && prefs.alert_schedule !== 'not_set') {
+      instructions += `- Alert Schedule: ${prefs.alert_schedule}\n`;
+    }
+
+    // Note missing mandatory fields
+    const missingFields = [];
+    if (!prefs.job_preference) {
+      missingFields.push('job preference');
+    }
+    if (!prefs.alert_schedule || prefs.alert_schedule === 'not_set') {
+      missingFields.push('alert schedule');
+    }
+
+    if (missingFields.length > 0) {
+      instructions += `\nMISSING REQUIRED: ${missingFields.join(', ')}\n`;
+    }
+  } else {
+    instructions += `\n\nUSER PROFILE: New user - needs job preferences and alert schedule setup\n`;
   }
 
   // Return previous response ID for conversation continuity
@@ -426,9 +533,15 @@ async function setupFirstTimeUser(whatsAppPayload: WhatsAppMessagePayload, acces
 
   await whatsapp.respond(
     whatsAppPayload,
-    "You're messaging Joby, an AI job finder assistant.\n" +
-      'By continuing, you agree to our terms and have read our privacy policy at https://whatsapp.postrix.io/privacy-policy.\n' +
-      'To get started, send a message like "I want to find a job as a [job title] in [location]"\n\n' +
+    "Hi! I'm Joby, an AI agent that sets up personalized WhatsApp notifications for job opportunities.\n\n" +
+      '🎯 **My Purpose:**\n' +
+      '• Collect your job preferences\n' +
+      '• Set up your alert schedule\n' +
+      '• Send you targeted job notifications via WhatsApp\n\n' +
+      'By continuing, you agree to our terms and have read our privacy policy at https://whatsapp.postrix.io/privacy-policy.\n\n' +
+      'To get started, tell me:\n' +
+      "1. What kind of job you're looking for\n" +
+      "2. When you'd like to receive job alerts\n\n" +
       'Available commands:\n' +
       '• /preferences - View your saved job preferences\n' +
       '• /reset - Clear all your data and start fresh',

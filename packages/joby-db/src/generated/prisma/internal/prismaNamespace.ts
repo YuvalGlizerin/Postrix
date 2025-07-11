@@ -616,8 +616,15 @@ export type UsersScalarFieldEnum = (typeof UsersScalarFieldEnum)[keyof typeof Us
 export const Job_preferencesScalarFieldEnum = {
   id: 'id',
   user_id: 'user_id',
+  keywords: 'keywords',
   job_preference: 'job_preference',
   alert_schedule: 'alert_schedule',
+  location: 'location',
+  time_zone: 'time_zone',
+  companies: 'companies',
+  datePosted: 'datePosted',
+  jobType: 'jobType',
+  onsiteRemote: 'onsiteRemote',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -694,6 +701,48 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'DatePosted'
+ */
+export type EnumDatePostedFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DatePosted'>
+    
+
+
+/**
+ * Reference to a field of type 'DatePosted[]'
+ */
+export type ListEnumDatePostedFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DatePosted[]'>
+    
+
+
+/**
+ * Reference to a field of type 'JobType'
+ */
+export type EnumJobTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobType'>
+    
+
+
+/**
+ * Reference to a field of type 'JobType[]'
+ */
+export type ListEnumJobTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'OnsiteRemote'
+ */
+export type EnumOnsiteRemoteFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OnsiteRemote'>
+    
+
+
+/**
+ * Reference to a field of type 'OnsiteRemote[]'
+ */
+export type ListEnumOnsiteRemoteFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OnsiteRemote[]'>
     
 
 
