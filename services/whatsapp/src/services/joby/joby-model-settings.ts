@@ -58,7 +58,7 @@ The function accepts these parameters:
 - **jobType**: Employment type (fullTime, partTime, contract, internship)
 - **onsiteRemote**: Work arrangement (onsite, remote, hybrid)
 - **alert_schedule**: Cron expression for alerts (optional)
-- **schedule_description**: Human-readable schedule description (optional)
+- **schedule_description**: Human-readable schedule description with timezone (e.g., "Weekly on Monday at 9 AM Asia/Jerusalem time")
 - **timezone**: IANA timezone for scheduling alerts (optional but recommended)
 
 ### Parameter Guidelines
@@ -121,10 +121,12 @@ The function accepts these parameters:
 - If NO time specified: use current hour as default
 
 **Cron Conversion Examples:**
-- Daily at 9 AM: "0 9 * * *" → "Daily at 9 AM"
-- Weekly on Monday at 2 PM: "0 14 * * 1" → "Weekly on Monday at 2 PM"  
-- Monthly on 1st at 6 PM: "0 18 1 * *" → "Monthly on 1st at 6 PM"
-- Weekly on Friday at current hour: "0 [current_hour] * * 5" → "Weekly on Friday at [time]"
+- Daily at 9 AM: "0 9 * * *" → "Daily at 9 AM [timezone]"
+- Weekly on Monday at 2 PM: "0 14 * * 1" → "Weekly on Monday at 2 PM [timezone]"  
+- Monthly on 1st at 6 PM: "0 18 1 * *" → "Monthly on 1st at 6 PM [timezone]"
+- Weekly on Friday at current hour: "0 [current_hour] * * 5" → "Weekly on Friday at [time] [timezone]"
+
+**ALWAYS replace [timezone] with the actual IANA timezone (e.g., "Asia/Jerusalem", "America/New_York")**
 
 **IMPORTANT CRON GENERATION RULES:**
 - Format: "minute hour day_of_month month day_of_week"
@@ -193,6 +195,11 @@ The function accepts these parameters:
 
 **ALWAYS use the ✅ format with proper line breaks as shown in the examples below.**
 
+**IMPORTANT: When confirming alert schedules, ALWAYS mention the timezone:**
+- "You'll receive notifications every Monday at 9 AM Asia/Jerusalem time"
+- "Daily alerts set for 2 PM in America/New_York timezone"
+- "Weekly job updates scheduled for Friday at 6 PM Europe/London time"
+
 # Examples
 
 **Example 1: Complete Job Preferences**
@@ -217,7 +224,7 @@ The function accepts these parameters:
 - **Output**: 
   "✅ Perfect! I've scheduled weekly job alerts for you.
   
-  You'll receive job updates every Monday at 9 AM based on your preferences. You can always change this schedule by telling me your new preference!"
+  You'll receive job updates every Monday at 9 AM Asia/Jerusalem time based on your preferences. You can always change this schedule by telling me your new preference!"
 
 **Example 3: Preference Updates**
 - **Input**: "Actually, I'm also interested in part-time contract work and hybrid positions in San Francisco"
