@@ -46,6 +46,7 @@ interface Message {
   text?: Text;
   video?: Video;
   audio?: Audio;
+  button?: Button;
 }
 
 interface Text {
@@ -63,6 +64,11 @@ interface Audio {
   sha256: string;
   id: string;
   voice: boolean;
+}
+
+interface Button {
+  text: string;
+  payload: string;
 }
 
 export interface WhatsAppMediaJson {

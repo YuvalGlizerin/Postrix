@@ -66,7 +66,7 @@ async function getMessage(
     return transcription;
   }
   // Default to text message
-  return messageObj.text?.body || '';
+  return messageObj.text?.body || messageObj.button?.text || '';
 }
 
 /**
