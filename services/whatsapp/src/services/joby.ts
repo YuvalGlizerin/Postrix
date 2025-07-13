@@ -29,6 +29,18 @@ async function jobyWebhook(req: Request, res: Response) {
 
     const message = await whatsapp.getMessage(whatsAppPayload, accessToken);
 
+    if (message === '/unsubscribe' || message?.toLocaleLowerCase() === 'unsubscribe') {
+      const phoneNumber = whatsAppPayload.entry[0].changes[0].value.messages[0].from;
+
+      await prisma.users.update({
+        where: { phone_number: phoneNumber },
+        data: { job_preferences: { update: { alert_schedule: 'not_set' } } }
+      });
+
+      await whatsapp.respond(whatsAppPayload, 'You have been unsubscribed from job alerts', accessToken);
+      return;
+    }
+
     // Check for reset command
     if (message === '/reset') {
       const phoneNumber = whatsAppPayload.entry[0].changes[0].value.messages[0].from;
@@ -544,7 +556,8 @@ async function setupFirstTimeUser(whatsAppPayload: WhatsAppMessagePayload, acces
       "2. When you'd like to receive job alerts\n\n" +
       'Available commands:\n' +
       '• /preferences - View your saved job preferences\n' +
-      '• /reset - Clear all your data and start fresh',
+      '• /reset - Clear all your data and start fresh\n' +
+      '• /unsubscribe - Unsubscribe from job alerts',
     accessToken
   );
   return newUser;
