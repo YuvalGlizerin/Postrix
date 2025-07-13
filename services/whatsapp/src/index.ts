@@ -4,9 +4,11 @@ import express, { type Request, type Response } from 'express';
 import whatsapp from 'whatsapp-utils';
 import secrets from 'secret-manager';
 import { Logger } from 'logger';
+import prisma from 'joby-db';
 
 import capishWebhook from './services/capish.ts';
 import jobyWebhook from './services/joby.ts';
+import { startJobScheduler, getSchedulerStatus, sendJobAlert } from './services/joby/job-scheduler.ts';
 
 const logger = new Logger('Whatsapp');
 
@@ -14,16 +16,59 @@ process.title = 'Whatsapp';
 const app = express();
 const PORT = process.env.PORT;
 
+startJobScheduler();
+
 app.use(express.json()); // Add this line to parse JSON request bodies
 
 // Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).send('OK');
+app.get('/health', (req: Request, res: Response) => {
+  const schedulerStatus = getSchedulerStatus();
+  res.status(200).json({
+    status: 'OK',
+    service: 'whatsapp',
+    scheduler: schedulerStatus
+  });
 });
 
 app.get('/webhook', async (req: Request, res: Response) => {
   logger.log('Received GET webhook verification request:', req.query);
   whatsapp.verifyToken(req, res, 'VERIFY_TOKEN');
+});
+
+app.post('/send-job-alert', async (req: Request, res: Response) => {
+  const { phoneNumber } = req.body;
+  logger.log('Received send job alert request:', { phoneNumber });
+
+  // Get all users with job preferences and alert schedules
+  const userWithAlerts = await prisma.users.findUnique({
+    include: {
+      job_preferences: true
+    },
+    where: {
+      phone_number: phoneNumber,
+      job_preferences: {
+        alert_schedule: {
+          not: 'not_set'
+        }
+      }
+    }
+  });
+
+  if (!userWithAlerts) {
+    logger.error('No user with alerts found', { phoneNumber });
+    res.status(404).send('No user with alerts found');
+    return;
+  }
+
+  if (!userWithAlerts.job_preferences) {
+    logger.error('No job preferences found', { phoneNumber });
+    res.status(404).send('No job preferences found');
+    return;
+  }
+
+  await sendJobAlert(userWithAlerts, userWithAlerts.job_preferences);
+  logger.log('Sent job alert for:', { phoneNumber });
+  res.status(200).send('OK');
 });
 
 // Add work in progress auto response
@@ -368,5 +413,4 @@ app.get('/privacy-policy', (req: Request, res: Response) => {
 const server = app.listen(PORT, () => {
   logger.log(`Whatsapp service is running on ${process.env.ENV}: http://localhost:${PORT}`);
 });
-
 export { server as default };

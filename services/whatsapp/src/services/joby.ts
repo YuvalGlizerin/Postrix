@@ -199,7 +199,7 @@ async function jobyWebhook(req: Request, res: Response) {
               keywords: {
                 type: 'string',
                 description:
-                  'Space-separated keywords for job search, extracted from the job preference (e.g., "python developer remote" or "marketing manager healthcare")'
+                  'Space-separated keywords for job search, extracted from the job preference (e.g., "python developer" or "marketing manager"). Do not include location, work style, company, or other attributes.'
               },
               location: {
                 type: 'string',

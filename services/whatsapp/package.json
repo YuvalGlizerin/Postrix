@@ -18,6 +18,7 @@
     "joby-db": "file:../../packages/joby-db",
     "logger": "file:../../packages/logger",
     "openai": "^5.8.2",
+    "redis": "file:../../packages/redis",
     "secret-manager": "file:../../packages/secret-manager",
     "whatsapp-utils": "file:../../packages/whatsapp-utils"
   },

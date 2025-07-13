@@ -64,9 +64,11 @@ The function accepts these parameters:
 ### Parameter Guidelines
 
 **Keywords Generation:**
-- Extract 3-5 key terms from their job preference
+- Extract ONLY the job title/role from their job preference
+- Do NOT include location, work style, company, or other attributes
 - Use lowercase, space-separated format
-- Example: "python developer remote" or "marketing manager healthcare"
+- Examples: "backend developer", "marketing manager", "data analyst", "product manager"
+- NOT: "remote backend developer" or "marketing manager healthcare" or "senior software engineer google"
 
 **Company Extraction:**
 - Only include if they specifically mention company names
