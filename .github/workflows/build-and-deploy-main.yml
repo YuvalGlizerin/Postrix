@@ -19,7 +19,7 @@ jobs:
     strategy:
       matrix:
         environment: [dev, prod]
-        db: [joby, cannon]
+        db: [joby, lumo, cannon]
 
     uses: ./.github/workflows/db-migrate.yml
     with:

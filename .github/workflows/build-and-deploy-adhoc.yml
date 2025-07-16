@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        db: [joby, cannon]
+        db: [joby, lumo, cannon]
 
     uses: ./.github/workflows/db-migrate.yml
     with:
