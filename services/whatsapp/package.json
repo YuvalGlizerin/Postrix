@@ -17,6 +17,7 @@
     "file-system": "file:../../packages/file-system",
     "joby-db": "file:../../packages/joby-db",
     "logger": "file:../../packages/logger",
+    "lumo-db": "file:../../packages/lumo-db",
     "openai": "^5.8.2",
     "redis": "file:../../packages/redis",
     "secret-manager": "file:../../packages/secret-manager",

@@ -1,0 +1,22 @@
+{
+  "name": "lumo-db",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A db package using postgresql and prisma for lumo database",
+  "main": "src/index.ts",
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "test": "jest --config ../../jest.config.mjs --rootDir ./",
+    "migrate:dev": "prisma migrate dev --skip-generate",
+    "migrate:deploy": "prisma migrate deploy",
+    "migrate:reset": "prisma migrate reset",
+    "generate": "prisma generate"
+  },
+  "devDependencies": {
+    "prisma": "^6.7.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.7.0",
+    "secret-manager": "file:../secret-manager"
+  }
+}
