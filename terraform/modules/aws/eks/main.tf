@@ -92,6 +92,8 @@ resource "aws_eks_node_group" "postrix_nodes_free_trial" {
   }
 }
 
+// Add discount for t4g.medium instances by having a yearly commitment via AWS Reserved Instances
+// We have a discount until 16/07/2026
 resource "aws_eks_node_group" "postrix_nodes" {
   cluster_name    = aws_eks_cluster.postrix.name
   node_group_name = "${var.cluster_name}-node-group"
