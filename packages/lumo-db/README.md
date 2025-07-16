@@ -1,0 +1,2 @@
+Add --skip-generate to the migrate dev command because without it the generated files contain the db password
+Therefor i generate it separately with prisma generate which creates the generated files without credentials

@@ -35,6 +35,7 @@
     "helmfile",
     "joby",
     "kubeconfig",
+    "lumo",
     "PGPASSWORD",
     "postrix",
     "psql",

@@ -5,10 +5,11 @@ import whatsapp from 'whatsapp-utils';
 import secrets from 'secret-manager';
 import { Logger } from 'logger';
 import prisma from 'joby-db';
+import prismaLumo from 'lumo-db';
 
-import capishWebhook from './services/capish.ts';
+import lumoWebhook from './services/lumo.ts';
 import jobyWebhook from './services/joby.ts';
-import { startJobScheduler, getSchedulerStatus, sendJobAlert } from './services/joby/job-scheduler.ts';
+import { getSchedulerStatus, sendJobAlert } from './services/joby/job-scheduler.ts';
 
 const logger = new Logger('Whatsapp');
 
@@ -16,7 +17,7 @@ process.title = 'Whatsapp';
 const app = express();
 const PORT = process.env.PORT;
 
-startJobScheduler();
+// startJobScheduler();
 
 app.use(express.json()); // Add this line to parse JSON request bodies
 
@@ -33,6 +34,14 @@ app.get('/health', (req: Request, res: Response) => {
 app.get('/webhook', async (req: Request, res: Response) => {
   logger.log('Received GET webhook verification request:', req.query);
   whatsapp.verifyToken(req, res, 'VERIFY_TOKEN');
+});
+
+app.get('/website/:id', async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const website = await prismaLumo.websites.findUnique({
+    where: { id: parseInt(id) }
+  });
+  res.status(200).send(website?.website_code);
 });
 
 app.post('/send-job-alert', async (req: Request, res: Response) => {
@@ -78,7 +87,7 @@ app.post('/webhook', async (req: Request, res: Response) => {
   const phoneNumberId = req.body?.entry?.[0]?.changes?.[0]?.value?.metadata?.phone_number_id;
 
   if (phoneNumberId === capishPhoneId) {
-    await capishWebhook(req, res);
+    await lumoWebhook(req, res);
   } else if (phoneNumberId === jobyPhoneId) {
     await jobyWebhook(req, res);
   } else {

@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+  binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-arm64-openssl-3.0.x"] // Add debian for server environments, TODO: Review this on prisma 7
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id               Int       @id @default(autoincrement())
+  phone_number     String?   @unique @db.Text
+  last_response_id String?   @db.Text // Store OpenAI response ID for conversation threading
+  created_at       DateTime? @default(now()) @db.Timestamp(6)
+  updated_at       DateTime? @default(now()) @db.Timestamp(6)
+
+  websites websites?
+}
+
+model websites {
+  id             Int       @id @default(autoincrement())
+  user_id        Int       @unique // Make user_id unique for one-to-one relationship
+  website_name   String    @db.Text // Name of the website, should be short and url friendly
+  website_code   String    @db.Text // The entire html code of the website
+  domain         String?   @db.Text // The domain of the website, not supported yet
+  created_at     DateTime? @default(now()) @db.Timestamp(6)
+  updated_at     DateTime? @default(now()) @db.Timestamp(6)
+
+  user users @relation(fields: [user_id], references: [id])
+}
