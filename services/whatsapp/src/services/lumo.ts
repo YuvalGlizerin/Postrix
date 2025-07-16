@@ -128,7 +128,6 @@ Always build first, then iterate based on feedback.`
     }
   } catch (error) {
     logger.error('Error in lumoWebhook:', { error });
-    res.status(500).send('Internal server error');
   }
 }
 
