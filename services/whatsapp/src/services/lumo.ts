@@ -6,7 +6,7 @@ import prisma from 'lumo-db';
 import type { usersModel as User, websitesModel as Website } from 'lumo-db';
 import OpenAI from 'openai';
 
-import { lumoModelSettings } from './lumo/lumo-model-settings.ts';
+import { buildSystemContent } from './lumo/lumo-model-settings.ts';
 
 const accessToken = secrets.WHATSAPP_ACCESS_TOKEN;
 const logger = new Logger('Whatsapp');
@@ -37,7 +37,7 @@ const websiteTools = [
     function: {
       name: 'create_or_update_website',
       description:
-        "ALWAYS create or update a user's website whenever they mention wanting a website, even with minimal details. Create a basic website first, then iterate based on feedback.",
+        "ALWAYS create or update a user's website whenever they mention wanting a website, even with minimal details. Create a BEAUTIFUL, MODERN, VISUALLY STUNNING website with professional design, modern CSS, gradients, shadows, smooth animations, and responsive layout. Make it look amazing, not just functional.",
       parameters: {
         type: 'object',
         properties: {
@@ -49,7 +49,7 @@ const websiteTools = [
           website_code: {
             type: 'string',
             description:
-              'Complete HTML code for the website. Create a professional-looking website even with minimal details. Include modern CSS styling, responsive design, and placeholder content that can be updated later.'
+              'Complete HTML code for the website with embedded CSS. Create a VISUALLY STUNNING, MODERN website with beautiful design elements: gradients, shadows, smooth animations, hover effects, modern typography (Google Fonts), professional color schemes, responsive layout using CSS Grid/Flexbox, proper spacing and visual hierarchy. Make it look like a premium, professional website that would impress visitors.'
           }
         },
         required: ['website_name', 'website_code']
@@ -75,20 +75,16 @@ async function lumoWebhook(req: Request, res: Response) {
       return;
     }
 
+    // Check if user has an existing website
+    const existingWebsite = await prisma.websites.findUnique({
+      where: { user_id: user.id }
+    });
+
     // Build conversation history
     const messages = [
       {
         role: 'system' as const,
-        content: `${lumoModelSettings}
-
-IMPORTANT: When a user mentions wanting a website, ALWAYS call the create_or_update_website function immediately, even with minimal details. Create a professional basic website first, then ask follow-up questions to improve it. Don't just ask questions - take action by building something they can see right away.
-
-Examples:
-- "I want a website for my flower business" → CREATE a basic flower business website immediately with placeholder content
-- "I need a portfolio site" → CREATE a basic portfolio website immediately 
-- "Can you build me a website?" → CREATE a basic website and ask what type of business/purpose
-
-Always build first, then iterate based on feedback.`
+        content: buildSystemContent(existingWebsite)
       },
       {
         role: 'user' as const,
@@ -221,7 +217,7 @@ async function handleToolCalls(
         // Combine confirmation message with AI's follow-up questions
         let fullMessage =
           `✅ Your website has been ${existingWebsite ? 'updated' : 'created'} successfully!\n\n` +
-          `You can view it at: https://whatsapp.postrix.io/website/${website.id}\n\n` +
+          `You can view it at: ${process.env.WEBSITE_URL}/website/${website.id}\n\n` +
           `Website name: ${websiteName}\n\n`;
 
         // Add AI's follow-up questions if they exist
