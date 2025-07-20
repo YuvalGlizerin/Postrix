@@ -26,30 +26,8 @@ interface ToolExecuteParams {
 
 // Tool definition for website management using Vercel AI SDK format
 const websiteTools = {
-  create_or_update_website: tool({
-    description: `CRITICAL: Create or update a user's website. You MUST provide BOTH website_name AND website_code parameters - NO EXCEPTIONS!
-
-WORKFLOW REQUIREMENT:
-1. First, understand what website the user wants
-2. Then, generate a complete HTML website with embedded CSS  
-3. Finally, call this tool with BOTH parameters
-
-PARAMETER REQUIREMENTS:
-- website_name: Short URL-friendly name (e.g., "flower-business", "portfolio-site")
-- website_code: COMPLETE HTML with embedded CSS (must include DOCTYPE, head, body, styles)
-
-EXAMPLE CORRECT USAGE:
-website_name: "flower-business"
-website_code: "<!DOCTYPE html><html><head><title>Beautiful Flowers</title><style>body{margin:0;font-family:Arial;background:linear-gradient(45deg,#ff6b6b,#4ecdc4);}header{padding:2rem;text-align:center;color:white;}.hero{background:rgba(255,255,255,0.9);padding:3rem;margin:2rem;border-radius:15px;box-shadow:0 10px 30px rgba(0,0,0,0.3);}</style></head><body><header><h1>Beautiful Flower Shop</h1></header><div class='hero'><h2>Fresh Flowers Daily</h2><p>We provide the most beautiful flowers for all occasions.</p></div></body></html>"
-
-DESIGN REQUIREMENTS:
-- Modern, responsive design with CSS Grid/Flexbox
-- Beautiful gradients, shadows, and animations  
-- Professional typography and color schemes
-- Mobile-friendly responsive layout
-- Smooth hover effects and transitions
-
-DO NOT call this tool with only website_name - both parameters are mandatory!`,
+  save_complete_website: tool({
+    description: `Save a website. Requires both website_name AND website_code. Only call this when you have generated the complete HTML.`,
     parameters: z.object({
       website_name: z
         .string()
@@ -138,6 +116,20 @@ async function lumoWebhook(req: Request, res: Response) {
 
     // Check if AI wants to call a tool
     if (response.toolCalls && response.toolCalls.length > 0) {
+      logger.log('AI tool calls detected:', {
+        toolCallsCount: response.toolCalls.length,
+        toolCalls: response.toolCalls.map(tc => {
+          const args = tc.args as WebsiteCreationArgs;
+          return {
+            toolName: tc.toolName,
+            hasWebsiteName: !!args?.website_name,
+            hasWebsiteCode: !!args?.website_code,
+            websiteNameLength: (args?.website_name || '').length,
+            websiteCodeLength: (args?.website_code || '').length,
+            args: tc.args
+          };
+        })
+      });
       await handleToolCalls(response.toolCalls, user, whatsAppPayload, accessToken, response.text);
     } else {
       // Regular response without tool call
@@ -222,7 +214,7 @@ async function handleToolCalls(
   previousMessageContent: string | null
 ) {
   for (const toolCall of toolCalls) {
-    if (toolCall.toolName === 'create_or_update_website') {
+    if (toolCall.toolName === 'save_complete_website') {
       try {
         const args = toolCall.args;
 
