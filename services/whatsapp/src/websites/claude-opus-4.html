@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloom & Blossom - Premium Floral Artistry</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-pink: #FFB6C1;
+            --deep-rose: #C1577A;
+            --sage-green: #87A96B;
+            --cream: #FFF8DC;
+            --charcoal: #2C2C2C;
+            --gold: #D4AF37;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+            color: var(--charcoal);
+            background-color: #FFFAF0;
+        }
+
+        /* Header and Navigation */
+        header {
+            background: linear-gradient(135deg, var(--cream) 0%, #FFF 100%);
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--deep-rose);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo::before {
+            content: "✿";
+            color: var(--primary-pink);
+            font-size: 2.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--charcoal);
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--deep-rose);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--deep-rose);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            background: linear-gradient(rgba(255, 182, 193, 0.3), rgba(255, 182, 193, 0.3)),
+                        radial-gradient(ellipse at top, #FFF8DC 0%, #FFE4E1 100%);
+            padding: 6rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before,
+        .hero::after {
+            content: "❀";
+            position: absolute;
+            font-size: 10rem;
+            opacity: 0.1;
+            color: var(--deep-rose);
+        }
+
+        .hero::before {
+            top: -50px;
+            left: -50px;
+            transform: rotate(-15deg);
+        }
+
+        .hero::after {
+            bottom: -50px;
+            right: -50px;
+            transform: rotate(15deg);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            color: var(--deep-rose);
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero .tagline {
+            font-size: 1.5rem;
+            color: var(--charcoal);
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background-color: var(--deep-rose);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(193, 87, 122, 0.3);
+        }
+
+        .cta-button:hover {
+            background-color: #A94566;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(193, 87, 122, 0.4);
+        }
+
+        /* About Section */
+        .about {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-content h2 {
+            font-size: 2.5rem;
+            color: var(--deep-rose);
+            margin-bottom: 1rem;
+        }
+
+        .about-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 1rem;
+        }
+
+        .about-image {
+            background: linear-gradient(45deg, var(--primary-pink), var(--cream));
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .about-image::before {
+            content: "🌸";
+            font-size: 8rem;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.3;
+        }
+
+        /* Featured Arrangements */
+        .featured {
+            background-color: #FAF0E6;
+            padding: 4rem 2rem;
+        }
+
+        .featured h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--deep-rose);
+            margin-bottom: 3rem;
+        }
+
+        .arrangements-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .arrangement-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .arrangement-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-pink), var(--deep-rose), var(--sage-green));
+        }
+
+        .arrangement-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .arrangement-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .arrangement-card h3 {
+            color: var(--deep-rose);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .arrangement-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .price {
+            font-size: 1.3rem;
+            color: var(--sage-green);
+            font-weight: bold;
+        }
+
+        /* Services Section */
+        .services {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .services h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--deep-rose);
+            margin-bottom: 3rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-item {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 10px;
+            background-color: rgba(255, 182, 193, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        .service-item:hover {
+            background-color: rgba(255, 182, 193, 0.2);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--deep-rose);
+        }
+
+        .service-item h3 {
+            color: var(--charcoal);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Contact Section */
+        .contact {
+            background: linear-gradient(135deg, var(--cream) 0%, #FFE4E1 100%);
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .contact h2 {
+            font-size: 2.5rem;
+            color: var(--deep-rose);
+            margin-bottom: 2rem;
+        }
+
+        .contact-info {
+            max-width: 600px;
+            margin: 0 auto;
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .contact-item span {
+            color: var(--deep-rose);
+            font-size: 1.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--charcoal);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .social-links {
+            margin: 1rem 0;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--primary-pink);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero .tagline {
+                font-size: 1.2rem;
+            }
+
+            .about {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .about-image {
+                order: -1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <a href="#" class="logo">Bloom & Blossom</a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#arrangements">Arrangements</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <h1>Where Every Petal Tells a Story</h1>
+        <p class="tagline">Exquisite floral arrangements crafted with love and artistry</p>
+        <a href="#contact" class="cta-button">Order Your Arrangement</a>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="about-content">
+            <h2>About Bloom & Blossom</h2>
+            <p>For over two decades, Bloom & Blossom has been the premier destination for breathtaking floral arrangements that capture the essence of nature's beauty.</p>
+            <p>Our master florists combine traditional techniques with contemporary design to create stunning arrangements that speak to the heart. Whether it's a romantic gesture, a celebration of life, or simply brightening someone's day, we pour passion into every creation.</p>
+            <p>We source only the freshest, most vibrant flowers from local growers and trusted international suppliers, ensuring that every arrangement is a masterpiece of color, texture, and fragrance.</p>
+        </div>
+        <div class="about-image">
+            <h3 style="color: var(--deep-rose); font-size: 2rem; margin-bottom: 1rem;">✿ Fresh Daily ✿</h3>
+            <p style="color: #666;">Hand-selected blooms<br>Artisanal arrangements<br>Delivered with care</p>
+        </div>
+    </section>
+
+    <!-- Featured Arrangements -->
+    <section class="featured" id="arrangements">
+        <h2>Featured Arrangements</h2>
+        <div class="arrangements-grid">
+            <div class="arrangement-card">
+                <div class="arrangement-icon">🌹</div>
+                <h3>Romantic Rose Garden</h3>
+                <p>A stunning collection of premium red roses accented with baby's breath and lush greenery</p>
+                <p class="price">From $85</p>
+            </div>
+            <div class="arrangement-card">
+                <div class="arrangement-icon">🌻</div>
+                <h3>Sunshine Symphony</h3>
+                <p>Bright sunflowers, golden daisies, and cheerful yellow roses to brighten any space</p>
+                <p class="price">From $65</p>
+            </div>
+            <div class="arrangement-card">
+                <div class="arrangement-icon">🌸</div>
+                <h3>Spring Elegance</h3>
+                <p>Delicate tulips, peonies, and cherry blossoms in soft pastels for a touch of grace</p>
+                <p class="price">From $75</p>
+            </div>
+            <div class="arrangement-card">
+                <div class="arrangement-icon">🌺</div>
+                <h3>Tropical Paradise</h3>
+                <p>Exotic orchids, birds of paradise, and vibrant tropical blooms for a bold statement</p>
+                <p class="price">From $95</p>
+            </div>
+            <div class="arrangement-card">
+                <div class="arrangement-icon">💐</div>
+                <h3>Garden Fresh Mix</h3>
+                <p>A delightful medley of seasonal flowers in a harmonious blend of colors</p>
+                <p class="price">From $55</p>
+            </div>
+            <div class="arrangement-card">
+                <div class="arrangement-icon">🌷</div>
+                <h3>Lavender Dreams</h3>
+                <p>Soothing lavender, purple roses, and lilacs create a calming, fragrant bouquet</p>
+                <p class="price">From $70</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <h2>Our Services</h2>
+        <div class="services-grid">
+            <div class="service-item">
+                <div class="service-icon">💒</div>
+                <h3>Wedding Florals</h3>
+                <p>Complete wedding packages from bridal bouquets to venue decoration</p>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">🎉</div>
+                <h3>Event Design</h3>
+                <p>Transform any event with our custom floral installations and centerpieces</p>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">🏢</div>
+                <h3>Corporate Services</h3>
+                <p>Weekly office arrangements and special corporate event florals</p>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">🚚</div>
+                <h3>Same-Day Delivery</h3>
+                <p>Order before 2 PM for same-day delivery within our service area</p>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">🎁</div>
+                <h3>Gift Subscriptions</h3>
+                <p>Monthly flower deliveries - the gift that keeps on giving</p>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">🌿</div>
+                <h3>Plant Care</h3>
+                <p>Expert advice and maintenance for your indoor plants and gardens</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <h2>Visit Our Garden Shop</h2>
+        <div class="contact-info">
+            <div class="contact-item">
+                <span>📍</span>
+                <p>123 Blossom Lane, Garden District, CA 90210</p>
+            </div>
+            <div class="contact-item">
+                <span>📞</span>
+                <p>(555) 123-BLOOM</p>
+            </div>
+            <div class="contact-item">
+                <span>✉️</span>
+                <p>hello@bloomandblossom.com</p>
+            </div>
+            <div class="contact-item">
+                <span>🕐</span>
+                <p>Mon-Sat: 8AM-7PM | Sun: 10AM-5PM</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 Bloom & Blossom. All petals reserved.</p>
+            <div class="social-links">
+                <a href="#">📘</a>
+                <a href="#">📷</a>
+                <a href="#">🐦</a>
+                <a href="#">📌</a>
+            </div>
+            <p style="margin-top: 1rem; font-size: 0.9rem;">Spreading joy, one bouquet at a time 🌸</p>
+        </div>
+    </footer>
+</body>
+</html> 

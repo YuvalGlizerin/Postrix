@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bloom & Blossom | Premium Floral Creations</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #e84393; /* Pink */
+      --secondary: #f8c291; /* Peach */
+      --light: #ffffff;
+      --dark: #2d3436;
+      --bg: #fdf6f9;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Open Sans", sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+        url("https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1400&q=80")
+          center/cover no-repeat;
+      height: 90vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: var(--light);
+    }
+
+    header h1 {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      margin-bottom: 1rem;
+    }
+
+    header p {
+      font-size: 1.2rem;
+      max-width: 550px;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 2rem;
+      padding: 0.9rem 2.5rem;
+      background: var(--primary);
+      color: var(--light);
+      border: none;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: var(--secondary);
+      color: var(--dark);
+    }
+
+    section {
+      padding: 4rem 1rem;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    section h2 {
+      text-align: center;
+      font-family: "Playfair Display", serif;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      color: var(--primary);
+    }
+
+    .about {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .about img {
+      width: 100%;
+      border-radius: 15px;
+      object-fit: cover;
+      max-height: 400px;
+    }
+
+    .services {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+    }
+
+    .card {
+      background: var(--light);
+      border-radius: 15px;
+      flex: 1 1 260px;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-7px);
+    }
+
+    .card i {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .gallery img {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+      border-radius: 12px;
+      transition: 0.3s;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.05);
+    }
+
+    .contact {
+      background: var(--primary);
+      color: var(--light);
+      border-radius: 15px;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .contact h2 {
+      color: var(--light);
+    }
+
+    .contact p {
+      margin-bottom: 2rem;
+    }
+
+    .contact a {
+      color: var(--light);
+      font-weight: 600;
+      text-decoration: none;
+      position: relative;
+    }
+
+    .contact a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 0;
+      height: 2px;
+      background: var(--secondary);
+      transition: 0.3s;
+    }
+
+    .contact a:hover::after {
+      width: 100%;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 0.9rem;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Bloom & Blossom</h1>
+    <p>
+      Bringing your moments to life with exquisite floral designs crafted with
+      passion and love.
+    </p>
+    <a href="#services" class="btn">Explore Our Blooms</a>
+  </header>
+
+  <section id="about">
+    <h2>About Us</h2>
+    <div class="about">
+      <div>
+        <p>
+          At Bloom & Blossom, every bouquet tells a story. Founded by floral
+          artisan Emma Rose, our studio blends contemporary elegance with
+          timeless charm. From weddings to corporate events and everyday
+          celebrations, we curate bespoke arrangements that express your unique
+          sentiment.
+        </p>
+        <p>
+          We source the freshest seasonal blooms from sustainable growers and
+          design with an eco-conscious heart. Let us adorn your world with
+          nature’s most enchanting art.
+        </p>
+      </div>
+      <img src="https://images.unsplash.com/photo-1498747946579-bde604cb8f44?auto=format&fit=crop&w=800&q=80" alt="About Bloom & Blossom" />
+    </div>
+  </section>
+
+  <section id="services">
+    <h2>Our Services</h2>
+    <div class="services">
+      <div class="card">
+        <i>💍</i>
+        <h3>Wedding Florals</h3>
+        <p>
+          Dreamy bouquets, ceremony arches & tablescapes handcrafted for your
+          special day.
+        </p>
+      </div>
+      <div class="card">
+        <i>🎉</i>
+        <h3>Events & Parties</h3>
+        <p>
+          Captivating floral decor that transforms birthdays, anniversaries &
+          corporate galas.
+        </p>
+      </div>
+      <div class="card">
+        <i>🌿</i>
+        <h3>Subscriptions</h3>
+        <p>
+          Fresh hand-tied bouquets delivered weekly or monthly to brighten your
+          space.
+        </p>
+      </div>
+      <div class="card">
+        <i>🛍️</i>
+        <h3>Custom Gifts</h3>
+        <p>Personalized arrangements & gift boxes for heartfelt expressions.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="gallery">
+    <h2>Gallery</h2>
+    <div class="gallery">
+      <img src="https://images.unsplash.com/photo-1521302080377-395a0cd1993e?auto=format&fit=crop&w=800&q=80" alt="Bouquet" />
+      <img src="https://images.unsplash.com/photo-1504544750208-dc0358e63f7f?auto=format&fit=crop&w=800&q=80" alt="Wedding arch" />
+      <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=800&q=80" alt="Floral centerpiece" />
+      <img src="https://images.unsplash.com/photo-1476629031311-5c7f201da79a?auto=format&fit=crop&w=800&q=80" alt="Boutonniere" />
+      <img src="https://images.unsplash.com/photo-1495747041964-4224dd2a4c1b?auto=format&fit=crop&w=800&q=80" alt="Flowers" />
+      <img src="https://images.unsplash.com/photo-1491316032839-aeda6f81be0b?auto=format&fit=crop&w=800&q=80" alt="Floral arrangement" />
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <h2>Let's Create Something Beautiful</h2>
+    <p>
+      Ready to elevate your next occasion with stunning florals? Drop us a line
+      or visit our studio.
+    </p>
+    <p>
+      Email:
+      <a href="mailto:hello@bloomandblossom.com">hello@bloomandblossom.com</a
+      ><br />
+      Phone: <a href="tel:+1234567890">+1 (234) 567-890</a>
+    </p>
+  </section>
+
+  <footer>© 2025 Bloom & Blossom. Crafted with love and petals.</footer>
+</body>
+</html> 

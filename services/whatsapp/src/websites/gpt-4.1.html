@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bloom & Blossom | Flower Boutique</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', Arial, sans-serif;
+      background: linear-gradient(135deg, #f8fafc 0%, #ffe3e3 100%);
+      color: #333;
+    }
+    header {
+      background: linear-gradient(90deg, #ffb6b9 0%, #fae3d9 100%);
+      padding: 2rem 0 1rem 0;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(255,182,185,0.1);
+    }
+    header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      margin: 0;
+      color: #a14a76;
+      letter-spacing: 2px;
+    }
+    header p {
+      font-size: 1.2rem;
+      color: #6d6875;
+      margin-top: 0.5rem;
+    }
+    nav {
+      margin: 1.5rem 0 0.5rem 0;
+    }
+    nav a {
+      text-decoration: none;
+      color: #a14a76;
+      font-weight: 500;
+      margin: 0 1.2rem;
+      font-size: 1.1rem;
+      transition: color 0.2s;
+    }
+    nav a:hover {
+      color: #ffb6b9;
+    }
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3rem 1rem 2rem 1rem;
+      background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+      border-radius: 0 0 40px 40px;
+      box-shadow: 0 4px 24px rgba(161,74,118,0.08);
+      min-height: 350px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(161,74,118,0.25);
+      z-index: 1;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+    .hero h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(161,74,118,0.2);
+    }
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+      color: #ffe3e3;
+      text-shadow: 0 1px 4px rgba(161,74,118,0.15);
+    }
+    .cta-btn {
+      background: #a14a76;
+      color: #fff;
+      border: none;
+      padding: 0.9rem 2.2rem;
+      border-radius: 30px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(161,74,118,0.12);
+      transition: background 0.2s, transform 0.2s;
+    }
+    .cta-btn:hover {
+      background: #ffb6b9;
+      color: #a14a76;
+      transform: translateY(-2px) scale(1.04);
+    }
+    main {
+      max-width: 1100px;
+      margin: 2.5rem auto;
+      padding: 0 1.5rem;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: #a14a76;
+      margin-bottom: 1.2rem;
+      text-align: center;
+    }
+    .flowers {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+    .flower-card {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 2px 12px rgba(161,74,118,0.07);
+      overflow: hidden;
+      transition: transform 0.18s, box-shadow 0.18s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 1.2rem;
+    }
+    .flower-card:hover {
+      transform: translateY(-6px) scale(1.03);
+      box-shadow: 0 6px 24px rgba(161,74,118,0.13);
+    }
+    .flower-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 18px 18px 0 0;
+    }
+    .flower-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: #a14a76;
+      margin: 1rem 0 0.5rem 0;
+    }
+    .flower-card p {
+      font-size: 1rem;
+      color: #6d6875;
+      margin: 0 1.2rem 0.5rem 1.2rem;
+      text-align: center;
+    }
+    .flower-card .price {
+      font-size: 1.1rem;
+      color: #ffb6b9;
+      font-weight: 500;
+      margin-top: 0.3rem;
+    }
+    .about {
+      background: #fae3d9;
+      border-radius: 18px;
+      padding: 2rem 1.5rem;
+      margin-bottom: 3rem;
+      box-shadow: 0 2px 8px rgba(255,182,185,0.08);
+      text-align: center;
+    }
+    .about h2 {
+      color: #a14a76;
+      margin-bottom: 0.7rem;
+    }
+    .about p {
+      color: #6d6875;
+      font-size: 1.1rem;
+      margin: 0 auto;
+      max-width: 700px;
+    }
+    .contact {
+      background: #fff;
+      border-radius: 18px;
+      padding: 2rem 1.5rem;
+      box-shadow: 0 2px 8px rgba(161,74,118,0.07);
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .contact h2 {
+      color: #a14a76;
+      margin-bottom: 0.7rem;
+    }
+    .contact p {
+      color: #6d6875;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+    .contact-info {
+      font-size: 1.1rem;
+      color: #a14a76;
+      margin-top: 0.7rem;
+    }
+    footer {
+      background: #a14a76;
+      color: #fff;
+      text-align: center;
+      padding: 1.2rem 0;
+      font-size: 1rem;
+      border-radius: 24px 24px 0 0;
+      margin-top: 2rem;
+      letter-spacing: 1px;
+    }
+    @media (max-width: 700px) {
+      .hero {
+        min-height: 220px;
+        padding: 2rem 0.5rem 1.5rem 0.5rem;
+      }
+      .hero h2 {
+        font-size: 1.3rem;
+      }
+      .section-title {
+        font-size: 1.3rem;
+      }
+      .about, .contact {
+        padding: 1.2rem 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Bloom & Blossom</h1>
+    <p>Your Local Flower Boutique</p>
+    <nav>
+      <a href="#flowers">Flowers</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+  <section class="hero">
+    <div class="hero-content">
+      <h2>Fresh Flowers, Beautiful Moments</h2>
+      <p>Handcrafted bouquets and arrangements for every occasion. Let us help you say it with flowers!</p>
+      <a href="#flowers"><button class="cta-btn">Shop Now</button></a>
+    </div>
+  </section>
+  <main>
+    <h2 class="section-title" id="flowers">Our Featured Flowers</h2>
+    <div class="flowers">
+      <div class="flower-card">
+        <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" alt="Roses Bouquet">
+        <h3>Classic Roses</h3>
+        <p>Elegant red, pink, and white roses, perfect for romance and celebration.</p>
+        <div class="price">$39.99</div>
+      </div>
+      <div class="flower-card">
+        <img src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=600&q=80" alt="Sunflowers">
+        <h3>Sunny Sunflowers</h3>
+        <p>Brighten anyone's day with our cheerful sunflower arrangements.</p>
+        <div class="price">$29.99</div>
+      </div>
+      <div class="flower-card">
+        <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" alt="Tulips">
+        <h3>Spring Tulips</h3>
+        <p>Colorful tulips to bring a touch of spring to any space.</p>
+        <div class="price">$34.99</div>
+      </div>
+      <div class="flower-card">
+        <img src="https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=600&q=80" alt="Orchids">
+        <h3>Elegant Orchids</h3>
+        <p>Exotic and graceful orchids for a sophisticated gift.</p>
+        <div class="price">$49.99</div>
+      </div>
+    </div>
+    <section class="about" id="about">
+      <h2>About Us</h2>
+      <p>Bloom & Blossom is a family-owned flower boutique dedicated to bringing beauty and joy to our community. We source the freshest blooms and craft each arrangement with love and care. Whether it's a wedding, birthday, or just because, we have the perfect flowers for you.</p>
+    </section>
+    <section class="contact" id="contact">
+      <h2>Contact Us</h2>
+      <p>Ready to order or have a special request? Reach out to us!</p>
+      <div class="contact-info">
+        <div>📞 (555) 123-4567</div>
+        <div>✉️ hello@bloomandblossom.com</div>
+        <div>🏠 123 Blossom Lane, Flower City</div>
+      </div>
+    </section>
+  </main>
+  <footer>
+    &copy; 2024 Bloom & Blossom. All rights reserved.
+  </footer>
+</body>
+</html> 
