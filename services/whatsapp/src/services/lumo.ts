@@ -4,59 +4,90 @@ import { Logger } from 'logger';
 import whatsapp, { type WhatsAppMessagePayload } from 'whatsapp-utils';
 import prisma from 'lumo-db';
 import type { usersModel as User, websitesModel as Website } from 'lumo-db';
-import OpenAI from 'openai';
+import { generateText, tool } from 'ai';
+import { z } from 'zod';
+
+import { getModel } from '../lib/ai-providers.ts';
 
 import { buildSystemContent } from './lumo/lumo-model-settings.ts';
 
 const accessToken = secrets.WHATSAPP_ACCESS_TOKEN;
 const logger = new Logger('Whatsapp');
 
-const openai = new OpenAI({
-  apiKey: secrets.OPENAI_TOKEN
-});
-
-// Types for function calling
-interface ToolCall {
-  id: string;
-  type: 'function';
-  function: {
-    name: string;
-    arguments: string;
-  };
-}
-
 interface WebsiteCreationArgs {
   website_name: string;
   website_code: string;
 }
 
-// Tool definition for website management
-const websiteTools = [
-  {
-    type: 'function' as const,
-    function: {
-      name: 'create_or_update_website',
-      description:
-        "ALWAYS create or update a user's website whenever they mention wanting a website, even with minimal details. Create a BEAUTIFUL, MODERN, VISUALLY STUNNING website with professional design, modern CSS, gradients, shadows, smooth animations, and responsive layout. Make it look amazing, not just functional.",
-      parameters: {
-        type: 'object',
-        properties: {
-          website_name: {
-            type: 'string',
-            description:
-              'A short, URL-friendly name for the website. If not specified, create one based on the business type (e.g., "flower-business", "photography-portfolio")'
-          },
-          website_code: {
-            type: 'string',
-            description:
-              'Complete HTML code for the website with embedded CSS. Create a VISUALLY STUNNING, MODERN website with beautiful design elements: gradients, shadows, smooth animations, hover effects, modern typography (Google Fonts), professional color schemes, responsive layout using CSS Grid/Flexbox, proper spacing and visual hierarchy. Make it look like a premium, professional website that would impress visitors.'
-          }
-        },
-        required: ['website_name', 'website_code']
+interface ToolExecuteParams {
+  website_name: string;
+  website_code: string;
+}
+
+// Tool definition for website management using Vercel AI SDK format
+const websiteTools = {
+  create_or_update_website: tool({
+    description: `CRITICAL: Create or update a user's website. You MUST provide BOTH website_name AND website_code parameters - NO EXCEPTIONS!
+
+WORKFLOW REQUIREMENT:
+1. First, understand what website the user wants
+2. Then, generate a complete HTML website with embedded CSS  
+3. Finally, call this tool with BOTH parameters
+
+PARAMETER REQUIREMENTS:
+- website_name: Short URL-friendly name (e.g., "flower-business", "portfolio-site")
+- website_code: COMPLETE HTML with embedded CSS (must include DOCTYPE, head, body, styles)
+
+EXAMPLE CORRECT USAGE:
+website_name: "flower-business"
+website_code: "<!DOCTYPE html><html><head><title>Beautiful Flowers</title><style>body{margin:0;font-family:Arial;background:linear-gradient(45deg,#ff6b6b,#4ecdc4);}header{padding:2rem;text-align:center;color:white;}.hero{background:rgba(255,255,255,0.9);padding:3rem;margin:2rem;border-radius:15px;box-shadow:0 10px 30px rgba(0,0,0,0.3);}</style></head><body><header><h1>Beautiful Flower Shop</h1></header><div class='hero'><h2>Fresh Flowers Daily</h2><p>We provide the most beautiful flowers for all occasions.</p></div></body></html>"
+
+DESIGN REQUIREMENTS:
+- Modern, responsive design with CSS Grid/Flexbox
+- Beautiful gradients, shadows, and animations  
+- Professional typography and color schemes
+- Mobile-friendly responsive layout
+- Smooth hover effects and transitions
+
+DO NOT call this tool with only website_name - both parameters are mandatory!`,
+    parameters: z.object({
+      website_name: z
+        .string()
+        .min(1, 'website_name is required and cannot be empty')
+        .describe(
+          'REQUIRED: URL-friendly website name (e.g., "flower-business", "photography-portfolio"). Must be provided.'
+        ),
+      website_code: z
+        .string()
+        .min(100, 'website_code must be a complete HTML document with at least 100 characters')
+        .describe(
+          'REQUIRED: Complete HTML document with embedded CSS. Must include: DOCTYPE declaration, html/head/body tags, title, embedded CSS styles, and complete website content. Example: "<!DOCTYPE html><html><head><title>My Site</title><style>/* CSS here */</style></head><body>/* content here */</body></html>". This is mandatory - do not call without this parameter!'
+        )
+    }),
+    execute: async (params: ToolExecuteParams) => {
+      const websiteName = params.website_name;
+      const websiteCode = params.website_code;
+
+      // Validate that both parameters are actually provided and meaningful
+      if (!websiteName || websiteName.trim().length === 0) {
+        throw new Error('website_name parameter is required and cannot be empty');
       }
+
+      if (!websiteCode || websiteCode.trim().length < 100) {
+        throw new Error(
+          'website_code parameter is required and must be a complete HTML document (at least 100 characters)'
+        );
+      }
+
+      return {
+        success: true,
+        websiteName,
+        websiteCodeLength: websiteCode.length,
+        message: `Website "${websiteName}" ready to be created/updated with ${websiteCode.length} characters of code`
+      };
     }
-  }
-];
+  })
+};
 
 async function lumoWebhook(req: Request, res: Response) {
   try {
@@ -80,6 +111,9 @@ async function lumoWebhook(req: Request, res: Response) {
       where: { user_id: user.id }
     });
 
+    // Get the AI model (can be configured via environment variable)
+    const model = getModel(process.env.AI_MODEL);
+
     // Build conversation history
     const messages = [
       {
@@ -92,38 +126,43 @@ async function lumoWebhook(req: Request, res: Response) {
       }
     ];
 
-    // Send message to OpenAI with tools
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4.1',
+    // Send message to AI using Vercel AI SDK
+    const response = await generateText({
+      model,
       messages,
       tools: websiteTools,
-      tool_choice: 'auto',
+      toolChoice: 'auto',
       temperature: 0.7,
-      user: user.phone_number || undefined
+      maxTokens: 4000
     });
 
-    const responseMessage = response.choices[0].message;
-
-    // Check if OpenAI wants to call a tool
-    if (responseMessage.tool_calls && responseMessage.tool_calls.length > 0) {
-      await handleToolCalls(responseMessage.tool_calls, user, whatsAppPayload, accessToken, responseMessage.content);
+    // Check if AI wants to call a tool
+    if (response.toolCalls && response.toolCalls.length > 0) {
+      await handleToolCalls(response.toolCalls, user, whatsAppPayload, accessToken, response.text);
     } else {
       // Regular response without tool call
       const reply =
-        responseMessage.content ||
-        "I'm here to help you build a website. Describe what you'd like your website to look like!";
+        response.text || "I'm here to help you build a website. Describe what you'd like your website to look like!";
       await whatsapp.respond(whatsAppPayload, reply, accessToken);
     }
 
     // Update user's last_response_id for conversation threading if available
-    if (response.id) {
+    const responseId = response.response?.id || response.response?.headers?.['x-request-id'];
+    if (responseId) {
       await prisma.users.update({
         where: { id: user.id },
-        data: { last_response_id: response.id, updated_at: new Date() }
+        data: { last_response_id: responseId, updated_at: new Date() }
       });
     }
   } catch (error) {
     logger.error('Error in lumoWebhook:', { error });
+
+    // Send user a friendly error message
+    await whatsapp.respond(
+      req.body,
+      'Sorry, I encountered an error while processing your request. Please try again or contact support if the issue persists.',
+      accessToken
+    );
   }
 }
 
@@ -169,6 +208,12 @@ async function handleResetCommand(user: User, whatsAppPayload: WhatsAppMessagePa
   }
 }
 
+interface ToolCall {
+  toolCallId: string;
+  toolName: string;
+  args: WebsiteCreationArgs;
+}
+
 async function handleToolCalls(
   toolCalls: ToolCall[],
   user: User,
@@ -177,9 +222,26 @@ async function handleToolCalls(
   previousMessageContent: string | null
 ) {
   for (const toolCall of toolCalls) {
-    if (toolCall.function.name === 'create_or_update_website') {
+    if (toolCall.toolName === 'create_or_update_website') {
       try {
-        const args: WebsiteCreationArgs = JSON.parse(toolCall.function.arguments);
+        const args = toolCall.args;
+
+        // Validate that both required parameters are present
+        if (!args.website_name || !args.website_code) {
+          logger.error('Tool call missing required parameters:', {
+            hasWebsiteName: !!args.website_name,
+            hasWebsiteCode: !!args.website_code,
+            args
+          });
+
+          await whatsapp.respond(
+            whatsAppPayload,
+            "I need more details to create your website. Please describe what kind of website you want and I'll build it for you!",
+            accessToken
+          );
+          continue;
+        }
+
         const websiteName = args.website_name;
         const websiteCode = args.website_code;
 
