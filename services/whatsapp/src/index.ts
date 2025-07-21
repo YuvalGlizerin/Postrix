@@ -152,19 +152,22 @@ app.post('/send-job-alert', async (req: Request, res: Response) => {
 
 // Add work in progress auto response
 app.post('/webhook', async (req: Request, res: Response) => {
-  const capishPhoneId = secrets.CAPISH_WHATSAPP_PHONE_ID;
-  const jobyPhoneId = secrets.JOBY_WHATSAPP_PHONE_ID;
-  const phoneNumberId = req.body?.entry?.[0]?.changes?.[0]?.value?.metadata?.phone_number_id;
+  try {
+    const capishPhoneId = secrets.CAPISH_WHATSAPP_PHONE_ID;
+    const jobyPhoneId = secrets.JOBY_WHATSAPP_PHONE_ID;
+    const phoneNumberId = req.body?.entry?.[0]?.changes?.[0]?.value?.metadata?.phone_number_id;
 
-  if (phoneNumberId === capishPhoneId) {
-    await lumoWebhook(req, res);
-  } else if (phoneNumberId === jobyPhoneId) {
-    await jobyWebhook(req, res);
-  } else {
-    logger.error('Invalid phone number', {
-      debug: phoneNumberId
-    });
-    res.status(400).send('Invalid phone number');
+    if (phoneNumberId === capishPhoneId) {
+      await lumoWebhook(req, res);
+    } else if (phoneNumberId === jobyPhoneId) {
+      await jobyWebhook(req, res);
+    } else {
+      logger.error('Invalid phone number', {
+        debug: phoneNumberId
+      });
+    }
+  } catch (error) {
+    logger.error('Error in webhook:', { error });
   }
 });
 
