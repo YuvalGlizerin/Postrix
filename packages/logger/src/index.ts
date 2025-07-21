@@ -41,6 +41,28 @@ export class Logger {
     this.serviceName = serviceName;
   }
 
+  private extractErrorInfo(error: Error): Record<string, unknown> {
+    const errorInfo: Record<string, unknown> = {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    };
+
+    // Add cause if it exists
+    if (error.cause) {
+      errorInfo.cause = error.cause;
+    }
+
+    // Add custom properties from the error
+    Object.getOwnPropertyNames(error).forEach(key => {
+      if (!['message', 'stack', 'name', 'cause'].includes(key)) {
+        errorInfo[key] = (error as unknown as Record<string, unknown>)[key];
+      }
+    });
+
+    return errorInfo;
+  }
+
   private async logger(
     level: 'log' | 'info' | 'warn' | 'error' | 'debug' | 'trace',
     message: string,
@@ -103,12 +125,16 @@ export class Logger {
   }
 
   async error(message: string, metadata: Metadata = {}) {
+    // Handle case where metadata itself is an Error
     if (metadata instanceof Error) {
-      metadata = { error: metadata.message };
+      metadata = { error: this.extractErrorInfo(metadata) };
     }
+
+    // Handle case where metadata.error is an Error object
     if (metadata.error instanceof Error) {
-      metadata.error = metadata.error.message;
+      metadata.error = this.extractErrorInfo(metadata.error);
     }
+
     return this.logger('error', message, metadata);
   }
 
