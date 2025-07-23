@@ -12,7 +12,7 @@ import prisma from 'joby-db';
 import prismaLumo from 'lumo-db';
 
 import lumoWebhook from './services/lumo.ts';
-import jobyWebhook from './services/joby.ts';
+import capishWebhook from './services/capish.ts';
 import { getSchedulerStatus, sendJobAlert } from './services/joby/job-scheduler.ts';
 
 // ES module equivalent of __dirname
@@ -154,7 +154,7 @@ app.post('/send-job-alert', async (req: Request, res: Response) => {
 app.post('/webhook', async (req: Request, res: Response) => {
   try {
     const capishPhoneId = secrets.CAPISH_WHATSAPP_PHONE_ID;
-    const jobyPhoneId = secrets.JOBY_WHATSAPP_PHONE_ID;
+    const lumoPhoneId = secrets.LUMO_WHATSAPP_PHONE_ID;
     const phoneNumberId = req.body?.entry?.[0]?.changes?.[0]?.value?.metadata?.phone_number_id;
 
     if (whatsapp.isStatusMessage(req.body)) {
@@ -164,9 +164,9 @@ app.post('/webhook', async (req: Request, res: Response) => {
     }
 
     if (phoneNumberId === capishPhoneId) {
+      await capishWebhook(req, res);
+    } else if (phoneNumberId === lumoPhoneId) {
       await lumoWebhook(req, res);
-    } else if (phoneNumberId === jobyPhoneId) {
-      await jobyWebhook(req, res);
     } else {
       logger.error('Invalid phone number', {
         debug: phoneNumberId
