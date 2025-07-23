@@ -22,6 +22,7 @@ interface Value {
   metadata: Metadata;
   contacts: Contact[];
   messages: Message[];
+  statuses?: Status[];
 }
 
 interface Metadata {
@@ -36,6 +37,13 @@ interface Contact {
 
 interface Profile {
   name: string;
+}
+
+interface Status {
+  id: string;
+  status: string;
+  timestamp: string;
+  recipient_id: string;
 }
 
 interface Message {

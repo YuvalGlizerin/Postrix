@@ -214,6 +214,19 @@ async function sendTemplate(
   return json;
 }
 
+function isStatusMessage(whatsappPayload: WhatsAppMessagePayload): boolean {
+  try {
+    const status = whatsappPayload.entry[0].changes[0].value.statuses?.[0]?.status;
+    return status === 'sent' || status === 'delivered' || status === 'read';
+  } catch (error) {
+    logger.error('Failed to check if message is a status message', {
+      error,
+      payload: JSON.stringify(whatsappPayload, null, 2)
+    });
+    return false;
+  }
+}
+
 export default {
   verifyToken,
   getMedia,
@@ -221,7 +234,8 @@ export default {
   respond,
   getMessage,
   sendMessage,
-  sendTemplate
+  sendTemplate,
+  isStatusMessage
 };
 
 export type { WhatsAppMessagePayload, WhatsAppTemplate };
