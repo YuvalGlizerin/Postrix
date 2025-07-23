@@ -72,7 +72,7 @@ async function lumoWebhook(req: Request, res: Response) {
     res.status(200).send('Message sent successfully'); // no retries
     const whatsAppPayload: WhatsAppMessagePayload = req.body;
     logger.log('Lumo whatsapp webhook payload:', {
-      debug: { headers: req.rawHeaders, body: whatsAppPayload }
+      debug: { headers: req.rawHeaders, body: whatsAppPayload, json: JSON.stringify(whatsAppPayload, null, 2) }
     });
 
     const user = await setupFirstTimeUser(whatsAppPayload, accessToken);
