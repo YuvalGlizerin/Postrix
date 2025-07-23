@@ -157,6 +157,8 @@ app.post('/webhook', async (req: Request, res: Response) => {
     const lumoPhoneId = secrets.LUMO_WHATSAPP_PHONE_ID;
     const phoneNumberId = req.body?.entry?.[0]?.changes?.[0]?.value?.metadata?.phone_number_id;
 
+    logger.log('Incoming webhook payload:', { debug: JSON.stringify(req.body, null, 2) });
+
     if (whatsapp.isStatusMessage(req.body)) {
       logger.log('Ignoring status message', { body: JSON.stringify(req.body, null, 2) });
       res.status(200).send('OK');
