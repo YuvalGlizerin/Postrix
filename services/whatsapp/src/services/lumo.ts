@@ -111,7 +111,7 @@ async function lumoWebhook(req: Request, res: Response) {
       tools: websiteTools,
       toolChoice: 'auto',
       temperature: 0.7,
-      maxTokens: 4000
+      maxTokens: 12000
     });
 
     // Check if AI wants to call a tool
