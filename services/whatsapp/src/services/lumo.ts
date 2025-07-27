@@ -4,7 +4,7 @@ import { Logger } from 'logger';
 import whatsapp, { type WhatsAppMessagePayload } from 'whatsapp-utils';
 import prisma from 'lumo-db';
 import type { usersModel as User, websitesModel as Website } from 'lumo-db';
-import { generateText, tool } from 'ai';
+import { streamText, tool } from 'ai';
 import { z } from 'zod';
 
 import { getModel } from '../lib/ai-providers.ts';
@@ -104,8 +104,8 @@ async function lumoWebhook(req: Request, res: Response) {
       }
     ];
 
-    // Send message to AI using Vercel AI SDK
-    const response = await generateText({
+    // Stream AI response and handle trigger sentence detection
+    const stream = await streamText({
       model,
       messages,
       tools: websiteTools,
@@ -114,11 +114,39 @@ async function lumoWebhook(req: Request, res: Response) {
       maxTokens: 12000
     });
 
+    const TRIGGER_SENTENCE = 'BUILDING_WEBSITE_NOW';
+    let fullResponse = '';
+    let acknowledgmentSent = false;
+    let toolCalls: ToolCall[] = [];
+
+    // Process the stream
+    for await (const chunk of stream.textStream) {
+      fullResponse += chunk;
+
+      // Check for trigger sentence in early chunks (only if not already sent)
+      if (!acknowledgmentSent && fullResponse.includes(TRIGGER_SENTENCE)) {
+        // Send acknowledgment message
+        await whatsapp.respond(
+          whatsAppPayload,
+          'I am building your website now. This may take a moment...',
+          accessToken
+        );
+        acknowledgmentSent = true;
+        logger.log('Website building acknowledgment sent', { userId: user.id });
+      }
+    }
+
+    // Wait for final result to get tool calls
+    toolCalls = await stream.toolCalls;
+
+    // Remove trigger sentence from response if present
+    fullResponse = fullResponse.replace(TRIGGER_SENTENCE, '').trim();
+
     // Check if AI wants to call a tool
-    if (response.toolCalls && response.toolCalls.length > 0) {
+    if (toolCalls && toolCalls.length > 0) {
       logger.log('AI tool calls detected:', {
-        toolCallsCount: response.toolCalls.length,
-        toolCalls: response.toolCalls.map(tc => {
+        toolCallsCount: toolCalls.length,
+        toolCalls: toolCalls.map(tc => {
           const args = tc.args as WebsiteCreationArgs;
           return {
             toolName: tc.toolName,
@@ -130,16 +158,17 @@ async function lumoWebhook(req: Request, res: Response) {
           };
         })
       });
-      await handleToolCalls(response.toolCalls, user, whatsAppPayload, accessToken, response.text);
+      await handleToolCalls(toolCalls, user, whatsAppPayload, accessToken);
     } else {
       // Regular response without tool call
       const reply =
-        response.text || "I'm here to help you build a website. Describe what you'd like your website to look like!";
+        fullResponse || "I'm here to help you build a website. Describe what you'd like your website to look like!";
       await whatsapp.respond(whatsAppPayload, reply, accessToken);
     }
 
     // Update user's last_response_id for conversation threading if available
-    const responseId = response.response?.id || response.response?.headers?.['x-request-id'];
+    const responseMetadata = await stream.response;
+    const responseId = responseMetadata?.id || responseMetadata?.headers?.['x-request-id'];
     if (responseId) {
       await prisma.users.update({
         where: { id: user.id },
@@ -210,8 +239,7 @@ async function handleToolCalls(
   toolCalls: ToolCall[],
   user: User,
   whatsAppPayload: WhatsAppMessagePayload,
-  accessToken: string,
-  previousMessageContent: string | null
+  accessToken: string
 ) {
   for (const toolCall of toolCalls) {
     if (toolCall.toolName === 'save_complete_website') {
@@ -271,13 +299,7 @@ async function handleToolCalls(
         // Combine confirmation message with AI's follow-up questions
         let fullMessage =
           `✅ Your website has been ${existingWebsite ? 'updated' : 'created'} successfully!\n\n` +
-          `You can view it at: ${process.env.WEBSITE_URL}/website/${website.id}\n\n` +
-          `Website name: ${websiteName}\n\n`;
-
-        // Add AI's follow-up questions if they exist
-        if (previousMessageContent && previousMessageContent.trim()) {
-          fullMessage += `${previousMessageContent}\n\n`;
-        }
+          `You can view it at: ${process.env.WEBSITE_URL}/website/${website.id}\n\n`;
 
         fullMessage += `You can continue to describe changes you'd like to make, or ask me to build additional features!`;
 
