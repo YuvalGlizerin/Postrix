@@ -1,0 +1,98 @@
+fluent-bit:
+  # Run as DaemonSet to collect logs from all nodes
+  kind: DaemonSet
+  
+  # Service account and RBAC permissions
+  serviceAccount:
+    create: true
+  
+  rbac:
+    create: true
+  
+  # Resource limits for the DaemonSet
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  
+  # Mount host paths to access container logs
+  extraVolumes:
+    - name: varlog
+      hostPath:
+        path: /var/log
+    - name: varlibdockercontainers
+      hostPath:
+        path: /var/lib/docker/containers
+    - name: elasticsearch-certs
+      secret:
+        secretName: elasticsearch-master-crt
+  
+  extraVolumeMounts:
+    - name: varlog
+      mountPath: /var/log
+      readOnly: true
+    - name: varlibdockercontainers
+      mountPath: /var/lib/docker/containers
+      readOnly: true
+    - name: elasticsearch-certs
+      mountPath: /etc/ssl/certs/elasticsearch
+      readOnly: true
+  
+  # Fluent Bit configuration
+  config:
+    # Input configuration - collect container logs
+    inputs: |
+      [INPUT]
+          Name              tail
+          Path              /var/log/containers/*.log
+          Parser            docker
+          Tag               kube.*
+          Refresh_Interval  5
+          Mem_Buf_Limit     5MB
+          Skip_Long_Lines   On
+          Skip_Empty_Lines  On
+    
+    # Filter configuration - add kubernetes metadata
+    filters: |
+      [FILTER]
+          Name                kubernetes
+          Match               kube.*
+          Kube_URL            https://kubernetes.default.svc:443
+          Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
+          Kube_Tag_Prefix     kube.var.log.containers.
+          Merge_Log           On
+          Keep_Log            Off
+          K8S-Logging.Parser  On
+          K8S-Logging.Exclude Off
+    
+    # Output configuration - send to Elasticsearch
+    outputs: |
+      [OUTPUT]
+          Name            es
+          Match           *
+          Host            elasticsearch.elastic.svc.cluster.local
+          Port            9200
+          HTTP_User       elastic
+          HTTP_Passwd     ${ELASTICSEARCH_PASSWORD}
+          Index           fluent-bit
+          Type            _doc
+          Logstash_Format On
+          Logstash_Prefix kubernetes
+          Time_Key        @timestamp
+          Replace_Dots    On
+          Retry_Limit     False
+          tls             On
+          tls.verify      Off
+          tls.ca_file     /etc/ssl/certs/elasticsearch/ca.crt
+  
+  # Environment variables for Elasticsearch authentication
+  extraEnvVars:
+    - name: ELASTICSEARCH_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: elasticsearch-auth
+          key: elasticsearch-password
