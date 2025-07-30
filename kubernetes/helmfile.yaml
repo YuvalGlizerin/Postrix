@@ -97,6 +97,14 @@ releases:
     values:
       - ./redis/values/defaults.yaml
 
+  - name: fluent-bit
+    namespace: fluent-bit
+    chart: ./fluent-bit
+    labels:
+      app: fluent-bit
+    values:
+      - ./fluent-bit/values/defaults.yaml
+
   - name: whatsapp
     namespace: "{{ default .Namespace .Environment.Name }}"
     chart: ./common
