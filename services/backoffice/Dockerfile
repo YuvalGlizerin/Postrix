@@ -34,8 +34,8 @@ COPY package.json package-lock.json ./
 RUN npm ci --workspace=backoffice --omit=dev
 
 # Copy the built and static assets
-COPY --from=build /app/.next ./.next
-COPY --from=build /app/public ./public
+COPY --from=build /usr/workspace/.next ./.next
+COPY --from=build /usr/workspace/public ./public
 
 # Expose the port the service runs on
 EXPOSE 3000
