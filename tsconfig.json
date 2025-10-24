@@ -1,24 +1,53 @@
 /**
- * We do not build any ts files(Except for the github actions), since we run node with stripping types
- * This tsconfig is only used for type checking
+ * Unified TypeScript Configuration for Postrix Monorepo
+ *
+ * This config is used for type checking across all services:
+ * - Backend Node.js services (cannon, whatsapp) - run TypeScript directly with Node.js
+ * - Frontend Next.js services (backoffice) - built by Next.js
+ *
+ * Since we don't emit with tsc (backends use Node.js native TS, Next.js has its own build),
+ * this config focuses on providing the best type checking experience for all service types.
  */
 {
   "compilerOptions": {
-    "target": "ESNext",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
-    "module": "NodeNext",                                /* Specify what module code is generated. */
-    "esModuleInterop": true,                             /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
-    "strict": true,                                      /* Enable all strict type-checking options. */
-    "strictNullChecks": true,                            /* When type checking, take into account 'null' and 'undefined'. */
-    "skipLibCheck": true,                                /* Skip type checking all .d.ts files. */
-    "allowImportingTsExtensions": true,                  /* Allow importing TypeScript files with extensions other than .ts. */  
-    "noEmit": true,                                      /* Do not emit outputs. */
-    "verbatimModuleSyntax": true                         /* Use the original module syntax for imports and exports. */
-    // "erasableSyntaxOnly": true                        /* Only allow the use of the erasable syntax. Not totally supported yet */
+    // Language & Module Settings (permissive to support both Node.js and browser/Next.js)
+    "target": "ESNext",
+    "module": "ESNext",
+    "lib": ["ESNext", "dom", "dom.iterable"],
+    "jsx": "preserve",
+    
+    // Module Resolution (works for both Node.js and bundler contexts)
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
+    
+    // Strict Type Checking
+    "strict": true,
+    "strictNullChecks": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    
+    // Interop & Support
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
+    
+    // Next.js support
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "exclude": [
     "node_modules",
     "**/node_modules/*",
     "dist",
-    "coverage"
+    "coverage",
+    ".next",
+    "out",
+    "build"
   ]
 }
