@@ -87,7 +87,7 @@ const config = [
       'no-var': 'error',
       'prefer-const': 'error',
       'prefer-template': 'error',
-      camelcase: ['error', { properties: 'never' }],
+      camelcase: ['error', { properties: 'never', ignoreImports: true }],
       curly: ['error', 'all'],
       'prettier/prettier': [
         'error',
