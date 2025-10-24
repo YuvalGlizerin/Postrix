@@ -3,7 +3,7 @@ import { Logger } from 'logger';
 const logger = new Logger('Backoffice');
 
 export default function Home() {
-  logger.info('Backoffice page loaded');
+  logger.info(`Backoffice page loaded in ${process.env.ENV} environment`);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">

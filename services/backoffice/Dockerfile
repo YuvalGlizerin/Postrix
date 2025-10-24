@@ -10,7 +10,7 @@ FROM --platform=linux/arm64 node:24.0.1-slim AS build
 WORKDIR /usr/workspace
 
 # Copy the root package.json and package-lock.json and tsconfig.json
-COPY package.json package-lock.json ./ tsconfig.json ./
+COPY package.json package-lock.json tsconfig.json ./
 
 # Copy the service
 COPY services/backoffice services/backoffice/

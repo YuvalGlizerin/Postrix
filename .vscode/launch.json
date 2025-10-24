@@ -16,6 +16,17 @@
       }
     },
     {
+      "name": "Backoffice",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev --prefix services/backoffice",
+      "env": {
+        "ENV": "${input:env}",
+        "NAMESPACE": "${input:env}",
+        "IS_LOCAL_DEV": "true"
+      }
+    },
+    {
       "name": "Job Notifications",
       "type": "node-terminal",
       "request": "launch",
