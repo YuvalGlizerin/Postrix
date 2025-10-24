@@ -8,8 +8,10 @@ import jsonParser from 'jsonc-eslint-parser';
 import jsoncPlugin from 'eslint-plugin-jsonc';
 import globals from 'globals';
 import prettier from 'eslint-plugin-prettier';
+import nextVitals from 'eslint-config-next/core-web-vitals';
+import nextTs from 'eslint-config-next/typescript';
 
-export default [
+const config = [
   {
     ignores: [
       '**/node_modules/**',
@@ -19,11 +21,18 @@ export default [
       '**/coverage/**',
       '**/kubernetes/**/templates/**/*.{yml,yaml}', // Ignore helm files
       '**/prisma/migrations/**', // Ignore prisma migration files
-      '**/src/generated/**' // Ignore generated prisma client
+      '**/src/generated/**', // Ignore generated prisma client
+      // Next.js specific ignores
+      '**/.next/**',
+      '**/out/**',
+      '**/build/**',
+      '**/next-env.d.ts'
     ]
   },
   js.configs.recommended,
   ...eslintPluginYml.configs['flat/recommended'],
+  ...nextVitals,
+  ...nextTs,
   {
     files: ['**/*.yml', '**/*.yaml'],
     languageOptions: {
@@ -123,3 +132,5 @@ export default [
     }
   }
 ];
+
+export default config;
