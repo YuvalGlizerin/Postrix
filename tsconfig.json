@@ -7,32 +7,31 @@
  *
  * Since we don't emit with tsc (backends use Node.js native TS, Next.js has its own build),
  * this config focuses on providing the best type checking experience for all service types.
- */
-{
+ */{
   "compilerOptions": {
     // Language & Module Settings (permissive to support both Node.js and browser/Next.js)
     "target": "ESNext",
     "module": "ESNext",
-    "lib": ["ESNext", "dom", "dom.iterable"],
-    "jsx": "preserve",
-    
+    "lib": [
+      "ESNext",
+      "dom",
+      "dom.iterable"
+    ],
+    "jsx": "react-jsx",
     // Module Resolution (works for both Node.js and bundler contexts)
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
-    
     // Strict Type Checking
     "strict": true,
     "strictNullChecks": true,
     "noEmit": true,
     "isolatedModules": true,
-    
     // Interop & Support
     "esModuleInterop": true,
     "skipLibCheck": true,
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
-    
     // Next.js support
     "incremental": true,
     "plugins": [
@@ -48,6 +47,16 @@
     "coverage",
     ".next",
     "out",
-    "build"
+    "build",
+    "**/generated/**",
+    "packages/**"
+  ],
+  "include": [
+    "next-env.d.ts",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts",
+    "**/*.ts",
+    "**/*.tsx"
   ]
 }
