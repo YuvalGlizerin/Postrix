@@ -7,7 +7,8 @@
  *
  * Since we don't emit with tsc (backends use Node.js native TS, Next.js has its own build),
  * this config focuses on providing the best type checking experience for all service types.
- */{
+ */
+ {
   "compilerOptions": {
     // Language & Module Settings (permissive to support both Node.js and browser/Next.js)
     "target": "ESNext",
@@ -48,8 +49,7 @@
     ".next",
     "out",
     "build",
-    "**/generated/**",
-    "packages/**"
+    "**/generated/**"
   ],
   "include": [
     "next-env.d.ts",
