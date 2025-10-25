@@ -7,6 +7,8 @@ repositories:
     url: https://kubernetes.github.io/ingress-nginx
   - name: autoscaler
     url: https://kubernetes.github.io/autoscaler
+  - name: fluent
+    url: https://fluent.github.io/helm-charts
 
 ---
 
@@ -98,8 +100,9 @@ releases:
       - ./redis/values/defaults.yaml
 
   - name: fluent-bit
-    namespace: fluent-bit
-    chart: ./fluent-bit
+    namespace: elastic
+    chart: fluent/fluent-bit
+    version: 0.54.0
     labels:
       app: fluent-bit
     values:
