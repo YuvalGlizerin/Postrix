@@ -45,6 +45,10 @@ build/Release
 node_modules/
 jspm_packages/
 
+# Prevent workspace-level lockfiles (monorepo structure)
+packages/*/package-lock.json
+services/*/package-lock.json
+
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
 
@@ -154,6 +158,15 @@ gha-creds-*.json
 
 # MacOS auto generated files
 .DS_Store
+
+# SSL certificates
+*.pem
+
+# Vercel
+.vercel
+
+# Next.js auto-generated types
+next-env.d.ts
 
 # Helm
 kubernetes/**/charts/

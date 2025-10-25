@@ -25,6 +25,7 @@
     "autoincrement",
     "awscli",
     "awsdns",
+    "backoffice",
     "bitnami",
     "Capish",
     "Creatomate",

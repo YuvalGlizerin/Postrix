@@ -116,3 +116,13 @@ releases:
     values:
       - ./cannon/values/defaults.yaml
       - ./cannon/values/{{ .Environment.Name }}.yaml
+
+  - name: backoffice
+    namespace: "{{ default .Namespace .Environment.Name }}"
+    chart: ./common
+    labels:
+      app: backoffice
+      group: app
+    values:
+      - ./backoffice/values/defaults.yaml
+      - ./backoffice/values/{{ .Environment.Name }}.yaml

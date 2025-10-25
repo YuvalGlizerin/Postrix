@@ -72,3 +72,4 @@ jobs:
           message: |
             [Whatsapp](https://${{ steps.repo_warm_up.outputs.namespace }}-whatsapp.postrix.io)
             [Cannon](https://${{ steps.repo_warm_up.outputs.namespace }}-cannon.postrix.io)
+            [Backoffice](https://${{ steps.repo_warm_up.outputs.namespace }}-backoffice.postrix.io)

@@ -13,3 +13,10 @@ resource "docker_hub_repository" "cannon" {
   description = "Cannon docker repository"
   private     = false
 }
+
+resource "docker_hub_repository" "backoffice" {
+  namespace   = var.namespace
+  name        = "backoffice"
+  description = "Backoffice docker repository"
+  private     = false
+}

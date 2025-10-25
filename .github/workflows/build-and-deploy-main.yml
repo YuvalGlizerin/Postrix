@@ -34,7 +34,7 @@ jobs:
 
     strategy:
       matrix:
-        service: [whatsapp, cannon]
+        service: [whatsapp, cannon, backoffice]
     
     uses: ./.github/workflows/build-and-push.yml
     with:
