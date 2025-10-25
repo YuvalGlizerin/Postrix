@@ -1,4 +1,5 @@
 /* eslint-disable no-console */ // Cannot use logger yet because I need to get the secrets first to initialize it
+import utils from 'utils';
 import { fromIni } from '@aws-sdk/credential-providers';
 import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
 
@@ -6,7 +7,7 @@ const secrets: Record<string, string> = {};
 
 const secretsClient = new SecretsManagerClient({
   region: 'us-east-1',
-  ...(process.env.IS_LOCAL_DEV === 'true' ? { credentials: fromIni() } : {})
+  ...(utils.isRunningInCluster() ? {} : { credentials: fromIni() })
 });
 
 // Create an array of promises for secret fetching

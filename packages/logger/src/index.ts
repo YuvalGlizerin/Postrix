@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import os from 'os';
 
+import utils from 'utils';
 import secrets from 'secret-manager';
 import { Client } from '@elastic/elasticsearch';
 
@@ -19,20 +20,31 @@ const BATCH_SIZE = 10;
 const FLUSH_INTERVAL_MS = 5000;
 const NODE = 'https://elasticsearch.postrix.io';
 const hostname = os.hostname();
-const client = new Client({
-  node: NODE,
-  auth: {
-    username: 'elastic', // Default to elastic user
-    password: secrets.ELASTICSEARCH_PASSWORD
-  },
-  tls: {
-    rejectUnauthorized: false
-  }
-});
+
+// Detect environment: use Fluent Bit in cloud (dev/prod), Elasticsearch API only in local
+// Check if running in Kubernetes (cloud) or local development
+const useElasticsearchAPI = !utils.isRunningInCluster();
+
+// Only initialize Elasticsearch client for local environment
+const client = useElasticsearchAPI
+  ? new Client({
+      node: NODE,
+      auth: {
+        username: 'elastic',
+        password: secrets.ELASTICSEARCH_PASSWORD
+      },
+      tls: {
+        rejectUnauthorized: false
+      }
+    })
+  : null;
+
 let batchLogs: LogEntry[] = [];
-const flushInterval = setInterval(() => {
-  Logger.flush().catch(err => console.error('Error flushing logs:', err));
-}, FLUSH_INTERVAL_MS);
+const flushInterval = useElasticsearchAPI
+  ? setInterval(() => {
+      Logger.flush().catch(err => console.error('Error flushing logs:', err));
+    }, FLUSH_INTERVAL_MS)
+  : null;
 
 export class Logger {
   private serviceName: string;
@@ -77,20 +89,28 @@ export class Logger {
       ...metadata
     };
 
-    // Add to batch
-    batchLogs.push(logEntry);
+    if (useElasticsearchAPI) {
+      // Local environment: use Elasticsearch API
+      // Add to batch
+      batchLogs.push(logEntry);
 
-    // Log to console immediately
-    console[level](message, metadata);
+      // Log to console immediately
+      console[level](message, metadata);
 
-    // Flush if we've reached batch size
-    if (batchLogs.length >= BATCH_SIZE) {
-      await Logger.flush();
+      // Flush if we've reached batch size
+      if (batchLogs.length >= BATCH_SIZE) {
+        await Logger.flush();
+      }
+    } else {
+      // Cloud environment: log to stdout as JSON for Fluent Bit to collect
+      // Fluent Bit will parse these logs and send them to Elasticsearch
+      console.log(JSON.stringify(logEntry));
     }
   }
 
   static async flush() {
-    if (batchLogs.length === 0) {
+    // Only flush to Elasticsearch in local environment
+    if (!useElasticsearchAPI || batchLogs.length === 0) {
       return;
     }
 
@@ -104,7 +124,7 @@ export class Logger {
       // Use bulk API for more efficient indexing
       const operations = logs.flatMap(doc => [{ index: { _index: indexName } }, doc]);
 
-      await client.bulk({ operations });
+      await client!.bulk({ operations });
     } catch (error) {
       // Log error and re-add logs to be sent on next flush
       console.error('Failed to send logs to Elasticsearch:', error);
@@ -147,8 +167,12 @@ export class Logger {
   }
 
   static async close() {
-    clearInterval(flushInterval);
-    await Logger.flush();
-    await client.close();
+    if (flushInterval) {
+      clearInterval(flushInterval);
+    }
+    if (useElasticsearchAPI) {
+      await Logger.flush();
+      await client!.close();
+    }
   }
 }
