@@ -32,14 +32,14 @@ app.get('/health', (req, res) => {
 });
 
 // Root route to serve the HTML toybuttons website
-app.get('/', (req: Request, res: Response) => {
+app.get('/', async (req: Request, res: Response) => {
   try {
     const htmlPath = path.join(__dirname, 'index.html');
     const htmlContent = fs.readFileSync(htmlPath, 'utf8');
-    logger.info(`Serving HTML file: ${htmlPath} ${process.env.KUBERNETES_SERVICE_HOST !== undefined}`);
+    await logger.info(`Serving HTML file: ${htmlPath}`);
     res.send(htmlContent);
   } catch (error) {
-    logger.error('Error serving HTML file:', { error });
+    await logger.error('Error serving HTML file:', { error });
     res.send(`Cannon service running on ${process.env.ENV}.\n`);
   }
 });
@@ -75,8 +75,8 @@ app.post('/leaderboard', async (req: Request, res: Response) => {
   }
 });
 
-const server = app.listen(PORT, () => {
-  logger.log(`Cannon service is running on ${process.env.ENV}: http://localhost:${PORT}`);
+const server = app.listen(PORT, async () => {
+  await logger.log(`Cannon service is running on ${process.env.ENV}: http://localhost:${PORT}`);
 });
 
 export { server as default };
