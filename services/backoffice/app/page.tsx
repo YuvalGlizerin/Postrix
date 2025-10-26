@@ -2,8 +2,11 @@ import Image from 'next/image';
 import { Logger } from 'logger';
 const logger = new Logger('Backoffice');
 
-export default function Home() {
-  logger.info(`Backoffice page loaded in ${process.env.ENV} environment`);
+// Force this page to be dynamic so it logs on each request
+export const dynamic = 'force-dynamic';
+
+export default async function Home() {
+  await logger.info(`Backoffice page loaded in ${process.env.ENV} environment`);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
@@ -39,7 +42,7 @@ export default function Home() {
             rel="noopener noreferrer"
           >
             <Image className="dark:invert" src="/vercel.svg" alt="Vercel logomark" width={16} height={16} />
-            Deploy Now(On K8S!!!)
+            Deploy Now(On K8S 2.0!!!)
           </a>
           <a
             className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/8 px-5 transition-colors hover:border-transparent hover:bg-black/4 dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"

@@ -36,6 +36,7 @@ app.get('/', (req: Request, res: Response) => {
   try {
     const htmlPath = path.join(__dirname, 'index.html');
     const htmlContent = fs.readFileSync(htmlPath, 'utf8');
+    logger.info(`Serving HTML file: ${htmlPath} ${process.env.KUBERNETES_SERVICE_HOST !== undefined}`);
     res.send(htmlContent);
   } catch (error) {
     logger.error('Error serving HTML file:', { error });
