@@ -86,6 +86,7 @@ export class Logger {
       level,
       message,
       service: this.serviceName,
+      view: 'App', // This will make fluent bit redirect the log to the App view in Kibana
       hostname,
       ...metadata
     };

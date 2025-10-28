@@ -56,6 +56,12 @@ config:
         Keep_Log Off
         K8S-Logging.Parser On
         K8S-Logging.Exclude Off
+
+    [FILTER]
+        Name rewrite_tag
+        Match kube.*
+        Rule $view ^App$ app.$TAG false
+        Emitter_Name re_emitted
     
     [FILTER]
         Name parser
@@ -68,6 +74,23 @@ config:
   outputs: |
     [OUTPUT]
         Name es
+        Match app.*
+        Host elasticsearch.elastic.svc.cluster.local
+        Port 9200
+        HTTP_User elastic
+        HTTP_Passwd ${ELASTICSEARCH_PASSWORD}
+        Logstash_Format On
+        Logstash_Prefix logs
+        Logstash_DateFormat %Y.%m.%d
+        Time_Key @timestamp
+        Replace_Dots On
+        Retry_Limit False
+        Suppress_Type_Name On
+        tls On
+        tls.verify Off
+
+    [OUTPUT]
+        Name es
         Match kube.*
         Host elasticsearch.elastic.svc.cluster.local
         Port 9200
@@ -75,6 +98,7 @@ config:
         HTTP_Passwd ${ELASTICSEARCH_PASSWORD}
         Logstash_Format On
         Logstash_Prefix kubernetes
+        Logstash_DateFormat %Y.%m.%d
         Time_Key @timestamp
         Replace_Dots On
         Retry_Limit False
