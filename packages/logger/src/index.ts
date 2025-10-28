@@ -23,7 +23,8 @@ const hostname = os.hostname();
 
 // Detect environment: use Fluent Bit in cloud (dev/prod), Elasticsearch API only in local
 // Check if running in Kubernetes (cloud) or local development
-const useElasticsearchAPI = !utils.isRunningInCluster();
+const isInCluster = utils.isRunningInCluster();
+const useElasticsearchAPI = !isInCluster;
 
 // Only initialize Elasticsearch client for local environment
 const client = useElasticsearchAPI
