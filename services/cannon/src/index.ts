@@ -52,6 +52,7 @@ app.get('/leaderboard', async (req: Request, res: Response) => {
         score: 'desc'
       }
     });
+    logger.info('Leaderboard entries:', { leaderboardEntries });
     res.status(200).json(leaderboardEntries);
   } catch (error) {
     logger.error('Error querying leaderboard:', { error });
@@ -68,6 +69,7 @@ app.post('/leaderboard', async (req: Request, res: Response) => {
       update: { score },
       create: { username, score }
     });
+    logger.info('Leaderboard entry added:', { result });
     res.status(201).json(result);
   } catch (error) {
     logger.error('Error adding to leaderboard:', { error });
