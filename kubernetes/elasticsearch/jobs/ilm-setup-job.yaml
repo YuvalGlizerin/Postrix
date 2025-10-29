@@ -1,0 +1,76 @@
+# This job sets up Index Lifecycle Management (ILM) policies for Elasticsearch indices.
+# It creates index templates with different retention policies:
+# - logs-*: 30-day retention (application logs)
+# - kubernetes-*: 7-day retention (infrastructure logs)
+# 
+# To apply manually:
+# kubectl apply -f elasticsearch/jobs/ilm-setup-job.yaml -n elastic
+#
+# To change retention periods, edit the policy names in the script:
+# Available policies: 7-days@lifecycle, 30-days@lifecycle, 90-days@lifecycle, 180-days@lifecycle, 365-days@lifecycle
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: elasticsearch-ilm-setup
+  namespace: elastic
+spec:
+  ttlSecondsAfterFinished: 60 # Delete job 1 minute after completion
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: ilm-setup
+          image: curlimages/curl:latest
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              echo "Waiting for Elasticsearch to be ready..."
+              until curl -k -u "elastic:${ELASTICSEARCH_PASSWORD}" -s "https://elasticsearch:9200/_cluster/health" > /dev/null; do
+                echo "Waiting..."
+                sleep 5
+              done
+              
+              echo "Creating index templates with lifecycle policies..."
+              echo ""
+              
+              # Set up logs-* with 30-day retention
+              echo "Setting up template for logs-* indices (30-day retention)..."
+              curl -k -u "elastic:${ELASTICSEARCH_PASSWORD}" -X PUT \
+                "https://elasticsearch:9200/_index_template/logs-template" \
+                -H 'Content-Type: application/json' \
+                -d '{
+                  "index_patterns": ["logs-*"],
+                  "template": {
+                    "settings": {
+                      "index.lifecycle.name": "30-days@lifecycle"
+                    }
+                  }
+                }'
+              echo ""
+              
+              # Set up kubernetes-* with 7-day retention
+              echo "Setting up template for kubernetes-* indices (7-day retention)..."
+              curl -k -u "elastic:${ELASTICSEARCH_PASSWORD}" -X PUT \
+                "https://elasticsearch:9200/_index_template/kubernetes-template" \
+                -H 'Content-Type: application/json' \
+                -d '{
+                  "index_patterns": ["kubernetes-*"],
+                  "template": {
+                    "settings": {
+                      "index.lifecycle.name": "7-days@lifecycle"
+                    }
+                  }
+                }'
+              echo ""
+              
+              echo "Index templates created successfully!"
+              echo "  - logs-*: 30-day retention (30-days@lifecycle)"
+              echo "  - kubernetes-*: 7-day retention (7-days@lifecycle)"
+          env:
+            - name: ELASTICSEARCH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: elasticsearch-auth
+                  key: elasticsearch-password
