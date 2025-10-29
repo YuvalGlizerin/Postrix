@@ -5,12 +5,13 @@ import path from 'path';
 import { S3Client } from '@aws-sdk/client-s3';
 import { fromIni } from '@aws-sdk/credential-providers';
 import { Logger } from 'logger';
+import utils from 'utils';
 
 const logger = new Logger('FileSystem');
 
 const s3Client = new S3Client({
   region: 'us-east-1',
-  ...(process.env.IS_LOCAL_DEV === 'true' ? { credentials: fromIni() } : {})
+  ...(utils.isRunningInCluster() ? {} : { credentials: fromIni() })
 });
 
 /**

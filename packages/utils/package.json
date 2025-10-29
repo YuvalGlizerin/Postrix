@@ -1,0 +1,13 @@
+{
+  "name": "utils",
+  "type": "module",
+  "description": "A utils package containing helper functions",
+  "main": "src/index.ts",
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "test": "jest --config ../../jest.config.mjs --rootDir ./"
+  },
+  "dependencies": {
+    "logger": "file:../logger"
+  }
+}

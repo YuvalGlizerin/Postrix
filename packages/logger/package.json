@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.10.0",
-    "secret-manager": "file:../secret-manager"
+    "secret-manager": "^1.0.0",
+    "utils": "*"
   }
 }

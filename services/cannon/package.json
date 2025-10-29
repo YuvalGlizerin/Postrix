@@ -13,7 +13,8 @@
     "cannon-db": "file:../../packages/cannon-db",
     "env-loader": "file:../../packages/env-loader",
     "express": "^4.18.2",
-    "logger": "file:../../packages/logger"
+    "logger": "file:../../packages/logger",
+    "utils": "file:../../packages/utils"
   },
   "devDependencies": {
     "@types/pg": "^8.11.11",

@@ -32,13 +32,14 @@ app.get('/health', (req, res) => {
 });
 
 // Root route to serve the HTML toybuttons website
-app.get('/', (req: Request, res: Response) => {
+app.get('/', async (req: Request, res: Response) => {
   try {
     const htmlPath = path.join(__dirname, 'index.html');
     const htmlContent = fs.readFileSync(htmlPath, 'utf8');
+    await logger.info(`Serving HTML file: ${htmlPath}`);
     res.send(htmlContent);
   } catch (error) {
-    logger.error('Error serving HTML file:', { error });
+    await logger.error('Error serving HTML file:', { error });
     res.send(`Cannon service running on ${process.env.ENV}.\n`);
   }
 });
@@ -51,6 +52,7 @@ app.get('/leaderboard', async (req: Request, res: Response) => {
         score: 'desc'
       }
     });
+    logger.info('Leaderboard entries:', { leaderboardEntries });
     res.status(200).json(leaderboardEntries);
   } catch (error) {
     logger.error('Error querying leaderboard:', { error });
@@ -67,6 +69,7 @@ app.post('/leaderboard', async (req: Request, res: Response) => {
       update: { score },
       create: { username, score }
     });
+    logger.info('Leaderboard entry added:', { result });
     res.status(201).json(result);
   } catch (error) {
     logger.error('Error adding to leaderboard:', { error });
@@ -74,8 +77,8 @@ app.post('/leaderboard', async (req: Request, res: Response) => {
   }
 });
 
-const server = app.listen(PORT, () => {
-  logger.log(`Cannon service is running on ${process.env.ENV}: http://localhost:${PORT}`);
+const server = app.listen(PORT, async () => {
+  await logger.log(`Cannon service is running on ${process.env.ENV}: http://localhost:${PORT}`);
 });
 
 export { server as default };

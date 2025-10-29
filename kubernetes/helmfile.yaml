@@ -7,6 +7,8 @@ repositories:
     url: https://kubernetes.github.io/ingress-nginx
   - name: autoscaler
     url: https://kubernetes.github.io/autoscaler
+  - name: fluent
+    url: https://fluent.github.io/helm-charts
 
 ---
 
@@ -96,6 +98,15 @@ releases:
       app: redis
     values:
       - ./redis/values/defaults.yaml
+
+  - name: fluent-bit
+    namespace: elastic
+    chart: fluent/fluent-bit
+    version: 0.54.0
+    labels:
+      app: fluent-bit
+    values:
+      - ./fluent-bit/values/defaults.yaml
 
   - name: whatsapp
     namespace: "{{ default .Namespace .Environment.Name }}"

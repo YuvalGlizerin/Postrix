@@ -11,8 +11,7 @@
       "command": "npm run start --prefix services/${input:serviceName}",
       "env": {
         "ENV": "${input:env}",
-        "NAMESPACE": "${input:env}",
-        "IS_LOCAL_DEV": "true" // This is used to determine if the service is running on your local machine
+        "NAMESPACE": "${input:env}"
       }
     },
     {
@@ -22,8 +21,7 @@
       "command": "npm run dev --prefix services/backoffice",
       "env": {
         "ENV": "${input:env}",
-        "NAMESPACE": "${input:env}",
-        "IS_LOCAL_DEV": "true"
+        "NAMESPACE": "${input:env}"
       }
     },
     {
