@@ -6,11 +6,14 @@
 # https://hub.docker.com/_/node
 FROM --platform=linux/arm64 node:24.0.1-slim AS build
 
+# Install pnpm globally
+RUN npm install -g pnpm@9.5.0
+
 # Set up the workspace directory and cd into it
 WORKDIR /usr/workspace
 
-# Copy the root package.json and package-lock.json and tsconfig.json
-COPY package.json package-lock.json tsconfig.json postcss.config.mjs ./
+# Copy pnpm workspace configuration and lockfile
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml tsconfig.json postcss.config.mjs ./
 
 # Copy the service
 COPY services/backoffice services/backoffice/
@@ -19,10 +22,10 @@ COPY services/backoffice services/backoffice/
 COPY packages packages/
 
 # Install dependencies that are only used by the service or its dependencies
-RUN npm ci --workspace=backoffice
+RUN pnpm install --frozen-lockfile --filter=backoffice...
 
 # Build the service
-RUN npm --prefix=services/backoffice run build
+RUN pnpm --filter=backoffice run build
 
 # From:https://hub.docker. using lightest node
 FROM --platform=linux/arm64 node:24.0.1-slim
@@ -30,8 +33,8 @@ FROM --platform=linux/arm64 node:24.0.1-slim
 # Set up the workspace directory and cd into it
 WORKDIR /usr/workspace
 
-# Copy the root package.json and package-lock.json
-COPY package.json package-lock.json ./
+# Copy pnpm workspace configuration and lockfile
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 
 # Copy the service
 COPY services/backoffice services/backoffice/
@@ -40,7 +43,7 @@ COPY services/backoffice services/backoffice/
 COPY packages packages/
 
 # Install dependencies that are only used by the service or its dependencies for production
-RUN npm ci --workspace=backoffice --omit=dev
+RUN pnpm install --prod --frozen-lockfile --filter=backoffice...
 
 # Copy the built and static assets
 COPY --from=build /usr/workspace/services/backoffice/.next services/backoffice/.next
@@ -53,4 +56,4 @@ EXPOSE 3000
 USER node
 
 # Start the application
-CMD ["npm","--prefix=services/backoffice","run","start"]
+CMD ["pnpm", "--filter=backoffice", "run", "start"]

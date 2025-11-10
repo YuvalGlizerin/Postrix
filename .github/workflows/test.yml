@@ -23,7 +23,7 @@ jobs:
         uses: ./.github/actions/aws-warm-up
       
       - name: Run Jest Test Suite
-        run: npm test
+        run: pnpm test
 
       - name: Upload Test Report to S3
         if: success() || failure()

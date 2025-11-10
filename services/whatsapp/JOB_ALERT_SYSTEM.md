@@ -94,7 +94,7 @@ Location: ${userPreferences.location || 'Not specified'}
 
 2. **Start the Service**
 ```bash
-npm start
+pnpm start
 ```
 
 The job scheduler automatically starts when the WhatsApp service launches.

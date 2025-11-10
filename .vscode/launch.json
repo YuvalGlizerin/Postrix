@@ -8,7 +8,7 @@
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "command": "npm run start --prefix services/${input:serviceName}",
+      "command": "pnpm run start --prefix services/${input:serviceName}",
       "env": {
         "ENV": "${input:env}",
         "NAMESPACE": "${input:env}"
@@ -18,7 +18,7 @@
       "name": "Backoffice",
       "type": "node-terminal",
       "request": "launch",
-      "command": "npm run dev --prefix services/backoffice",
+      "command": "pnpm run dev --prefix services/backoffice",
       "env": {
         "ENV": "${input:env}",
         "NAMESPACE": "${input:env}"
@@ -28,7 +28,7 @@
       "name": "Job Notifications",
       "type": "node-terminal",
       "request": "launch",
-      "command": "npm run start --prefix .github/actions/job-notifications",
+      "command": "pnpm run start --prefix .github/actions/job-notifications",
       "env": {
         "ENV": "local"
       }

@@ -14,4 +14,4 @@ jobs:
         uses: ./.github/actions/repo-warm-up
           
       - name: Run ESLint
-        run: npm run lint 
+        run: pnpm run lint 

@@ -12,6 +12,6 @@
     "@aws-sdk/client-s3": "^3.802.0",
     "@aws-sdk/credential-providers": "^3.799.0",
     "logger": "file:../logger",
-    "utils": "*"
+    "utils": "workspace:*"
   }
 }

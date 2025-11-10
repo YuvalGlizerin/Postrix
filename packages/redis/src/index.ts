@@ -1,8 +1,8 @@
 import os from 'os';
 
 import { Redis } from 'ioredis';
-import secrets from 'secret-manager';
 import { Logger } from 'logger';
+import secrets from 'secret-manager';
 
 const logger = new Logger('redis');
 

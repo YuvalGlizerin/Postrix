@@ -11,6 +11,6 @@
   "dependencies": {
     "@elastic/elasticsearch": "^8.10.0",
     "secret-manager": "^1.0.0",
-    "utils": "*"
+    "utils": "workspace:*"
   }
 }

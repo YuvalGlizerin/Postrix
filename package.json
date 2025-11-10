@@ -12,7 +12,7 @@
     ".github/actions/*"
   ],
   "scripts": {
-    "type-check": "npm run type-check --workspaces --if-present",
+    "type-check": "pnpm -r --if-present run type-check",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx,json,yml,yaml}\"",
     "test": "jest --config ./jest.config.mjs"
   },
