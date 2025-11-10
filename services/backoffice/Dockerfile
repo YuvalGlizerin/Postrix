@@ -30,6 +30,9 @@ RUN pnpm --filter=backoffice run build
 # From:https://hub.docker. using lightest node
 FROM --platform=linux/arm64 node:24.0.1-slim
 
+# Install pnpm globally
+RUN npm install -g pnpm@9.5.0
+
 # Set up the workspace directory and cd into it
 WORKDIR /usr/workspace
 
