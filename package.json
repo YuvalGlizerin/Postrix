@@ -4,7 +4,7 @@
   "description": "Open source generic project",
   "type": "module",
   "engines": {
-    "node": "24.0.1"
+    "node": "24.4.1"
   },
   "workspaces": [
     "packages/*",
@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "type-check": "npm run type-check --workspaces --if-present",
-    "lint": "eslint \"**/*.{js,jsx,ts,tsx,json,yml,yaml}\"",
+    "lint": "eslint --plugin import --rule 'import/no-extraneous-dependencies: error' \"**/*.{js,jsx,ts,tsx,json,yml,yaml}\"",
     "test": "jest --config ./jest.config.mjs"
   },
   "devDependencies": {
@@ -23,7 +23,7 @@
     "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^8.21.0",
     "@typescript-eslint/parser": "^8.21.0",
-    "eslint": "^9.18.0",
+    "eslint": "^9.39.1",
     "eslint-config-next": "16.0.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jsonc": "^2.19.1",

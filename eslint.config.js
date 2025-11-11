@@ -81,7 +81,12 @@ const config = [
     rules: {
       ...eslint.configs['recommended'].rules,
       'import/order': ['warn', { 'newlines-between': 'always' }],
-      'import/no-extraneous-dependencies': 'error',
+
+      // TODO: Add this rule once we have a way to manage dependencies correctly
+      // Also remove the hardcoded rule in the package.json for the lint command
+      // https://github.com/YuvalGlizerin/Postrix/issues/201
+      // 'import/no-extraneous-dependencies': 'error',
+
       'no-console': 'warn',
       'no-debugger': 'error',
       'no-var': 'error',
