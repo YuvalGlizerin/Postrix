@@ -1,5 +1,6 @@
 {
   "name": "utils",
+  "version": "1.0.0",
   "type": "module",
   "description": "A utils package containing helper functions",
   "main": "src/index.ts",

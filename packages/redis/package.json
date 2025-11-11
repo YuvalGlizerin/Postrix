@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "ioredis": "^5.6.1",
-    "logger": "file:../logger",
     "secret-manager": "file:../secret-manager"
   }
 }

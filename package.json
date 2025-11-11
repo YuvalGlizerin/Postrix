@@ -4,7 +4,7 @@
   "description": "Open source generic project",
   "type": "module",
   "engines": {
-    "node": "24.0.1"
+    "node": "24.4.1"
   },
   "workspaces": [
     "packages/*",
@@ -14,7 +14,8 @@
   "scripts": {
     "type-check": "npm run type-check --workspaces --if-present",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx,json,yml,yaml}\"",
-    "test": "jest --config ./jest.config.mjs"
+    "test": "jest --config ./jest.config.mjs",
+    "add-dep": "./scripts/add-workspace-dep.sh"
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",
@@ -25,6 +26,7 @@
     "@typescript-eslint/parser": "^8.21.0",
     "eslint": "^9.18.0",
     "eslint-config-next": "16.0.0",
+    "eslint-import-resolver-node": "^0.3.9",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jsonc": "^2.19.1",
     "eslint-plugin-prettier": "^5.2.3",
@@ -33,6 +35,7 @@
     "jest": "^29.7.0",
     "jest-html-reporter": "^4.1.0",
     "jsonc-eslint-parser": "^2.4.0",
+    "next": "^16.0.1",
     "prettier": "^3.4.2",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",

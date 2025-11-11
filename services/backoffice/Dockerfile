@@ -4,7 +4,7 @@
 
 # Use the official lightweight Node.js image.
 # https://hub.docker.com/_/node
-FROM --platform=linux/arm64 node:24.0.1-slim AS build
+FROM --platform=linux/arm64 node:24.4.1-slim AS build
 
 # Set up the workspace directory and cd into it
 WORKDIR /usr/workspace
@@ -25,7 +25,7 @@ RUN npm ci --workspace=backoffice
 RUN npm --prefix=services/backoffice run build
 
 # From:https://hub.docker. using lightest node
-FROM --platform=linux/arm64 node:24.0.1-slim
+FROM --platform=linux/arm64 node:24.4.1-slim
 
 # Set up the workspace directory and cd into it
 WORKDIR /usr/workspace
