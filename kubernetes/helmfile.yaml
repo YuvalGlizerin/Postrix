@@ -9,6 +9,8 @@ repositories:
     url: https://kubernetes.github.io/autoscaler
   - name: fluent
     url: https://fluent.github.io/helm-charts
+  - name: emberstack
+    url: https://emberstack.github.io/helm-charts
 
 ---
 
@@ -20,6 +22,13 @@ environments:
 ---
 
 releases:
+  - name: reflector
+    namespace: kube-system
+    chart: emberstack/reflector
+    version: 7.1.288
+    labels:
+      app: reflector
+
   - name: sealed-secrets
     namespace: sealed-secrets
     chart: bitnami/sealed-secrets
@@ -107,6 +116,14 @@ releases:
       app: fluent-bit
     values:
       - ./fluent-bit/values/defaults.yaml
+
+  - name: n8n
+    namespace: n8n
+    chart: ./n8n
+    labels:
+      app: n8n
+    values:
+      - ./n8n/values/defaults.yaml
 
   - name: whatsapp
     namespace: "{{ default .Namespace .Environment.Name }}"
