@@ -1,26 +1,31 @@
-redis:
-  architecture: standalone
+# Official Redis image configuration
+image:
+  repository: redis
+  tag: "7.4"
+  pullPolicy: IfNotPresent
 
-  master:
-    persistence:
-      enabled: true 
-      size: 1Gi
-      storageClass: gp3-redis
-    service:
-      type: ClusterIP
-      port: 6379
-    resources:
-      requests:
-        cpu: 100m
-        memory: 50Mi
-      limits:
-        cpu: 150m
-        memory: 200Mi
+# Service configuration
+service:
+  type: ClusterIP
+  port: 6379
 
-  auth:
-    enabled: true
-    existingSecret: "redis-auth"
-    existingSecretPasswordKey: "redis-password"
+# Persistence configuration
+persistence:
+  enabled: true
+  size: 1Gi
+  storageClass: gp3-redis
 
-  replica:
-    replicaCount: 0
+# Resource limits
+resources:
+  requests:
+    cpu: 100m
+    memory: 50Mi
+  limits:
+    cpu: 150m
+    memory: 200Mi
+
+# Authentication configuration
+auth:
+  enabled: true
+  existingSecret: "redis-auth"
+  existingSecretPasswordKey: "redis-password"

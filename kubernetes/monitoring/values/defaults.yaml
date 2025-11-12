@@ -63,6 +63,10 @@ kube-prometheus-stack:
     
     replicas: 1
     
+    # Use Recreate strategy to avoid multi-attach issues with ReadWriteOnce volumes
+    deploymentStrategy:
+      type: Recreate
+    
     resources:
       limits:
         cpu: 500m
@@ -80,16 +84,8 @@ kube-prometheus-stack:
         - ReadWriteOnce
       size: 10Gi
     
-    # Data sources - Prometheus is automatically configured
-    datasources:
-      datasources.yaml:
-        apiVersion: 1
-        datasources:
-          - name: Prometheus
-            type: prometheus
-            url: http://monitoring-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
-            access: proxy
-            isDefault: true
+    # Data sources - Prometheus is automatically configured by the chart
+    # No need to manually configure datasources as kube-prometheus-stack handles this
     
     # Install some default dashboards
     dashboardProviders:
