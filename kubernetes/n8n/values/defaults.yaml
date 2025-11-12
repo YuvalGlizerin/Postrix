@@ -1,0 +1,65 @@
+n8n:
+  image:
+    repository: n8nio/n8n
+    tag: latest
+    pullPolicy: IfNotPresent
+
+  ingress:
+    enabled: true
+    annotations:
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    className: nginx
+    hosts:
+      - host: n8n.postrix.io
+        paths:
+          - /
+
+  main:
+    replicaCount: 1
+    
+    service:
+      type: ClusterIP
+      port: 80
+    
+    resources:
+      limits:
+        cpu: 500m
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 512Mi
+    
+    # Enable persistent storage for files
+    persistence:
+      enabled: true
+      type: dynamic
+      size: 5Gi
+      storageClass: gp3-n8n
+      accessModes:
+        - ReadWriteOnce
+    
+    config:
+      n8n:
+        host: n8n.postrix.io
+        port: 5678
+        protocol: https
+      db:
+        type: postgresdb
+        postgresdb:
+          host: postgresql.postgresql.svc.cluster.local
+          port: 5432
+          database: n8n
+          schema: n8n
+          user: postgres
+    
+    # Reference PostgreSQL password from existing secret
+    extraEnv:
+      - name: DB_POSTGRESDB_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: postgresql-auth
+            key: postgresql-password
+            optional: false
+
+  scaling:
+    enabled: false
