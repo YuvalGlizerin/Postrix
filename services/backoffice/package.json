@@ -12,7 +12,9 @@
     "logger": "file:../../packages/logger",
     "next": "16.0.0",
     "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "react-dom": "19.2.0",
+    "next-auth": "^4.24.8",
+    "secret-manager": "file:../../packages/secret-manager"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
