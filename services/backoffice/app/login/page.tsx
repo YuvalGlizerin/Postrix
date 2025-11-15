@@ -1,6 +1,8 @@
 'use client';
 
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 const isEphemeralEnvironment = () => {
   if (typeof window === 'undefined') {
@@ -16,16 +18,43 @@ const isEphemeralEnvironment = () => {
 };
 
 export default function LoginPage() {
+  const { status } = useSession();
+  const router = useRouter();
+
+  // If already authenticated, redirect to home
+  useEffect(() => {
+    if (status === 'authenticated') {
+      router.push('/');
+    }
+  }, [status, router]);
+
   const handleSignIn = () => {
     if (typeof window === 'undefined') {
       return;
     }
 
     if (isEphemeralEnvironment()) {
-      // For ephemeral environments, redirect to production for OAuth
+      // For ephemeral environments, open production OAuth in popup
       // The session cookie will be shared via .postrix.io domain
-      const returnUrl = encodeURIComponent(`${window.location.origin}/`);
-      window.location.href = `https://backoffice.postrix.io/api/auth/signin/google?callbackUrl=${returnUrl}`;
+      const width = 500;
+      const height = 600;
+      const left = window.screen.width / 2 - width / 2;
+      const top = window.screen.height / 2 - height / 2;
+
+      const popup = window.open(
+        'https://backoffice.postrix.io/api/auth/signin/google?callbackUrl=https://backoffice.postrix.io/api/auth/oauth-success',
+        'oauth-popup',
+        `width=${width},height=${height},left=${left},top=${top},popup=yes,noopener=yes`
+      );
+
+      // Poll for popup close or message
+      const pollTimer = setInterval(() => {
+        if (popup?.closed) {
+          clearInterval(pollTimer);
+          // Popup closed, check if we have a session now
+          window.location.reload();
+        }
+      }, 500);
     } else {
       // For persistent environments (prod, dev, localhost), use normal OAuth
       const callbackUrl = `${window.location.origin}/`;

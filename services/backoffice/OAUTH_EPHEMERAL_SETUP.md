@@ -6,7 +6,7 @@ Google OAuth doesn't support wildcard redirect URIs. This means we can't pre-con
 
 ## Solution
 
-We use an **OAuth proxy pattern** where ephemeral environments redirect to production for authentication, then rely on shared session cookies to maintain authentication state.
+We use an **OAuth popup pattern** where ephemeral environments open production's OAuth flow in a popup window, then rely on shared session cookies to maintain authentication state.
 
 ### How It Works
 
@@ -18,11 +18,12 @@ We use an **OAuth proxy pattern** where ephemeral environments redirect to produ
    - Session cookies are configured with `domain: '.postrix.io'`
    - This allows sessions created on production to work on all `*.postrix.io` subdomains
 
-3. **OAuth Proxy for Ephemeral Environments**
-   - Ephemeral environments redirect users to production's OAuth endpoint
-   - Production handles the entire OAuth flow with Google
-   - After successful authentication, users are redirected back to their original ephemeral domain
-   - The session cookie (set for `.postrix.io`) is accessible on the ephemeral domain
+3. **OAuth Popup for Ephemeral Environments**
+   - Ephemeral environments open production's OAuth flow in a popup window
+   - Production handles the entire OAuth flow with Google in the popup
+   - After successful authentication, the popup shows a success message and auto-closes
+   - The session cookie (set for `.postrix.io`) is now accessible on the ephemeral domain
+   - The main window detects the popup closed and reloads to pick up the session
 
 ### Authentication Flow
 
@@ -31,16 +32,17 @@ For a user accessing `pr-123-backoffice.postrix.io`:
 ```
 1. User visits pr-123-backoffice.postrix.io/login
 2. Clicks "Sign in with Google"
-3. Browser redirects to https://backoffice.postrix.io/api/auth/signin/google?callbackUrl=https://pr-123-backoffice.postrix.io/
-4. Production handles OAuth: redirects to Google with redirect_uri=https://backoffice.postrix.io/api/auth/callback/google
+3. A popup window opens: https://backoffice.postrix.io/api/auth/signin/google
+4. Popup handles OAuth: redirects to Google with redirect_uri=https://backoffice.postrix.io/api/auth/callback/google
 5. User authenticates with Google
 6. Google redirects back to https://backoffice.postrix.io/api/auth/callback/google
 7. Production creates session cookie with domain=.postrix.io
-8. Production redirects user to https://pr-123-backoffice.postrix.io/
-9. User is authenticated on ephemeral domain (cookie is valid for all *.postrix.io domains)
+8. Popup redirects to success page, shows "Authentication Successful", and auto-closes
+9. Main window detects popup closed and reloads
+10. User is now authenticated on ephemeral domain (cookie is valid for all *.postrix.io domains)
 ```
 
-For persistent environments (dev, prod), OAuth happens directly on that environment.
+For persistent environments (dev, prod), OAuth happens directly on that environment without a popup.
 
 ## Google OAuth Configuration
 
@@ -74,8 +76,13 @@ No special configuration needed! They automatically proxy through production.
 
 - **`app/login/page.tsx`**
   - Detects ephemeral vs persistent environments
-  - For ephemeral: redirects to production OAuth endpoint with return URL
+  - For ephemeral: opens production OAuth in a popup window
   - For persistent: uses standard NextAuth OAuth flow
+  - Polls for popup closure and reloads to pick up the session
+
+- **`app/api/auth/oauth-success/route.ts`** (new)
+  - Success page shown in popup after OAuth completes
+  - Displays success message and auto-closes the popup window
 
 - **`envs/dev.env`**
   - Updated `NEXTAUTH_URL` to use dev-specific domain
