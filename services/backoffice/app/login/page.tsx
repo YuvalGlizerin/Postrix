@@ -41,16 +41,28 @@ export default function LoginPage() {
       const left = window.screen.width / 2 - width / 2;
       const top = window.screen.height / 2 - height / 2;
 
+      // Listen for message from popup
+      const handleMessage = (event: MessageEvent) => {
+        if (event.origin === 'https://backoffice.postrix.io' && event.data === 'oauth-success') {
+          window.removeEventListener('message', handleMessage);
+          // Reload to pick up the session
+          window.location.reload();
+        }
+      };
+      window.addEventListener('message', handleMessage);
+
+      const successUrl = encodeURIComponent('https://backoffice.postrix.io/api/auth/oauth-success');
       const popup = window.open(
-        'https://backoffice.postrix.io/api/auth/signin/google?callbackUrl=https://backoffice.postrix.io/api/auth/oauth-success',
+        `https://backoffice.postrix.io/api/auth/signin/google?callbackUrl=${successUrl}`,
         'oauth-popup',
-        `width=${width},height=${height},left=${left},top=${top},popup=yes,noopener=yes`
+        `width=${width},height=${height},left=${left},top=${top}`
       );
 
-      // Poll for popup close or message
+      // Fallback: Poll for popup close
       const pollTimer = setInterval(() => {
         if (popup?.closed) {
           clearInterval(pollTimer);
+          window.removeEventListener('message', handleMessage);
           // Popup closed, check if we have a session now
           window.location.reload();
         }

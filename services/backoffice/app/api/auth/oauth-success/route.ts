@@ -46,6 +46,11 @@ export async function GET() {
     <p>This window will close automatically...</p>
   </div>
   <script>
+    // Notify the parent window that OAuth succeeded
+    if (window.opener) {
+      window.opener.postMessage('oauth-success', '*');
+    }
+    
     // Close the popup window after a short delay
     setTimeout(() => {
       window.close();

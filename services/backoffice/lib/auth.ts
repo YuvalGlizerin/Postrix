@@ -46,28 +46,34 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     async redirect({ url, baseUrl }) {
-      // If there's a callbackUrl with an ephemeral domain, redirect there
-      const urlObj = new URL(url, baseUrl);
-      const callbackUrl = urlObj.searchParams.get('callbackUrl');
+      // Allow redirects to oauth-success page for popup flow
+      if (url.includes('/api/auth/oauth-success')) {
+        return url;
+      }
 
-      if (callbackUrl) {
+      // Handle absolute URLs - allow postrix.io subdomains
+      if (url.startsWith('http')) {
         try {
-          const callback = new URL(callbackUrl);
-          // Allow redirects to any postrix.io subdomain
-          if (callback.hostname.endsWith('.postrix.io') || callback.hostname === 'localhost') {
-            return callbackUrl;
+          const urlObj = new URL(url);
+          // Allow redirects to any postrix.io subdomain or localhost
+          if (
+            urlObj.hostname.endsWith('.postrix.io') ||
+            urlObj.hostname === 'localhost' ||
+            urlObj.hostname === 'backoffice.postrix.io'
+          ) {
+            return url;
           }
         } catch {
           // Invalid URL, fall through to default behavior
         }
       }
 
-      // Default NextAuth behavior
+      // Handle relative URLs
       if (url.startsWith('/')) {
         return `${baseUrl}${url}`;
-      } else if (new URL(url).origin === baseUrl) {
-        return url;
       }
+
+      // Default: redirect to base URL
       return baseUrl;
     }
   },
