@@ -2,13 +2,35 @@
 
 import { signIn } from 'next-auth/react';
 
+const isEphemeralEnvironment = () => {
+  if (typeof window === 'undefined') {
+    return false;
+  }
+  const hostname = window.location.hostname;
+  // Check if this is an ephemeral environment (not prod, dev, or localhost)
+  const isPersistent =
+    hostname === 'backoffice.postrix.io' || // prod
+    hostname === 'dev-backoffice.postrix.io' || // dev
+    hostname === 'localhost'; // local
+  return !isPersistent;
+};
+
 export default function LoginPage() {
   const handleSignIn = () => {
-    // Capture the current origin to redirect back after OAuth
-    // This is crucial for ephemeral environments with dynamic domains
-    const callbackUrl = typeof window !== 'undefined' ? `${window.location.origin}/` : '/';
+    if (typeof window === 'undefined') {
+      return;
+    }
 
-    signIn('google', { callbackUrl });
+    if (isEphemeralEnvironment()) {
+      // For ephemeral environments, redirect to production for OAuth
+      // The session cookie will be shared via .postrix.io domain
+      const returnUrl = encodeURIComponent(`${window.location.origin}/`);
+      window.location.href = `https://backoffice.postrix.io/api/auth/signin/google?callbackUrl=${returnUrl}`;
+    } else {
+      // For persistent environments (prod, dev, localhost), use normal OAuth
+      const callbackUrl = `${window.location.origin}/`;
+      signIn('google', { callbackUrl });
+    }
   };
 
   return (
