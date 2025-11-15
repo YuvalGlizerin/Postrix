@@ -1,19 +1,6 @@
 import type { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import secrets from 'secret-manager';
-import utils from 'utils';
-
-// For ephemeral environments, we need to use the production domain for OAuth callbacks
-// since Google doesn't support wildcard redirect URIs.
-// Always use the production URL for OAuth callbacks, but track the original host
-// to redirect back after authentication.
-const isEphemeralEnv =
-  utils.isRunningInCluster() && process.env.NAMESPACE !== 'prod' && process.env.NAMESPACE !== 'local';
-
-if (isEphemeralEnv) {
-  // Use the production domain for OAuth callbacks
-  process.env.NEXTAUTH_URL = 'https://backoffice.postrix.io';
-}
 
 export const authOptions: NextAuthOptions = {
   providers: [
