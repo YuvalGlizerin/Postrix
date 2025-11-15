@@ -1,84 +1,38 @@
-import type { NextAuthOptions } from 'next-auth';
+import { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import secrets from 'secret-manager';
 
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
-      clientId: secrets.GOOGLE_CLIENT_ID!,
-      clientSecret: secrets.GOOGLE_CLIENT_SECRET!,
-      authorization: {
-        params: {
-          // Hint Google to use the postrix.io hosted domain.
-          hd: 'postrix.io'
-        }
-      }
+      clientId: secrets.GOOGLE_CLIENT_ID || '',
+      clientSecret: secrets.GOOGLE_CLIENT_SECRET || ''
     })
   ],
-  cookies: {
-    // Set cookies to work across all postrix.io subdomains
-    // This allows sessions to work on ephemeral environments
-    sessionToken: {
-      name: process.env.NODE_ENV === 'production' ? '__Secure-next-auth.session-token' : 'next-auth.session-token',
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        // Share cookies across all postrix.io subdomains
-        domain: process.env.NODE_ENV === 'production' ? '.postrix.io' : undefined
-      }
-    }
+  pages: {
+    signIn: '/login',
+    error: '/login'
   },
   callbacks: {
-    async signIn({ user, profile }) {
-      const email = user?.email ?? profile?.email;
-
-      if (!email) {
-        return false;
+    async jwt({ token, account, user }) {
+      if (account && user) {
+        token.accessToken = account.access_token;
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        token.picture = user.image;
       }
-
-      // Only allow @postrix.io accounts.
-      if (!email.toLowerCase().endsWith('@postrix.io')) {
-        return false;
-      }
-
-      return true;
+      return token;
     },
-    async redirect({ url, baseUrl }) {
-      // Allow redirects to oauth-success page for popup flow
-      if (url.includes('/api/auth/oauth-success')) {
-        return url;
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id as string;
+        session.user.email = token.email as string;
+        session.user.name = token.name as string;
+        session.user.image = token.picture as string;
       }
-
-      // Handle absolute URLs - allow postrix.io subdomains
-      if (url.startsWith('http')) {
-        try {
-          const urlObj = new URL(url);
-          // Allow redirects to any postrix.io subdomain or localhost
-          if (
-            urlObj.hostname.endsWith('.postrix.io') ||
-            urlObj.hostname === 'localhost' ||
-            urlObj.hostname === 'backoffice.postrix.io'
-          ) {
-            return url;
-          }
-        } catch {
-          // Invalid URL, fall through to default behavior
-        }
-      }
-
-      // Handle relative URLs
-      if (url.startsWith('/')) {
-        return `${baseUrl}${url}`;
-      }
-
-      // Default: redirect to base URL
-      return baseUrl;
+      return session;
     }
   },
-  secret: secrets.NEXTAUTH_SECRET,
-  pages: {
-    signIn: '/login'
-  }
+  secret: secrets.NEXTAUTH_SECRET
 };
