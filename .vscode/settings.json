@@ -39,6 +39,7 @@
     "keepalive",
     "kubeconfig",
     "lumo",
+    "NEXTAUTH",
     "PGPASSWORD",
     "postrix",
     "psql",
