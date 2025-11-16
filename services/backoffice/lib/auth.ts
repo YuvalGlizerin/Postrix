@@ -1,6 +1,11 @@
 import { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import secrets from 'secret-manager';
+import utils from 'utils';
+
+if (utils.isRunningInCluster() && process.env.NAMESPACE !== 'prod') {
+  process.env.NEXTAUTH_URL = `https://${process.env.NAMESPACE}-backoffice.postrix.io`;
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
