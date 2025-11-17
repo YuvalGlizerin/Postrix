@@ -14,3 +14,11 @@ variable "subnet_ids" {
     "subnet-0f5f53463472c2445"  # us-east-1b
   ]
 }
+
+variable "gcp_project_id" {
+  default = "postrix-478214"
+}
+
+variable "gcp_region" {
+  default = "us-central1"
+}

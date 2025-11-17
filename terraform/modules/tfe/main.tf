@@ -116,3 +116,16 @@ resource "tfe_variable" "docker_password" {
   sensitive       = true # value not tracked if sensitive is true
   variable_set_id = tfe_variable_set.docker_credentials.id
 }
+
+resource "tfe_variable_set" "gcp_credentials" {
+  name          = "GCP Credentials"
+  organization  = tfe_organization.postrix.name
+  global        = true
+}
+
+resource "tfe_variable" "gcp_credentials" {
+  key             = "GOOGLE_CREDENTIALS"
+  category        = "env"
+  sensitive       = true # value not tracked if sensitive is true
+  variable_set_id = tfe_variable_set.gcp_credentials.id
+}

@@ -8,7 +8,7 @@ terraform {
     }
     github = {
       source  = "integrations/github"
-      version = ">= 6.3.1"
+      version = "~> 6.7.0"  # Pin to 6.7.x - newer than state, older than buggy 6.8.2
     }
     tfe = {
       source  = "hashicorp/tfe"
@@ -17,6 +17,10 @@ terraform {
     docker = {
       source  = "docker/docker"
       version = "~> 0.4"
+    }
+    google = {
+      source  = "hashicorp/google"
+      version = ">= 7.11.0"
     }
   }
 
@@ -47,6 +51,12 @@ provider "tfe" {
 
 provider "docker" {
   # Using DOCKER_USERNAME and DOCKER_PASSWORD
+}
+
+provider "google" {
+  # Using GOOGLE_CREDENTIALS (service account JSON)
+  project = var.gcp_project_id
+  region  = var.gcp_region
 }
 
 module "aws_vpc" {
@@ -155,5 +165,13 @@ module "docker" {
 
   providers = {
     docker = docker
+  }
+}
+
+module "gcp" {
+  source = "./modules/gcp"
+
+  providers = {
+    google = google
   }
 }
