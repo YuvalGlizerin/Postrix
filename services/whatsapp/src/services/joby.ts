@@ -13,14 +13,14 @@ import { handleCommand } from './joby/commands.ts';
 const logger = new Logger('Whatsapp');
 
 const openai = new OpenAI({
-  apiKey: secrets.OPENAI_TOKEN
+  apiKey: secrets.SECRET_OPENAI_TOKEN
 });
 
 async function jobyWebhook(req: Request, res: Response) {
   try {
     res.status(200).send('Message sent successfully'); // no retries
 
-    const accessToken = secrets.WHATSAPP_ACCESS_TOKEN;
+    const accessToken = secrets.SECRET_WHATSAPP_ACCESS_TOKEN;
     const whatsAppPayload: WhatsAppMessagePayload = req.body;
 
     // Log the incoming request body to understand its structure

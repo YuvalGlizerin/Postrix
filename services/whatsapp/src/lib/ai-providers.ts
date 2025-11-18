@@ -6,15 +6,15 @@ import secrets from 'secret-manager';
 
 // Create provider instances with API keys
 const openaiProvider = createOpenAI({
-  apiKey: secrets.OPENAI_TOKEN
+  apiKey: secrets.SECRET_OPENAI_TOKEN
 });
 
 const anthropicProvider = createAnthropic({
-  apiKey: secrets.ANTHROPIC_API_KEY
+  apiKey: secrets.SECRET_ANTHROPIC_API_KEY
 });
 
 const googleProvider = createGoogleGenerativeAI({
-  apiKey: secrets.GOOGLE_API_KEY
+  apiKey: secrets.SECRET_GOOGLE_API_KEY
 });
 
 // Create provider registry

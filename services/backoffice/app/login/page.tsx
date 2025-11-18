@@ -3,15 +3,74 @@
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 
 function LoginForm() {
   const searchParams = useSearchParams();
   const error = searchParams.get('error');
   const callbackUrl = searchParams.get('callbackUrl') || '/';
 
-  const handleSignIn = () => {
+  const [email, setEmail] = useState('');
+  const [code, setCode] = useState('');
+  const [codeSent, setCodeSent] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState('');
+
+  const handleGoogleSignIn = () => {
     signIn('google', { callbackUrl });
+  };
+
+  const handleSendCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setMessage('');
+
+    try {
+      const response = await fetch('/api/auth/send-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setCodeSent(true);
+        setMessage('Verification code sent! Check your email.');
+        // In dev, the code is logged to console
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Check server logs for the verification code');
+        }
+      } else {
+        setMessage(data.error || 'Failed to send code');
+      }
+    } catch (error) {
+      setMessage('Failed to send verification code');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleVerifyCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setMessage('');
+
+    const result = await signIn('credentials', {
+      email,
+      code,
+      callbackUrl,
+      redirect: false
+    });
+
+    setIsLoading(false);
+
+    if (result?.error) {
+      setMessage('Invalid verification code. Please try again.');
+      setCode('');
+    } else if (result?.ok) {
+      window.location.href = callbackUrl;
+    }
   };
 
   return (
@@ -22,22 +81,104 @@ function LoginForm() {
         Welcome to Backoffice
       </h1>
 
-      <p className="mb-8 text-center text-sm text-zinc-600 dark:text-zinc-400">
-        Please sign in with your Google account to continue
-      </p>
+      <p className="mb-6 text-center text-sm text-zinc-600 dark:text-zinc-400">Sign in to continue</p>
 
-      {error && (
-        <div className="mb-4 w-full rounded-md bg-red-50 p-3 text-center text-sm text-red-600 dark:bg-red-950 dark:text-red-400">
-          {error === 'OAuthSignin' && 'Error occurred during authentication'}
-          {error === 'OAuthCallback' && 'Error occurred during callback'}
+      {(error || message) && (
+        <div
+          className={`mb-4 w-full rounded-md p-3 text-center text-sm ${
+            error ||
+            (message &&
+              (message.toLowerCase().includes('invalid') ||
+                message.toLowerCase().includes('failed') ||
+                message.toLowerCase().includes('required') ||
+                message.toLowerCase().includes('error')))
+              ? 'bg-red-50 text-red-600 dark:bg-red-950 dark:text-red-400'
+              : 'bg-green-50 text-green-600 dark:bg-green-950 dark:text-green-400'
+          }`}
+        >
+          {error === 'OAuthSignin' && 'Error occurred during Google authentication'}
+          {error === 'OAuthCallback' && 'Error occurred during Google callback'}
           {error === 'OAuthCreateAccount' && 'Could not create account'}
           {error === 'Callback' && 'Authentication failed'}
           {error === 'Default' && 'An error occurred during sign in'}
+          {message && !error && message}
         </div>
       )}
 
+      {/* Email/Verification Code Form */}
+      {!codeSent ? (
+        <form onSubmit={handleSendCode} className="mb-4 w-full space-y-4">
+          <div>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
+              disabled={isLoading}
+              className="w-full rounded-lg border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 placeholder-zinc-500 focus:border-zinc-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder-zinc-400 dark:focus:border-zinc-600"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="cursor-pointer w-full rounded-lg border border-zinc-200 bg-zinc-900 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+          >
+            {isLoading ? 'Sending...' : 'Send Verification Code'}
+          </button>
+        </form>
+      ) : (
+        <form onSubmit={handleVerifyCode} className="mb-4 w-full space-y-4">
+          <div>
+            <p className="mb-2 text-xs text-zinc-500 dark:text-zinc-400">Code sent to {email}</p>
+            <input
+              type="text"
+              placeholder="Enter 6-digit code"
+              value={code}
+              onChange={e => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+              required
+              maxLength={6}
+              disabled={isLoading}
+              className="w-full rounded-lg border border-zinc-200 bg-white px-4 py-3 text-center text-2xl tracking-widest text-zinc-900 placeholder-zinc-500 focus:border-zinc-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder-zinc-400 dark:focus:border-zinc-600"
+            />
+          </div>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                setCodeSent(false);
+                setCode('');
+                setMessage('');
+              }}
+              disabled={isLoading}
+              className="cursor-pointer flex-1 rounded-lg border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-zinc-900 transition-colors hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800"
+            >
+              Change Email
+            </button>
+            <button
+              type="submit"
+              disabled={isLoading || code.length !== 6}
+              className="cursor-pointer flex-1 rounded-lg border border-zinc-200 bg-zinc-900 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+            >
+              {isLoading ? 'Verifying...' : 'Verify Code'}
+            </button>
+          </div>
+        </form>
+      )}
+
+      {/* Divider */}
+      <div className="relative my-6">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-zinc-200 dark:border-zinc-700"></div>
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-white px-2 text-zinc-500 dark:bg-black dark:text-zinc-400">Or</span>
+        </div>
+      </div>
+
+      {/* Google Sign In Button */}
       <button
-        onClick={handleSignIn}
+        onClick={handleGoogleSignIn}
         className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-lg border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-zinc-900 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800"
       >
         <svg className="h-5 w-5" viewBox="0 0 24 24">

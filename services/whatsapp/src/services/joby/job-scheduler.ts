@@ -5,8 +5,8 @@ import { Logger } from 'logger';
 import OpenAI from 'openai';
 import redis from 'redis';
 
-const jobyPhoneId = secrets.JOBY_WHATSAPP_PHONE_ID;
-const accessToken = secrets.WHATSAPP_ACCESS_TOKEN;
+const jobyPhoneId = secrets.SECRET_JOBY_WHATSAPP_PHONE_ID;
+const accessToken = secrets.SECRET_WHATSAPP_ACCESS_TOKEN;
 const getJobDetailsUrl = (id: string) => `https://linkedin-data-api.p.rapidapi.com/get-job-details?id=${id}`;
 const getLocationUrl = (location: string) =>
   `https://linkedin-data-api.p.rapidapi.com/search-locations?keyword=${location}`;
@@ -48,7 +48,7 @@ const getJobsUrl = (
 const options = {
   method: 'GET',
   headers: {
-    'x-rapidapi-key': secrets.LINKEDIN_API_KEY,
+    'x-rapidapi-key': secrets.SECRET_LINKEDIN_API_KEY,
     'x-rapidapi-host': 'linkedin-data-api.p.rapidapi.com'
   }
 };
@@ -79,7 +79,7 @@ async function addJobDetailsToEveryJob(jobs: JobData[]) {
 const logger = new Logger('JobScheduler');
 
 const openai = new OpenAI({
-  apiKey: secrets.OPENAI_TOKEN
+  apiKey: secrets.SECRET_OPENAI_TOKEN
 });
 
 // Redis key prefix for storing last notification times

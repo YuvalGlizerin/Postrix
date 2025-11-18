@@ -11,7 +11,7 @@ import { getModel } from '../lib/ai-providers.ts';
 
 import { buildSystemContent } from './lumo/lumo-model-settings.ts';
 
-const accessToken = secrets.WHATSAPP_ACCESS_TOKEN;
+const accessToken = secrets.SECRET_WHATSAPP_ACCESS_TOKEN;
 const logger = new Logger('Whatsapp');
 
 interface WebsiteCreationArgs {
