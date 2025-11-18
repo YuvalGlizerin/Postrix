@@ -2,19 +2,14 @@ import { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import secrets from 'secret-manager';
-import utils from 'utils';
 import redis from 'redis';
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    ...(utils.isAdhoc()
-      ? []
-      : [
-          GoogleProvider({
-            clientId: secrets.SECRET_GOOGLE_CLIENT_ID || '',
-            clientSecret: secrets.SECRET_GOOGLE_CLIENT_SECRET || ''
-          })
-        ]),
+    GoogleProvider({
+      clientId: secrets.SECRET_GOOGLE_CLIENT_ID || '',
+      clientSecret: secrets.SECRET_GOOGLE_CLIENT_SECRET || ''
+    }),
     CredentialsProvider({
       name: 'Email Verification Code',
       credentials: {
