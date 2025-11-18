@@ -3,6 +3,11 @@ import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import secrets from 'secret-manager';
 import redis from 'redis';
+import utils from 'utils';
+
+if (utils.isAdhoc()) {
+  process.env.NEXTAUTH_URL = `https://${process.env.NAMESPACE}-backoffice.postrix.io`;
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
