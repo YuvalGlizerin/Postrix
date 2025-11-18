@@ -9,7 +9,7 @@ function urlHasAdhoc(): boolean {
   if (typeof window === 'undefined') {
     return false;
   }
-  return window.location.pathname.includes('-adhoc-backoffice.postrix.io');
+  return window.location.hostname.includes('-adhoc-backoffice.postrix.io');
 }
 
 function LoginForm() {
@@ -51,7 +51,7 @@ function LoginForm() {
       } else {
         setMessage(data.error || 'Failed to send code');
       }
-    } catch (error) {
+    } catch {
       setMessage('Failed to send verification code');
     } finally {
       setIsLoading(false);
