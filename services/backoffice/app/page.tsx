@@ -60,13 +60,7 @@ export default async function Home() {
           </p>
           <div className="mt-6 space-y-2">
             <p className="text-sm text-zinc-600 dark:text-zinc-400">
-              <span className="font-medium">User ID:</span> {session.user.email}
-            </p>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
               <span className="font-medium">Email:</span> {session.user.email}
-            </p>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
-              <span className="font-medium">Name:</span> {session.user.name}
             </p>
           </div>
         </div>
