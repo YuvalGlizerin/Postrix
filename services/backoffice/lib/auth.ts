@@ -1,78 +1,99 @@
-import type { NextAuthOptions } from 'next-auth';
+import { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import secrets from 'secret-manager';
+import redis from 'redis';
+import utils from 'utils';
+
+if (utils.isAdhoc()) {
+  process.env.NEXTAUTH_URL = `https://${process.env.NAMESPACE}-backoffice.postrix.io`;
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
-      clientId: secrets.GOOGLE_CLIENT_ID!,
-      clientSecret: secrets.GOOGLE_CLIENT_SECRET!,
-      authorization: {
-        params: {
-          // Hint Google to use the postrix.io hosted domain.
-          hd: 'postrix.io'
+      clientId: secrets.SECRET_GOOGLE_CLIENT_ID || '',
+      clientSecret: secrets.SECRET_GOOGLE_CLIENT_SECRET || ''
+    }),
+    CredentialsProvider({
+      name: 'Email Verification Code',
+      credentials: {
+        email: { label: 'Email', type: 'email' },
+        code: { label: 'Verification Code', type: 'text' }
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.code) {
+          return null;
+        }
+
+        try {
+          // Normalize email
+          const normalizedEmail = credentials.email.toLowerCase().trim();
+
+          // Get code from Redis
+          const redisKey = `auth:code:${normalizedEmail}`;
+          const storedCode = await redis.get(redisKey);
+
+          if (!storedCode) {
+            return null; // Code not found or expired
+          }
+
+          // Verify code
+          if (storedCode !== credentials.code) {
+            return null; // Invalid code
+          }
+
+          // Delete code after successful verification (one-time use)
+          await redis.del(redisKey);
+
+          // Return user object (email is the identifier)
+          // No database needed - we just use the email as the user ID
+          return {
+            id: normalizedEmail, // Use email as ID since we don't have a database
+            email: normalizedEmail,
+            name: null,
+            image: null
+          };
+        } catch (error) {
+          console.error('Error during code verification:', error);
+          return null;
         }
       }
     })
   ],
-  cookies: {
-    // Set cookies to work across all postrix.io subdomains
-    // This allows sessions to work on ephemeral environments
-    sessionToken: {
-      name: process.env.NODE_ENV === 'production' ? '__Secure-next-auth.session-token' : 'next-auth.session-token',
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        // Share cookies across all postrix.io subdomains
-        domain: process.env.NODE_ENV === 'production' ? '.postrix.io' : undefined
-      }
-    }
+  pages: {
+    signIn: '/login',
+    error: '/login'
   },
   callbacks: {
-    async signIn({ user, profile }) {
-      const email = user?.email ?? profile?.email;
-
-      if (!email) {
-        return false;
+    async jwt({ token, account, user }) {
+      // Handle OAuth providers (Google)
+      if (account && user) {
+        token.accessToken = account.access_token;
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        token.picture = user.image;
       }
-
-      // Only allow @postrix.io accounts.
-      if (!email.toLowerCase().endsWith('@postrix.io')) {
-        return false;
+      // Handle Credentials provider (email/code)
+      // User object is only passed on first sign-in
+      if (user && !account) {
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        token.picture = user.image;
       }
-
-      return true;
+      return token;
     },
-    async redirect({ url, baseUrl }) {
-      // If there's a callbackUrl with an ephemeral domain, redirect there
-      const urlObj = new URL(url, baseUrl);
-      const callbackUrl = urlObj.searchParams.get('callbackUrl');
-
-      if (callbackUrl) {
-        try {
-          const callback = new URL(callbackUrl);
-          // Allow redirects to any postrix.io subdomain
-          if (callback.hostname.endsWith('.postrix.io') || callback.hostname === 'localhost') {
-            return callbackUrl;
-          }
-        } catch {
-          // Invalid URL, fall through to default behavior
-        }
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id as string;
+        session.user.email = token.email as string;
+        session.user.name = token.name as string;
+        session.user.image = token.picture as string;
       }
-
-      // Default NextAuth behavior
-      if (url.startsWith('/')) {
-        return `${baseUrl}${url}`;
-      } else if (new URL(url).origin === baseUrl) {
-        return url;
-      }
-      return baseUrl;
+      return session;
     }
   },
-  secret: secrets.NEXTAUTH_SECRET,
-  pages: {
-    signIn: '/login'
-  }
+  secret: secrets.SECRET_NEXTAUTH_SECRET
 };

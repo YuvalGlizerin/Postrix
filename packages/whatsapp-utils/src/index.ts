@@ -10,7 +10,7 @@ import type { WhatsAppMessagePayload, WhatsAppMediaJson, WhatsAppMessageResult, 
 
 const logger = new Logger('Whatsapp');
 const openai = new OpenAI({
-  apiKey: secrets.OPENAI_TOKEN
+  apiKey: secrets.SECRET_OPENAI_TOKEN
 });
 
 /**

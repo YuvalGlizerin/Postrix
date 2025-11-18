@@ -32,7 +32,7 @@ const client = useElasticsearchAPI
       node: NODE,
       auth: {
         username: 'elastic',
-        password: secrets.ELASTICSEARCH_PASSWORD
+        password: secrets.SECRET_ELASTICSEARCH_PASSWORD
       },
       tls: {
         rejectUnauthorized: false

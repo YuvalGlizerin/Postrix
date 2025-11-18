@@ -6,9 +6,9 @@ export function LogoutButton() {
   return (
     <button
       onClick={() => signOut({ callbackUrl: '/login' })}
-      className="mt-6 rounded-full bg-zinc-200 px-5 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-zinc-300 cursor-pointer"
+      className="cursor-pointer rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-900 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800"
     >
-      Logout
+      Sign out
     </button>
   );
 }

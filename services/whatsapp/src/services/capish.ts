@@ -15,9 +15,9 @@ async function capishWebhook(req: Request, res: Response) {
   try {
     res.status(200).send('Message sent successfully'); // no retries
 
-    const accessToken = secrets.WHATSAPP_ACCESS_TOKEN;
-    const phoneId = secrets.CAPISH_WHATSAPP_PHONE_ID;
-    const apiVideoKey = secrets.CREATOMATE_API_KEY_TRIAL;
+    const accessToken = secrets.SECRET_WHATSAPP_ACCESS_TOKEN;
+    const phoneId = secrets.SECRET_CAPISH_WHATSAPP_PHONE_ID;
+    const apiVideoKey = secrets.SECRET_CREATOMATE_API_KEY_TRIAL;
 
     // Log the incoming request body to understand its structure
     logger.log('Incoming webhook payload:', { debug: JSON.stringify(req.body, null, 2) });

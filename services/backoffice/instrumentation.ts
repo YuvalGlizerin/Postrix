@@ -21,6 +21,7 @@ export async function register() {
     // Dynamic imports (await import) ensure these modules are only loaded when this code runs,
     // not at build time. This prevents Next.js from trying to bundle Node.js modules for Edge Runtime.
     await import('env-loader');
+    await import('secret-manager');
   }
   // When NEXT_RUNTIME === 'edge', this function does nothing and returns immediately
 }

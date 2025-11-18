@@ -10,7 +10,7 @@ const keyPrefix = `${process.env.ENV}:${process.env.ENV === 'local' ? os.hostnam
 
 const client = new Redis(process.env.REDIS_URL!, {
   keyPrefix,
-  password: secrets.REDIS_PASSWORD,
+  password: secrets.SECRET_REDIS_PASSWORD,
   keepAlive: 30000 // Send TCP keepalive packets every 30 seconds to prevent idle connection timeouts
 });
 

@@ -153,8 +153,8 @@ app.post('/send-job-alert', async (req: Request, res: Response) => {
 // Add work in progress auto response
 app.post('/webhook', async (req: Request, res: Response) => {
   try {
-    const capishPhoneId = secrets.CAPISH_WHATSAPP_PHONE_ID;
-    const lumoPhoneId = secrets.LUMO_WHATSAPP_PHONE_ID;
+    const capishPhoneId = secrets.SECRET_CAPISH_WHATSAPP_PHONE_ID;
+    const lumoPhoneId = secrets.SECRET_LUMO_WHATSAPP_PHONE_ID;
     const phoneNumberId = req.body?.entry?.[0]?.changes?.[0]?.value?.metadata?.phone_number_id;
 
     logger.log('Incoming webhook payload:', { debug: JSON.stringify(req.body, null, 2) });

@@ -160,8 +160,8 @@ GROUP BY day_of_week;
 ## 🔧 Configuration
 
 ### Environment Variables
-- `OPENAI_TOKEN` - Required for generating personalized alerts
-- `WHATSAPP_ACCESS_TOKEN` - Required for sending notifications
+- `SECRET_OPENAI_TOKEN` - Required for generating personalized alerts
+- `SECRET_WHATSAPP_ACCESS_TOKEN` - Required for sending notifications
 - `DATABASE_URL` - PostgreSQL connection string
 
 ### Scheduler Settings
