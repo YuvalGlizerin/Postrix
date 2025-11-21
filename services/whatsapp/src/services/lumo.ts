@@ -353,17 +353,17 @@ async function setupFirstTimeUser(whatsAppPayload: WhatsAppMessagePayload, acces
     }
   });
 
-  await whatsapp.respond(
-    whatsAppPayload,
-    "Hi! I'm Lumo, an AI agent that helps you build a website.\n\n" +
-      'By continuing, you agree to our terms and have read our privacy policy at https://whatsapp.postrix.io/privacy-policy.\n\n' +
-      'To get started, tell me:\n' +
-      '1. What kind of website you want to build\n' +
-      "2. What content or features you'd like it to have\n\n" +
-      'Available commands:\n' +
-      '• /reset - Clear all your data and start fresh',
-    accessToken
-  );
+  // await whatsapp.respond(
+  //   whatsAppPayload,
+  //   "Hi! I'm Lumo, an AI agent that helps you build a website.\n\n" +
+  //     'By continuing, you agree to our terms and have read our privacy policy at https://whatsapp.postrix.io/privacy-policy.\n\n' +
+  //     'To get started, tell me:\n' +
+  //     '1. What kind of website you want to build\n' +
+  //     "2. What content or features you'd like it to have\n\n" +
+  //     'Available commands:\n' +
+  //     '• /reset - Clear all your data and start fresh',
+  //   accessToken
+  // );
   return newUser;
 }
 
