@@ -42,6 +42,7 @@
     "lumo",
     "NEXTAUTH",
     "PGPASSWORD",
+    "polymarket",
     "postrix",
     "psql",
     "rabbitmq",

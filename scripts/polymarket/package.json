@@ -1,0 +1,18 @@
+{
+  "name": "script-polymarket",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A script to interact with the polymarket clob client",
+  "main": "src/index.ts",
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "test": "jest --config ../../jest.config.mjs --rootDir ./",
+    "dev": "node src/index.ts"
+  },
+  "dependencies": {
+    "@polymarket/clob-client": "^4.22.8",
+    "env-loader": "^1.0.0",
+    "ethers": "^6.15.0",
+    "secret-manager": "^1.0.0"
+  }
+}
