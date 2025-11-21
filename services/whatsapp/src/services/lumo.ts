@@ -78,6 +78,21 @@ async function lumoWebhook(req: Request, res: Response) {
     const user = await setupFirstTimeUser(whatsAppPayload, accessToken);
     const message = await whatsapp.getMessage(whatsAppPayload, accessToken);
 
+    logger.log('Lumo message received:', { message });
+    const phoneNumber = whatsAppPayload.entry[0].changes[0].value.messages[0].from;
+    if (phoneNumber !== '972544686188' && phoneNumber !== '972526269826') {
+      await whatsapp.respond(
+        whatsAppPayload,
+        'Lumo is currently unavailable. We will update you once it is live!',
+        accessToken
+      );
+      return;
+    }
+    if (phoneNumber === '972544686188' || phoneNumber === '972526269826') {
+      await whatsapp.respond(whatsAppPayload, 'Olma!', accessToken);
+      return;
+    }
+
     // Handle reset command
     if (message.trim().toLowerCase() === '/reset') {
       await handleResetCommand(user, whatsAppPayload, accessToken);
