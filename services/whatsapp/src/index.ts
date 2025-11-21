@@ -44,6 +44,112 @@ app.get('/webhook', async (req: Request, res: Response) => {
   whatsapp.verifyToken(req, res, 'VERIFY_TOKEN');
 });
 
+app.get('/get-lumo-users', async (req: Request, res: Response) => {
+  const cutoffDate = new Date('2025-11-21');
+  const users = await prismaLumo.users.findMany({
+    where: {
+      created_at: {
+        gt: cutoffDate
+      }
+    },
+    orderBy: {
+      created_at: 'desc'
+    }
+  });
+
+  // Generate HTML table
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Lumo Users (Created after 2025-11-21)</title>
+      <style>
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+          margin: 20px;
+          background-color: #f5f5f5;
+        }
+        h1 {
+          color: #333;
+          margin-bottom: 20px;
+        }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          background-color: white;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          border-radius: 8px;
+          overflow: hidden;
+        }
+        thead {
+          background-color: #4a5568;
+          color: white;
+        }
+        th, td {
+          padding: 12px 15px;
+          text-align: left;
+          border-bottom: 1px solid #e2e8f0;
+        }
+        th {
+          font-weight: 600;
+          text-transform: uppercase;
+          font-size: 12px;
+          letter-spacing: 0.5px;
+        }
+        tbody tr:hover {
+          background-color: #f7fafc;
+        }
+        tbody tr:last-child td {
+          border-bottom: none;
+        }
+        .count {
+          margin-bottom: 15px;
+          color: #666;
+          font-size: 14px;
+        }
+      </style>
+    </head>
+    <body>
+      <h1>Lumo Users</h1>
+      <div class="count">Total users created: <strong>${users.length}</strong></div>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Phone Number</th>
+            <th>Last Response ID</th>
+            <th>Created At</th>
+            <th>Updated At</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${
+            users.length === 0
+              ? '<tr><td colspan="5" style="text-align: center; padding: 40px; color: #999;">No users found</td></tr>'
+              : users
+                  .map(
+                    user => `
+              <tr>
+                <td>${user.id}</td>
+                <td>${user.phone_number || '-'}</td>
+                <td>${user.last_response_id || '-'}</td>
+                <td>${user.created_at ? new Date(user.created_at).toLocaleString() : '-'}</td>
+                <td>${user.updated_at ? new Date(user.updated_at).toLocaleString() : '-'}</td>
+              </tr>
+            `
+                  )
+                  .join('')
+          }
+        </tbody>
+      </table>
+    </body>
+    </html>
+  `;
+
+  res.setHeader('Content-Type', 'text/html');
+  res.status(200).send(html);
+});
+
 app.get('/website/:id', async (req: Request, res: Response) => {
   const { id } = req.params;
   const website = await prismaLumo.websites.findUnique({
