@@ -11,9 +11,9 @@ const logger = new Logger('polymarket-script');
 (async () => {
   // Get token ID for "Abraham" market from the event
   const marketInfo = await polymarket.getTokenIdForMarket(
-    'what-will-trump-say-during-saudi-investment-forum-on-november-19',
-    'Radical Left Lunatic',
-    'NO'
+    'what-will-keir-starmer-say-at-the-next-prime-ministers-questions-event-354',
+    'Footing',
+    'YES'
   );
 
   if (!marketInfo) {
@@ -21,17 +21,15 @@ const logger = new Logger('polymarket-script');
     process.exit(1);
   }
 
-  // Calculate minimum shares needed to meet $1 minimum order size
-  const minOrderValue = 1.0; // $1 minimum
-  const minShares = Math.ceil(minOrderValue / marketInfo.price);
-  const orderSize = Math.max(1, minShares); // At least 1 share, but meet minimum if needed
+  const orderSize = 10; // 10 shares hardcoded
+  const price = 0.95; // 95 cents hardcoded
 
   logger.info(
     `Order details: ${orderSize} shares at $${marketInfo.price} = $${(orderSize * marketInfo.price).toFixed(2)}`
   );
 
   // Buy YES shares for Abraham at current market price
-  const resp2 = await polymarket.placeOrder(marketInfo.tokenId, 'BUY', orderSize, marketInfo.price);
+  const resp2 = await polymarket.placeOrder(marketInfo.tokenId, 'BUY', orderSize, price);
 
   logger.info('Order created successfully:', resp2);
 })();
