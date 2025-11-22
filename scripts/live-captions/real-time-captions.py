@@ -4,7 +4,7 @@ Real-time YouTube Live Stream Audio Transcription
 Streams audio from YouTube and transcribes it in real-time using Whisper.
 """
 
-video_url = "https://www.youtube.com/watch?v=r2fqxxR_WDQ"
+video_url = "https://www.youtube.com/watch?v=j8ags57BAPI"
 
 try:
     import yt_dlp
