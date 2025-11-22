@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 /**
  * Real-time YouTube Live Stream Audio Transcription
  * Streams audio from YouTube and transcribes it in real-time using Whisper.

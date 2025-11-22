@@ -28,7 +28,7 @@
       "name": "Node Script",
       "type": "node-terminal",
       "request": "launch",
-      "command": "npm run dev --prefix scripts/polymarket",
+      "command": "npm run dev --prefix scripts/polymarket"
     },
     {
       "name": "GHA: Typescript",

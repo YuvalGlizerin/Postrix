@@ -9,6 +9,7 @@
     "test": "jest --config ../../jest.config.mjs --rootDir ./"
   },
   "dependencies": {
+    "@ethersproject/wallet": "^5.8.0",
     "@polymarket/clob-client": "^4.22.8",
     "ethers": "^6.15.0",
     "logger": "^1.0.0",
