@@ -8,6 +8,7 @@
   },
   "workspaces": [
     "packages/*",
+    "scripts/*",
     "services/*",
     ".github/actions/*"
   ],

@@ -1,0 +1,14 @@
+# Requirements for real-time-captions.py
+# Install with: pip install -r requirements.txt
+
+yt-dlp>=2023.12.30
+openai-whisper>=20231117
+
+# Optional: For faster real-time transcription (recommended)
+# faster-whisper>=1.0.0
+
+# Note: You also need ffmpeg installed on your system:
+# macOS: brew install ffmpeg
+# Ubuntu/Debian: sudo apt-get install ffmpeg
+# Windows: Download from https://ffmpeg.org/download.html
+

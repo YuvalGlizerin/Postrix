@@ -25,13 +25,10 @@
       }
     },
     {
-      "name": "Job Notifications",
+      "name": "Node Script",
       "type": "node-terminal",
       "request": "launch",
-      "command": "npm run start --prefix .github/actions/job-notifications",
-      "env": {
-        "ENV": "local"
-      }
+      "command": "npm run dev --prefix scripts/polymarket"
     },
     {
       "name": "GHA: Typescript",
