@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { Logger } from 'logger';
@@ -58,10 +59,32 @@ export default async function Home() {
           <p className="text-zinc-600 dark:text-zinc-400">
             You are successfully authenticated and can now access the backoffice features.
           </p>
-          <div className="mt-6 space-y-2">
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
-              <span className="font-medium">Email:</span> {session.user.email}
-            </p>
+          <div className="mt-6 space-y-4">
+            <div className="space-y-2">
+              <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                <span className="font-medium">Email:</span> {session.user.email}
+              </p>
+            </div>
+
+            <div className="border-t border-zinc-200 pt-4 dark:border-zinc-800">
+              <h3 className="mb-3 text-sm font-medium text-zinc-900 dark:text-zinc-100">Quick Links</h3>
+              <div className="grid gap-2">
+                <Link
+                  href="/trades"
+                  className="flex items-center justify-between rounded-md border border-zinc-200 bg-zinc-50 p-3 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800/50 dark:hover:bg-zinc-800"
+                >
+                  <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">Trades Explorer</span>
+                  <svg
+                    className="h-4 w-4 text-zinc-500 dark:text-zinc-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </main>
